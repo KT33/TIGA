@@ -68,8 +68,8 @@ void Error_Handler(void);
 #define SEN_L_GPIO_Port GPIOA
 #define SEN_LF_Pin GPIO_PIN_3
 #define SEN_LF_GPIO_Port GPIOA
-#define UI_LEDLEFT_BO_Pin GPIO_PIN_4
-#define UI_LEDLEFT_BO_GPIO_Port GPIOA
+#define UI_LED_LEFT_BO_Pin GPIO_PIN_4
+#define UI_LED_LEFT_BO_GPIO_Port GPIOA
 #define SENLED_L_Pin GPIO_PIN_5
 #define SENLED_L_GPIO_Port GPIOA
 #define SENLED_LF_Pin GPIO_PIN_6

@@ -19,6 +19,7 @@
 "Src/SEGGER_RTT.o"
 "Src/SEGGER_RTT_printf.o"
 "Src/adc.o"
+"Src/dma.o"
 "Src/gpio.o"
 "Src/main.o"
 "Src/spi.o"
@@ -28,4 +29,5 @@
 "Src/sysmem.o"
 "Src/system_stm32f4xx.o"
 "Src/tim.o"
+"Src/variable.o"
 "Startup/startup_stm32f413chux.o"

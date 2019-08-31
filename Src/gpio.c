@@ -49,27 +49,27 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13|SENLED_R_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, UI_LED_LEFT_BO_Pin|SENLED_L_Pin|SENLED_LF_Pin|CS_GYRO_Pin 
-                          |FLAG_LED_Pin|SEN_LED_RF_Pin, GPIO_PIN_RESET);
+                          |FLAG_LED_Pin|GPIO_PIN_11|SEN_LED_RF_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, UI_LED1_Pin|CS_R_EN_Pin|CS_L_EN_Pin|MOTER_R_CWCCW_Pin 
                           |MOTER_L_CWCCW_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = SENLED_R_Pin;
+  /*Configure GPIO pins : PC13 PCPin */
+  GPIO_InitStruct.Pin = GPIO_PIN_13|SENLED_R_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(SENLED_R_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PAPin PAPin PAPin PAPin 
-                           PAPin PAPin */
+                           PAPin PA11 PAPin */
   GPIO_InitStruct.Pin = UI_LED_LEFT_BO_Pin|SENLED_L_Pin|SENLED_LF_Pin|CS_GYRO_Pin 
-                          |FLAG_LED_Pin|SEN_LED_RF_Pin;
+                          |FLAG_LED_Pin|GPIO_PIN_11|SEN_LED_RF_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -87,7 +87,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = SWITCH_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(SWITCH_GPIO_Port, &GPIO_InitStruct);
 
 }
