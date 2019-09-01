@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "gpio.h"
@@ -29,7 +30,9 @@
 /* USER CODE BEGIN Includes */
 #include "SEGGER_RTT.h"
 #include "SEGGER_RTT_Conf.h"
-
+#include "stdint.h"
+#include "variable.h"
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,6 +96,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_SPI2_Init();
   MX_SPI3_Init();
@@ -106,6 +110,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	int i = 33;
 	float pi = 3.14;
+
+	HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer, sizeof(g_ADCBuffer)/sizeof(uint16_t));
 	while (1) {
 //	  SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
 
@@ -113,15 +119,19 @@ int main(void)
 //	  SEGGER_RTT_WriteString(0, "###### Testing SEGGER_printf() ######\r\n");
 //		printf("Hello World!\n");
 //		printf("i=%d,pi=%f\r\n",i,pi);
-		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin,1);
+//		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
+//		HAL_Delay(500);
+//		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		HAL_Delay(500);
-		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin,0);
-		HAL_Delay(500);
-//		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
-//			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
-//		} else {
-//			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
-//		}
+
+
+
+		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
+			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
+			HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer, sizeof(g_ADCBuffer)/sizeof(uint16_t));
+		} else {
+			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
+		}
 
     /* USER CODE END WHILE */
 

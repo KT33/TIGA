@@ -21,6 +21,10 @@
 #include "adc.h"
 
 /* USER CODE BEGIN 0 */
+#include "variable.h"
+#include "SEGGER_RTT.h"
+#include "SEGGER_RTT_Conf.h"
+#include "stdio.h"
 
 /* USER CODE END 0 */
 
@@ -38,7 +42,7 @@ void MX_ADC1_Init(void)
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ENABLE;
-  hadc1.Init.ContinuousConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
@@ -54,7 +58,7 @@ void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_9;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -63,6 +67,7 @@ void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 2;
+  sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -181,7 +186,16 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 } 
 
 /* USER CODE BEGIN 1 */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
+	printf("%4d,%4d,%4d,%4d,%4d\n", g_ADCBuffer[0], g_ADCBuffer[1],
+			g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4]);
 
+	printf("%d\n", g_ADCBuffer[0]);
+	Batt = (float) g_ADCBuffer[0] / 4095 * 3.3 * 2;
+	printf("Batt=%.4f\n", Batt);
+	printf("\n");
+
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
