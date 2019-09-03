@@ -17,7 +17,8 @@ C_SRCS += \
 ../Src/sysmem.c \
 ../Src/system_stm32f4xx.c \
 ../Src/tim.c \
-../Src/variable.c 
+../Src/variable.c \
+../Src/walldata.c 
 
 OBJS += \
 ./Src/SEGGER_RTT.o \
@@ -33,7 +34,8 @@ OBJS += \
 ./Src/sysmem.o \
 ./Src/system_stm32f4xx.o \
 ./Src/tim.o \
-./Src/variable.o 
+./Src/variable.o \
+./Src/walldata.o 
 
 C_DEPS += \
 ./Src/SEGGER_RTT.d \
@@ -49,7 +51,8 @@ C_DEPS += \
 ./Src/sysmem.d \
 ./Src/system_stm32f4xx.d \
 ./Src/tim.d \
-./Src/variable.d 
+./Src/variable.d \
+./Src/walldata.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -81,4 +84,6 @@ Src/tim.o: ../Src/tim.c
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F413xx -DDEBUG -c -I../Inc -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/tim.d" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 Src/variable.o: ../Src/variable.c
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F413xx -DDEBUG -c -I../Inc -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/variable.d" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
+Src/walldata.o: ../Src/walldata.c
+	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F413xx -DDEBUG -c -I../Inc -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/walldata.d" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 

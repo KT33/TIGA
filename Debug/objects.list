@@ -30,4 +30,5 @@
 "Src/system_stm32f4xx.o"
 "Src/tim.o"
 "Src/variable.o"
+"Src/walldata.o"
 "Startup/startup_stm32f413chux.o"

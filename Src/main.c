@@ -19,7 +19,6 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
-#include <variable.h>
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
@@ -33,6 +32,8 @@
 #include "SEGGER_RTT_Conf.h"
 #include "stdint.h"
 #include "stdio.h"
+#include "variable.h"
+#include "walldata.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,9 +65,10 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void wait_time(uint16_t ms){
-	g_test=0;
-	while(g_test<ms);
+void wait_time(uint16_t ms) {
+	g_test = 0;
+	while (g_test < ms)
+		;
 }
 /* USER CODE END 0 */
 
@@ -106,23 +108,28 @@ int main(void) {
 	MX_TIM6_Init();
 	/* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim6);
+	SEGGER_RTT_Init();
 
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-	int i = 33;
-	float pi = 3.14;
-
+	int i ,j;
+//	float pi = 3.14;
 	HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+	clear_Map(&walldate_real);
+	for(i=0;i<17;i++){
+		for(j=0;j<17;j++){
+			step_map[i][j]=i+j*16;
+		}
+	}
 	while (1) {
 		wait_time(1000);
-HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
+		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
 		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
 //			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
-			HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer,
-					sizeof(g_ADCBuffer) / sizeof(uint16_t));
+			output_Walldate(&walldate_real);
 		} else {
 //			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		}

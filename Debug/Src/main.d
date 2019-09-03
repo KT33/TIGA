@@ -1,4 +1,4 @@
-Src/main.o: ../Src/main.c ../Inc/variable.h ../Inc/main.h \
+Src/main.o: ../Src/main.c ../Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -30,9 +30,8 @@ Src/main.o: ../Src/main.c ../Inc/variable.h ../Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h ../Inc/adc.h \
  ../Inc/main.h ../Inc/dma.h ../Inc/spi.h ../Inc/tim.h ../Inc/gpio.h \
- ../Inc/SEGGER_RTT.h ../Inc/SEGGER_RTT_Conf.h ../Inc/SEGGER_RTT_Conf.h
-
-../Inc/variable.h:
+ ../Inc/SEGGER_RTT.h ../Inc/SEGGER_RTT_Conf.h ../Inc/SEGGER_RTT_Conf.h \
+ ../Src/variable.h ../Src/walldata.h
 
 ../Inc/main.h:
 
@@ -113,3 +112,7 @@ Src/main.o: ../Src/main.c ../Inc/variable.h ../Inc/main.h \
 ../Inc/SEGGER_RTT_Conf.h:
 
 ../Inc/SEGGER_RTT_Conf.h:
+
+../Src/variable.h:
+
+../Src/walldata.h:
