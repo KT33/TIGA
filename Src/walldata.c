@@ -11,7 +11,6 @@
 #include "variable.h"
 #include "walldata.h"
 
-
 void add_West_wall(walldate_t *walldate) {
 	uint16_t new;
 	new = 1;
@@ -198,65 +197,65 @@ void clear_adachiMap(walldate_t *walldate) {
 }
 
 void output_Walldate(walldate_t *walldate) {
-	int i=0;
+	int i = 0;
+	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
+			SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
 
-	for(i=0;i<1000;i++){
-		printf("i=%d\n",i);
+
+	int x_check, y_check;
+	printf("\n");
+	for (y_check = 15; y_check >= 0; y_check--) {
+		//printf("\x1b[31m");
+		printf("+");
+		for (x_check = 0; x_check < 16; x_check++) {
+			if (getWall(x_check, y_check, North, walldate) == 1) {
+				//printf("\x1b[31m");
+				printf("-----");
+			} else {
+				//printf("\x1b[m");
+				printf("     ");
+			}
+			//printf("\x1b[31m");
+			printf("+");
+		}
+		printf("\n");
+		for (x_check = 0; x_check < 16; x_check++) {
+			if (getWall(x_check, y_check, West, walldate) == 1) {
+				//printf("\x1b[31m");
+				printf("|");
+			} else {
+				printf(" ");
+			}
+			//printf("\x1b[m");
+			if (step_map[x_check][y_check] < 1000) {
+				printf(" %3d ", step_map[x_check][y_check]); //step_Map[x_check][y_check]
+			} else {
+				printf(" %3d ", 999);
+			}
+		}
+		if (getWall(15, y_check, East, walldate) == 1) {
+			//printf("\x1b[31m");
+			printf("|");
+		} else {
+			printf(" ");
+		}
+		printf("\n");
 	}
-
-//	int x_check, y_check;
-//	printf("\n");
-//	for (y_check = 15; y_check >= 0; y_check--) {
-//		//printf("\x1b[31m");
-//		printf("+");
-//		for (x_check = 0; x_check < 16; x_check++) {
-//			if (getWall(x_check, y_check, North, walldate) == 1) {
-//				//printf("\x1b[31m");
-//				printf("-----");
-//			} else {
-//				//printf("\x1b[m");
-//				printf("     ");
-//			}
-//			//printf("\x1b[31m");
-//			printf("+");
-//		}
-//		printf("\n");
-//		for (x_check = 0; x_check < 16; x_check++) {
-//			if (getWall(x_check, y_check, West, walldate) == 1) {
-//				//printf("\x1b[31m");
-//				printf("|");
-//			} else {
-//				printf(" ");
-//			}
-//			//printf("\x1b[m");
-//			if (step_map[x_check][y_check] < 1000) {
-//				printf(" %3d ", step_map[x_check][y_check]); //step_Map[x_check][y_check]
-//			} else {
-//				printf(" %3d ", 999);
-//			}
-//		}
-//		if (getWall(15, y_check, East, walldate) == 1) {
-//			//printf("\x1b[31m");
-//			printf("|");
-//		} else {
-//			printf(" ");
-//		}
-//		printf("\n");
-//	}
-//	printf("+");
-//	y_check = 0;
-//	for (x_check = 0; x_check < 16; x_check++) {
-//		if (getWall(x_check, y_check, South, walldate) == 1) {
-//			//printf("\x1b[31m");
-//			printf("-----");
-//		} else {
-//			printf("     ");
-//		}
-//		printf("+");
-//	}
-//	//printf("\x1b[m");
-//	printf("\n");
-//	printf("\n");
+	printf("+");
+	y_check = 0;
+	for (x_check = 0; x_check < 16; x_check++) {
+		if (getWall(x_check, y_check, South, walldate) == 1) {
+			//printf("\x1b[31m");
+			printf("-----");
+		} else {
+			printf("     ");
+		}
+		printf("+");
+	}
+	//printf("\x1b[m");
+	printf("\n");
+	printf("\n");
+	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 }
 
 int getWall(int x_check, int y_check, int direction_check, walldate_t *walldate) { //(見たい座標のx,y,とその座標からの方角１～４壁があれば１

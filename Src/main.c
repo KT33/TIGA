@@ -129,10 +129,10 @@ int main(void) {
 //		wait_time(1000);
 //		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
 		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
-//			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
-//			output_Walldate(&walldate_real);
-			 SEGGER_RTT_printf(0,"test:%d\n",i);
-			i++;
+			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
+			output_Walldate(&walldate_real);
+//			 SEGGER_RTT_printf(0,"test:%d\n",i);
+//			i++;
 		} else {
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		}
