@@ -109,29 +109,32 @@ int main(void) {
 	/* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim6);
 	SEGGER_RTT_Init();
+	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-	int i ,j;
+	int i, j;
 //	float pi = 3.14;
 	HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));
 	clear_Map(&walldate_real);
-	for(i=0;i<17;i++){
-		for(j=0;j<17;j++){
-			step_map[i][j]=i+j*16;
+	for (i = 0; i < 17; i++) {
+		for (j = 0; j < 17; j++) {
+			step_map[i][j] = i + j * 16;
 		}
 	}
 	while (1) {
-		wait_time(1000);
-		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
+//		wait_time(1000);
+//		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
 		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
 //			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
-			output_Walldate(&walldate_real);
+//			output_Walldate(&walldate_real);
+			 SEGGER_RTT_printf(0,"test:%d\n",i);
+			i++;
 		} else {
-//			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
+			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		}
 
 		/* USER CODE END WHILE */
