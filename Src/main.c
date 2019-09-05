@@ -34,6 +34,7 @@
 #include "stdio.h"
 #include "variable.h"
 #include "walldata.h"
+#include "other.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -110,6 +111,7 @@ int main(void) {
 	HAL_TIM_Base_Start_IT(&htim6);
 	SEGGER_RTT_Init();
 	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+	printf("\x1b[0m");
 
 	/* USER CODE END 2 */
 
@@ -126,13 +128,11 @@ int main(void) {
 		}
 	}
 	while (1) {
-//		wait_time(1000);
-//		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
 		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
+			chattering();
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
 			output_Walldate(&walldate_real);
-//			 SEGGER_RTT_printf(0,"test:%d\n",i);
-//			i++;
+
 		} else {
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		}

@@ -10,6 +10,7 @@
 #include "stdio.h"
 #include "variable.h"
 #include "walldata.h"
+#include "main.h"
 
 void add_West_wall(walldate_t *walldate) {
 	uint16_t new;
@@ -200,33 +201,42 @@ void output_Walldate(walldate_t *walldate) {
 	int i = 0;
 	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
 			SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
-
-
 	int x_check, y_check;
 	printf("\n");
+	printf("\x1b[36m");
+	printf("\x1b[1m");
+	printf("  ");
+	for(i=1;i<17;i++){
+	printf("  %2d  ",i);
+	}
+	printf("\x1b[0m");
+	printf("\n");
 	for (y_check = 15; y_check >= 0; y_check--) {
-		//printf("\x1b[31m");
-		printf("+");
+		//
+		printf("  +");
 		for (x_check = 0; x_check < 16; x_check++) {
 			if (getWall(x_check, y_check, North, walldate) == 1) {
-				//printf("\x1b[31m");
+				//
 				printf("-----");
 			} else {
-				//printf("\x1b[m");
 				printf("     ");
 			}
-			//printf("\x1b[31m");
+			//
 			printf("+");
 		}
 		printf("\n");
+		printf("\x1b[1m");
+		printf("\x1b[36m");
+		printf("%2d",y_check);
+		printf("\x1b[0m");
 		for (x_check = 0; x_check < 16; x_check++) {
 			if (getWall(x_check, y_check, West, walldate) == 1) {
-				//printf("\x1b[31m");
+				//
 				printf("|");
 			} else {
 				printf(" ");
 			}
-			//printf("\x1b[m");
+
 			if (step_map[x_check][y_check] < 1000) {
 				printf(" %3d ", step_map[x_check][y_check]); //step_Map[x_check][y_check]
 			} else {
@@ -234,28 +244,41 @@ void output_Walldate(walldate_t *walldate) {
 			}
 		}
 		if (getWall(15, y_check, East, walldate) == 1) {
-			//printf("\x1b[31m");
+			//
 			printf("|");
 		} else {
 			printf(" ");
 		}
+		printf("\x1b[1m");
+		printf("\x1b[36m");
+		printf("%2d",y_check);
+		printf("\x1b[0m");
 		printf("\n");
 	}
-	printf("+");
+	printf("  +");
 	y_check = 0;
 	for (x_check = 0; x_check < 16; x_check++) {
 		if (getWall(x_check, y_check, South, walldate) == 1) {
-			//printf("\x1b[31m");
+
 			printf("-----");
 		} else {
 			printf("     ");
 		}
 		printf("+");
 	}
-	//printf("\x1b[m");
 	printf("\n");
+	printf("  ");
+	printf("\x1b[1m");
+	printf("\x1b[36m");
+	for(i=1;i<17;i++){
+	printf("  %2d  ",i);
+	}
+	printf("\x1b[0m");
+
 	printf("\n");
+
 	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+	printf("\x1b[0m");
 }
 
 int getWall(int x_check, int y_check, int direction_check, walldate_t *walldate) { //(見たい座標のx,y,とその座標からの方角１～４壁があれば１

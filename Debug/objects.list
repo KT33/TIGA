@@ -22,6 +22,7 @@
 "Src/dma.o"
 "Src/gpio.o"
 "Src/main.o"
+"Src/other.o"
 "Src/spi.o"
 "Src/stm32f4xx_hal_msp.o"
 "Src/stm32f4xx_it.o"
