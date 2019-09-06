@@ -132,7 +132,6 @@ int main(void) {
 			chattering();
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
 			output_Walldate(&walldate_real);
-
 		} else {
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		}

@@ -9,5 +9,9 @@
 #define OTHER_H_
 
 void chattering(void);
+void erase_flash(void);
+
+void save_all_walldata(void);
+void read_mapdata(void);
 
 #endif /* OTHER_H_ */

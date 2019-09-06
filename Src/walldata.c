@@ -212,7 +212,7 @@ void output_Walldate(walldate_t *walldate) {
 	printf("\x1b[0m");
 	printf("\n");
 	for (y_check = 15; y_check >= 0; y_check--) {
-		//
+		printf("\x1b[31m");
 		printf("  +");
 		for (x_check = 0; x_check < 16; x_check++) {
 			if (getWall(x_check, y_check, North, walldate) == 1) {
@@ -231,12 +231,12 @@ void output_Walldate(walldate_t *walldate) {
 		printf("\x1b[0m");
 		for (x_check = 0; x_check < 16; x_check++) {
 			if (getWall(x_check, y_check, West, walldate) == 1) {
-				//
+				printf("\x1b[31m");
 				printf("|");
+				printf("\x1b[0m");
 			} else {
 				printf(" ");
 			}
-
 			if (step_map[x_check][y_check] < 1000) {
 				printf(" %3d ", step_map[x_check][y_check]); //step_Map[x_check][y_check]
 			} else {
@@ -244,8 +244,9 @@ void output_Walldate(walldate_t *walldate) {
 			}
 		}
 		if (getWall(15, y_check, East, walldate) == 1) {
-			//
+			printf("\x1b[31m");
 			printf("|");
+			printf("\x1b[0m");
 		} else {
 			printf(" ");
 		}
@@ -255,16 +256,21 @@ void output_Walldate(walldate_t *walldate) {
 		printf("\x1b[0m");
 		printf("\n");
 	}
+	printf("\x1b[31m");
 	printf("  +");
+	printf("\x1b[0m");
 	y_check = 0;
 	for (x_check = 0; x_check < 16; x_check++) {
 		if (getWall(x_check, y_check, South, walldate) == 1) {
-
+			printf("\x1b[31m");
 			printf("-----");
+			printf("\x1b[0m");
 		} else {
 			printf("     ");
 		}
+		printf("\x1b[31m");
 		printf("+");
+		printf("\x1b[0m");
 	}
 	printf("\n");
 	printf("  ");
