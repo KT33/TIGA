@@ -1,5 +1,5 @@
-other.c:15:6:chattering	16	static
-other.c:27:6:erase_flash	32	static
-other.c:39:6:save_walldata	32	static
-other.c:48:6:save_all_walldata	16	static
-other.c:64:6:read_mapdata	4	static
+other.c:16:6:chattering	16	static
+other.c:28:6:erase_flash	32	static
+other.c:40:6:write_flash	40	static
+other.c:51:6:save_all_walldata	16	static
+other.c:57:6:read_flash	24	static

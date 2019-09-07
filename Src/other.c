@@ -8,6 +8,7 @@
 #include "other.h"
 #include "variable.h"
 #include "main.h"
+#include "string.h"
 
 #define CHATT 10000
 #define SECTOR_BASE_ADRR 0x08160000ul
@@ -36,31 +37,23 @@ void erase_flash(void) {
 	HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError); //erase sector
 }
 
-void save_walldata(uint8_t start_block){
-	uint8_t i;
-	for (i = 0; i < 17; i++) {
-		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
-		SECTOR_BASE_ADRR + sizeof(uint32_t)*(i+start_block), &walldate_real.row[i]);
+void write_flash(uint32_t address,uint8_t *data,uint32_t size){
+	uint32_t add=address;
+	HAL_FLASH_Unlock(); //flash unlook
+	erase_flash();
+	for(add=address;add<(address+size);add++){
+		HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, add, *data);
+		data++;
 	}
-
+	HAL_FLASH_Lock(); //flash look
 }
 
 void save_all_walldata(void) {
 	uint8_t i = 0;
-	HAL_FLASH_Unlock(); //flash unlook
-	erase_flash();
+//write_flash(SECTOR_BASE_ADRR, data, size)
 
-//	uint32_t* p_data;
-//
-//	for (i = 0; i < 17; i++) {
-//		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
-//		SECTOR_BASE_ADRR + sizeof(uint32_t)*i, p_data);
-//	}
-
-
-	HAL_FLASH_lock(); //flash look
 }
 
-void read_mapdata(void) {
-
+void read_flash(uint32_t address,uint8_t *data,uint32_t size) {
+	memcpy(data,(uint8_t*)address,size);
 }

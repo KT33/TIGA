@@ -117,11 +117,16 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-	int i, j;
+	int i=-1, j;
 //	float pi = 3.14;
+	read_flash(0x08160000ul, &i, sizeof(i));
+	printf("i=%d\n",i);
+	i++;
+	write_flash(0x08160000ul, &i, sizeof(i));
+
 	HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));
-	clear_Map(&walldate_real);
+
 	for (i = 0; i < 17; i++) {
 		for (j = 0; j < 17; j++) {
 			step_map[i][j] = i + j * 16;
@@ -131,7 +136,7 @@ int main(void) {
 		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
 			chattering();
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
-			output_Walldate(&walldate_real);
+
 		} else {
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		}

@@ -10,6 +10,6 @@
 uint16_t g_ADCBuffer[5];
 float Batt;
 uint16_t g_test=0;
-walldate_t walldate_real, walldate_checked, walldate_adachi;
+walldata_t walldata;
 XY_t x,y;
 uint16_t step_map[16][16];

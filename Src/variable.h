@@ -14,7 +14,13 @@
 typedef struct{
 	uint16_t row[17];
 	uint16_t column[17];
-}walldate_t;
+}singlewalldata_t;
+
+typedef struct{
+	singlewalldata_t real;
+	singlewalldata_t check;
+	singlewalldata_t adachi;
+}walldata_t;
 
 typedef struct{
 	uint8_t now;
@@ -25,7 +31,7 @@ typedef struct{
 extern uint16_t g_ADCBuffer[5];
 extern float Batt;
 extern uint16_t g_test;
-extern walldate_t walldate_real, walldate_checked, walldate_adachi;
+extern walldata_t walldata;
 extern XY_t x,y;
 extern uint16_t step_map[16][16];
 
