@@ -31,8 +31,10 @@
 #include "SEGGER_RTT.h"
 #include "SEGGER_RTT_Conf.h"
 #include "stdint.h"
-#include "variable.h"
 #include "stdio.h"
+#include "variable.h"
+#include "walldata.h"
+#include "other.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,7 +66,11 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void wait_time(uint16_t ms) {
+	g_test = 0;
+	while (g_test < ms)
+		;
+}
 /* USER CODE END 0 */
 
 /**
@@ -102,33 +108,39 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
+	HAL_TIM_Base_Start_IT(&htim6);
+	SEGGER_RTT_Init();
+	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+	printf("\x1b[0m");
+	init_walldata();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	int i = 33;
-	float pi = 3.14;
+	int i = -1, j;
+//	float pi = 3.14;
+	read_flash(0x08160000ul, &walldata, sizeof(walldata));
+	walldata.real.column[1]++;
+	write_flash(0x08160000ul, &walldata, sizeof(walldata));
 
-	HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer, sizeof(g_ADCBuffer)/sizeof(uint16_t));
+	HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+
+	for (i = 0; i < 17; i++) {
+		for (j = 0; j < 17; j++) {
+			step_map[i][j] = i + j * 16;
+		}
+	}
+//	output_Walldata(REAL);
 	while (1) {
-//	  SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
-
-//	  SEGGER_RTT_WriteString(0, "SEGGER Real-Time-Terminal Sample\r\n\r\n");
-//	  SEGGER_RTT_WriteString(0, "###### Testing SEGGER_printf() ######\r\n");
-//		printf("Hello World!\n");
-//		printf("i=%d,pi=%f\r\n",i,pi);
-//		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
-//		HAL_Delay(500);
-//		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
-		HAL_Delay(500);
-
-
-
 		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
+//			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
-			HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer, sizeof(g_ADCBuffer)/sizeof(uint16_t));
+			chattering();
+//			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
 		} else {
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		}

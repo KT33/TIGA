@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/kt33_/Documents/Mice/TIGA/Inc
+HeaderPath=C:/Users/kt33_/Documents/mice/TIGA/Inc
 HeaderFiles=gpio.h;adc.h;spi.h;tim.h;stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;dma.h;
-SourcePath=C:/Users/kt33_/Documents/Mice/TIGA/Src
+SourcePath=C:/Users/kt33_/Documents/mice/TIGA/Src
 SourceFiles=gpio.c;adc.c;spi.c;tim.c;stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;dma.c;
 
 [PreviousLibFiles]

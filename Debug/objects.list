@@ -19,6 +19,7 @@
 "Src/SEGGER_RTT.o"
 "Src/SEGGER_RTT_printf.o"
 "Src/adc.o"
+"Src/buzzer.o"
 "Src/dma.o"
 "Src/gpio.o"
 "Src/main.o"

@@ -1,0 +1,17 @@
+walldata.c:15:6:add_West_wall	24	static
+walldata.c:22:6:add_South_wall	24	static
+walldata.c:29:6:add_East_wall	24	static
+walldata.c:36:6:add_North_wall	24	static
+walldata.c:43:6:pull_West_wall	24	static
+walldata.c:50:6:pull_South_wall	24	static
+walldata.c:57:6:pull_East_wall	24	static
+walldata.c:64:6:pull_North_wall	24	static
+walldata.c:71:6:add_walldata_one	16	static
+walldata.c:84:6:pull_walldata_one	16	static
+walldata.c:97:6:addWall	8	static
+walldata.c:139:6:clear_Map	24	static
+walldata.c:152:6:clear_adachiMap	24	static
+walldata.c:161:6:init_walldata	8	static
+walldata.c:167:6:output_Walldata	16	static
+walldata.c:179:6:read_Walldata	40	static
+walldata.c:270:5:getWall	32	static

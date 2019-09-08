@@ -9,3 +9,10 @@
 
 uint16_t g_ADCBuffer[5];
 float Batt;
+uint16_t g_test=0;
+walldata_t walldata;
+XY_t x,y;
+uint16_t step_map[16][16];
+uint8_t add_wall_flag=1;
+uint8_t direction=North;
+sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF,SEN_F;
