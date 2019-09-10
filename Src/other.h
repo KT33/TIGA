@@ -18,7 +18,10 @@ void save_all_walldata(void);
 void read_all_walldata(void);
 uint8_t read_spi(uint8_t);
 void init_gyro(void);
+float read_gyro(void);
+float read_accel(void);
 
 #define WHO_AM_I 0x00
+
 
 #endif /* OTHER_H_ */

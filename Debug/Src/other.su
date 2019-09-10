@@ -7,3 +7,5 @@ other.c:60:6:read_all_walldata	8	static
 other.c:63:9:read_spi	32	static
 other.c:75:6:write_spi	32	static
 other.c:85:6:init_gyro	8	static
+other.c:113:7:read_gyro	24	static
+other.c:123:7:read_accel	24	static

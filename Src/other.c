@@ -72,26 +72,60 @@ uint8_t read_spi(uint8_t addr) { //addrのデータを読み取る
 	return data_rx[1];
 }
 
-void write_spi(uint8_t addr,uint8_t data){
-	uint8_t data_rx[2],data_tx[2];
-	data_tx[0]=0x7f&addr;
-	data_tx[1]=data;
+void write_spi(uint8_t addr, uint8_t data) {
+	uint8_t data_rx[2], data_tx[2];
+	data_tx[0] = 0x7f & addr;
+	data_tx[1] = data;
 
 	HAL_GPIO_WritePin(CS_GYRO_GPIO_Port, CS_GYRO_Pin, 0);
 	HAL_SPI_TransmitReceive(&hspi2, data_tx, data_rx, 2, 1);
 	HAL_GPIO_WritePin(CS_GYRO_GPIO_Port, CS_GYRO_Pin, 1);
 }
 
-void init_gyro(void){
-		read_spi(WHO_AM_I);
+void init_gyro(void) {
+	read_spi(WHO_AM_I);
 	HAL_Delay(10);
-	if(read_spi(WHO_AM_I)!=0xe0){
+	if (read_spi(WHO_AM_I) != 0xe0) {
 		printf("gyro init error\n");
 	}
 	HAL_Delay(10);
+	write_spi(0x05, 0x00); //USER_CTRL いろんな機能をoffに
+	HAL_Delay(10);
+	write_spi(0x06, 0x09); //PWRMGMT_1 温度センサoff クロックを自動設定 スリープ解除
+	HAL_Delay(10);
+	write_spi(0x07, 0x3f); //PWRMGMT_2 ジャイロ・加速度センサoff
 
+	HAL_Delay(10);
+	write_spi(0x7f, 0x20); //REG_BANK_SEL bank2に移動
 
+	HAL_Delay(10);
+	write_spi(0x01, 0x06); //GYRO_CONFIG_1 +-2000dps non-filter
+	HAL_Delay(10);
+	write_spi(0x14, 0x04); //ACCEL_CONFIG +-8g non-filter
 
+	HAL_Delay(10);
+	write_spi(0x7f, 0x00); //REG_BANK_SEL bank0に移動
 
-
+	HAL_Delay(10);
+	write_spi(0x07, 0x00); //PWRMGMT_2 ジャイロ・加速度センサon
 }
+
+float read_gyro(void) {
+	uint8_t data_l;
+	int8_t data_h;
+	int16_t value;
+	data_h = read_spi(0x37);
+	data_l = read_spi(0x38);
+	value = (int16_t)(data_h << 8) |(int16_t) data_l;
+	return (float)value*0.0610370189;//*2000/(2^15-1) return deg
+}
+
+float read_accel(void) {
+	uint8_t data_l, data_h;
+	int16_t value;
+	data_h = read_spi(0x31);
+	data_l = read_spi(0x32);
+	value = (int16_t)(data_h << 8) |(int16_t) data_l;
+	return (float)value*0.00239427472762;//*9.8...*8/(2^15-1) return m/s^2
+}
+

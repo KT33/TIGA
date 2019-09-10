@@ -114,6 +114,7 @@ int main(void) {
 	printf("\x1b[0m");
 	init_walldata();
 	HAL_GPIO_WritePin(CS_GYRO_GPIO_Port, CS_GYRO_Pin, SET);
+	init_gyro();
 
 	/* USER CODE END 2 */
 
@@ -147,6 +148,8 @@ int main(void) {
 		} else {
 			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
 		}
+		  printf("gyro=%.4f,accel=%.4f\n",read_gyro(),read_accel());
+		  HAL_Delay(1000);
 
 		/* USER CODE END WHILE */
 
