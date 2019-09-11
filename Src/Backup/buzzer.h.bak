@@ -10,7 +10,7 @@
 
 
 #include "main.h"
-#include "varargs.h"
+#include "variable.h"
 
 uint16_t calculation_counter(uint16_t Hz);
 
