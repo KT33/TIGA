@@ -20,6 +20,7 @@ uint8_t read_spi(uint8_t);
 void init_gyro(void);
 float read_gyro(void);
 float read_accel(void);
+void set_led(uint8_t);
 
 #define WHO_AM_I 0x00
 

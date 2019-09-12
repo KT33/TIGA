@@ -49,7 +49,7 @@ extern uint16_t step_map[16][16];
 extern uint8_t add_wall_flag;
 extern uint8_t direction;
 extern sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF,SEN_F;
-
+extern uint8_t mode;
 
 #define North 0
 #define West 1

@@ -10,6 +10,7 @@
 #include "main.h"
 #include "string.h"
 #include "spi.h"
+#include "gpio.h"
 
 #define CHATT 10000
 #define SECTOR_BASE_ADRR 0x08160000ul
@@ -21,6 +22,7 @@ void chattering(void) {
 	}
 	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
 	}
+	i=0;
 	while (i < CHATT) {
 		i++;
 	}
@@ -116,8 +118,8 @@ float read_gyro(void) {
 	int16_t value;
 	data_h = read_spi(0x37);
 	data_l = read_spi(0x38);
-	value = (int16_t)(data_h << 8) |(int16_t) data_l;
-	return (float)value*0.0610370189;//*2000/(2^15-1) return deg
+	value = (int16_t) (data_h << 8) | (int16_t) data_l;
+	return (float) value * 0.0610370189; //*2000/(2^15-1) return deg
 }
 
 float read_accel(void) {
@@ -125,7 +127,29 @@ float read_accel(void) {
 	int16_t value;
 	data_h = read_spi(0x31);
 	data_l = read_spi(0x32);
-	value = (int16_t)(data_h << 8) |(int16_t) data_l;
-	return (float)value*0.00239427472762;//*9.8...*8/(2^15-1) return m/s^2
+	value = (int16_t) (data_h << 8) | (int16_t) data_l;
+	return (float) value * 0.00239427472762; //*9.8...*8/(2^15-1) return m/s^2
 }
 
+void set_led(uint8_t num) {
+	if ((0x01 & num) != 0) {
+		HAL_GPIO_WritePin(UI_LED_RIGHT_GPIO_Port, UI_LED_RIGHT_Pin, SET);
+	}else{
+		HAL_GPIO_WritePin(UI_LED_RIGHT_GPIO_Port, UI_LED_RIGHT_Pin, RESET);
+	}
+	if ((0x02 & num) != 0) {
+		HAL_GPIO_WritePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin, SET);
+	}else{
+		HAL_GPIO_WritePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin, RESET);
+	}
+	if ((0x04 & num) != 0) {
+		HAL_GPIO_WritePin(UI_LED_LEFT_GPIO_Port, UI_LED_LEFT_Pin, SET);
+	}else{
+		HAL_GPIO_WritePin(UI_LED_LEFT_GPIO_Port, UI_LED_LEFT_Pin, RESET);
+	}
+	if ((0x08 & num) != 0) {
+		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, SET);
+	}else{
+		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, RESET);
+	}
+}

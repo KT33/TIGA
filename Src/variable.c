@@ -16,3 +16,4 @@ uint16_t step_map[16][16];
 uint8_t add_wall_flag=1;
 uint8_t direction=North;
 sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF,SEN_F;
+uint8_t mode=0;
