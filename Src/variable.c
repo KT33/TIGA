@@ -17,3 +17,6 @@ uint8_t add_wall_flag=1;
 uint8_t direction=North;
 sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF,SEN_F;
 uint8_t mode=0;
+uint16_t buzzer_count=0xffff;
+buzzer_t buzzer[30];
+uint8_t buzzer_index=0;

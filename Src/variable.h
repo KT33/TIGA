@@ -40,6 +40,11 @@ typedef struct {
 	int oblique_threshold;
 } sensor_t;
 
+typedef struct{
+	uint16_t freq;
+	uint16_t ms;
+}buzzer_t;
+
 extern uint16_t g_ADCBuffer[5];
 extern float Batt;
 extern uint16_t g_test;
@@ -50,6 +55,9 @@ extern uint8_t add_wall_flag;
 extern uint8_t direction;
 extern sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF,SEN_F;
 extern uint8_t mode;
+extern uint16_t buzzer_count;
+extern buzzer_t buzzer[30];
+extern uint8_t buzzer_index;
 
 #define North 0
 #define West 1

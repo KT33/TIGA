@@ -22,6 +22,7 @@
 "Src/buzzer.o"
 "Src/dma.o"
 "Src/gpio.o"
+"Src/interrupt.o"
 "Src/main.o"
 "Src/other.o"
 "Src/spi.o"
