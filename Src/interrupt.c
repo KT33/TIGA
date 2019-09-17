@@ -40,7 +40,7 @@ void interrupt_1ms(void) {
 	}
 
 	read_gyro();
-	read_spi_en(RIGHT, 0x3FFF);
+	g_test=read_spi_en(LEFT, 0x3FFF);
 
 }
 

@@ -67,11 +67,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void wait_time(uint16_t ms) {
-	g_test = 0;
-	while (g_test < ms)
-		;
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -157,7 +153,8 @@ int main(void)
 		HAL_GPIO_TogglePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin);
 
 //		en_test = read_spi_en(RIGHT, 0x3FFE);
-		printf("RIGHT=%x\n", en_test);
+		printf("RIGHT=%x\n", g_test);
+
 		HAL_Delay(500);
 
 		if (mode == 0) {
