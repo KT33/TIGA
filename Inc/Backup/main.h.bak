@@ -78,8 +78,8 @@ void Error_Handler(void);
 #define SENLED_LF_GPIO_Port GPIOA
 #define Speaker_Pin GPIO_PIN_7
 #define Speaker_GPIO_Port GPIOA
-#define UI_LED1_Pin GPIO_PIN_0
-#define UI_LED1_GPIO_Port GPIOB
+#define UI_LED_LEFT_Pin GPIO_PIN_0
+#define UI_LED_LEFT_GPIO_Port GPIOB
 #define Battery_Pin GPIO_PIN_1
 #define Battery_GPIO_Port GPIOB
 #define SCLK_GY_Pin GPIO_PIN_10
@@ -96,6 +96,8 @@ void Error_Handler(void);
 #define CS_GYRO_GPIO_Port GPIOA
 #define FLAG_LED_Pin GPIO_PIN_9
 #define FLAG_LED_GPIO_Port GPIOA
+#define UI_LED_RIGHT_Pin GPIO_PIN_11
+#define UI_LED_RIGHT_GPIO_Port GPIOA
 #define SEN_LED_RF_Pin GPIO_PIN_12
 #define SEN_LED_RF_GPIO_Port GPIOA
 #define MOTER_R_PWM_Pin GPIO_PIN_15

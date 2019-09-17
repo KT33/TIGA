@@ -13,6 +13,8 @@
 #include "variable.h"
 
 uint16_t calculation_counter(uint16_t Hz);
+void set_buzzer(uint8_t index, uint16_t Hz, uint16_t ms);
+void set_buzzer_mode(uint8_t mode);
 
 #define F_2 87
 #define G_2 98

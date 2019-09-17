@@ -37,8 +37,8 @@ TIGA.list \
 all: TIGA.elf secondary-outputs
 
 # Tool invocations
-TIGA.elf: $(OBJS) $(USER_OBJS) C:\Users\kt33_\Documents\mice\TIGA\STM32F413CHUX_FLASH.ld
-	arm-none-eabi-gcc -o "TIGA.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\kt33_\Documents\mice\TIGA\STM32F413CHUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TIGA.map" -Wl,--gc-sections -static -u_printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+TIGA.elf: $(OBJS) $(USER_OBJS) C:\Users\kt33_\Documents\Mice\TIGA\STM32F413CHUX_FLASH.ld
+	arm-none-eabi-gcc -o "TIGA.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\kt33_\Documents\Mice\TIGA\STM32F413CHUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TIGA.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

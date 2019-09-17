@@ -52,12 +52,17 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, UI_LED_CENTER_Pin|SENLED_R_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, UI_LED_LEFT_BO_Pin|SENLED_L_Pin|SENLED_LF_Pin|CS_GYRO_Pin 
-                          |FLAG_LED_Pin|UI_LED_RIGHT_Pin|SEN_LED_RF_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, UI_LED_LEFT_BO_Pin|SENLED_L_Pin|SENLED_LF_Pin|FLAG_LED_Pin 
+                          |UI_LED_RIGHT_Pin|SEN_LED_RF_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, UI_LED_LEFT_Pin|CS_R_EN_Pin|CS_L_EN_Pin|MOTER_R_CWCCW_Pin 
-                          |MOTER_L_CWCCW_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, UI_LED_LEFT_Pin|MOTER_R_CWCCW_Pin|MOTER_L_CWCCW_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(CS_GYRO_GPIO_Port, CS_GYRO_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, CS_R_EN_Pin|CS_L_EN_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : PCPin PCPin */
   GPIO_InitStruct.Pin = UI_LED_CENTER_Pin|SENLED_R_Pin;

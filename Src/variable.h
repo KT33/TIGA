@@ -41,7 +41,7 @@ typedef struct {
 } sensor_t;
 
 typedef struct{
-	uint16_t freq;
+	uint16_t autoreload;
 	uint16_t ms;
 }buzzer_t;
 
@@ -57,7 +57,7 @@ extern sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF,SEN_F;
 extern uint8_t mode;
 extern uint16_t buzzer_count;
 extern buzzer_t buzzer[30];
-extern uint8_t buzzer_index;
+extern uint8_t buzzer_index,buzzer_flag;
 
 #define North 0
 #define West 1

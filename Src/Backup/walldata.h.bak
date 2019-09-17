@@ -21,4 +21,5 @@ void read_Walldata(singlewalldata_t*);
 int getWall(int x_check, int y_check, int direction_check, singlewalldata_t*); //(見たい座標のx,y,とその座標からの方角１～４壁があれば１
 void output_Walldata(uint8_t);
 
+
 #endif /* WALLDATA_H_ */

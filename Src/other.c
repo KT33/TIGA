@@ -22,7 +22,7 @@ void chattering(void) {
 	}
 	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
 	}
-	i=0;
+	i = 0;
 	while (i < CHATT) {
 		i++;
 	}
@@ -62,6 +62,7 @@ void save_all_walldata(void) {
 void read_all_walldata(void) {
 	read_flash(SECTOR_BASE_ADRR, (uint8_t*) &walldata, sizeof(walldata));
 }
+
 uint8_t read_spi(uint8_t addr) { //addrのデータを読み取る
 	uint8_t data_tx[2], data_rx[2];
 	data_tx[0] = (0x80 | addr); //readのMSB(1)とアドレス
@@ -131,25 +132,100 @@ float read_accel(void) {
 	return (float) value * 0.00239427472762; //*9.8...*8/(2^15-1) return m/s^2
 }
 
+uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み取る
+	uint16_t data_tx[2];
+	uint16_t data_rx[2] = { 5, 5 };
+
+	data_tx[0] = 0x3aa3;
+	data_tx[1] = 0xaaaa;
+
+	//data_tx[0] = (0x4000 | addr); //14bitが1でread 0でwrite
+	//data_tx[0] = data_tx[0] || (check_parity(data_tx[0]) << 15);
+
+	printf("data_tx[0]=%x,%x\n", data_tx[0], data_tx[1]);
+
+//	data_tx[1] = 0x0000; //dummy
+	if (le_ri == LEFT) {
+		HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 0);
+	} else if (le_ri == RIGHT) {
+		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 0);
+	}
+	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) data_tx, (uint8_t*) data_rx, 1,
+			100);
+
+	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
+	HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
+
+	printf("1st rx0=%d,rx1=%d\n", data_rx[0], data_rx[1]);
+
+
+	if (le_ri == LEFT) {
+		HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 0);
+	} else if (le_ri == RIGHT) {
+		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 0);
+	}
+	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) &data_tx[1],
+			(uint8_t*) &data_rx[1], 1, 100);
+
+	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
+	HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
+
+	printf("2nd rx0=%d,rx1=%d\n", data_rx[0], data_rx[1]);
+
+	return (uint16_t) ((uint16_t) (data_rx[0] << 8) + (uint16_t) data_rx[1]);
+}
+
+void write_spi_en(uint8_t le_ri, uint16_t addr, uint16_t data) {
+	uint8_t data_tx[2];
+	uint16_t data_rx[2];
+	data_tx[0] = 0xBFFF & addr; //14bitが1でread 0でwrite
+	data_tx[0] = data_tx[0] && (check_parity(data_tx[0]) << 15);
+
+	data_tx[1] = data;
+
+	if (le_ri == LEFT) {
+		HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 0);
+	} else if (le_ri == RIGHT) {
+		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 0);
+	} else {
+	}
+	HAL_SPI_TransmitReceive(&hspi3, data_tx, (uint8_t*) data_rx, 2, 1);
+	if (le_ri == LEFT) {
+		HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
+	} else if (le_ri == RIGHT) {
+		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
+	} else {
+
+	}
+}
+
+uint16_t check_parity(uint16_t val) {
+	val ^= val >> 8;
+	val ^= val >> 4;
+	val ^= val >> 2;
+	val ^= val >> 1;
+	return val & 0x0001;
+}
+
 void set_led(uint8_t num) {
 	if ((0x01 & num) != 0) {
 		HAL_GPIO_WritePin(UI_LED_RIGHT_GPIO_Port, UI_LED_RIGHT_Pin, SET);
-	}else{
+	} else {
 		HAL_GPIO_WritePin(UI_LED_RIGHT_GPIO_Port, UI_LED_RIGHT_Pin, RESET);
 	}
 	if ((0x02 & num) != 0) {
 		HAL_GPIO_WritePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin, SET);
-	}else{
+	} else {
 		HAL_GPIO_WritePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin, RESET);
 	}
 	if ((0x04 & num) != 0) {
 		HAL_GPIO_WritePin(UI_LED_LEFT_GPIO_Port, UI_LED_LEFT_Pin, SET);
-	}else{
+	} else {
 		HAL_GPIO_WritePin(UI_LED_LEFT_GPIO_Port, UI_LED_LEFT_Pin, RESET);
 	}
 	if ((0x08 & num) != 0) {
 		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, SET);
-	}else{
+	} else {
 		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, RESET);
 	}
 }

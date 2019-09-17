@@ -1,1 +1,3 @@
-buzzer.c:10:10:calculation_counter	24	static
+buzzer.c:11:10:calculation_counter	24	static
+buzzer.c:21:6:set_buzzer	24	static
+buzzer.c:29:6:set_buzzer_mode	16	static
