@@ -133,11 +133,11 @@ float read_accel(void) {
 }
 
 uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み取る
-	uint16_t data_tx[2];
-	uint16_t data_rx[2] = { 5, 5 };
+	uint16_t data_tx;
+	uint16_t data_rx = 7;
 
-	data_tx[0] = 0xfffc;
-	data_tx[1] = 0xfffc;
+	data_tx = 0xfffc;
+//	data_tx[1] = 0xfffc;
 
 	//data_tx[0] = (0x4000 | addr); //14bitが1でread 0でwrite
 	//data_tx[0] = data_tx[0] || (check_parity(data_tx[0]) << 15);
@@ -150,13 +150,13 @@ uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み
 	} else if (le_ri == RIGHT) {
 		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 0);
 	}
-	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) data_tx, (uint8_t*) data_rx, 2,
+	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) &data_tx, (uint8_t*) &data_rx, 2,
 			100);
 
 	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
 	HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
 
-	for(int i=0;i<100;i++);
+
 
 //	printf("1st rx0=%d,rx1=%d\n", data_rx[0], data_rx[1]);
 
@@ -171,11 +171,10 @@ uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み
 //
 //	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
 //	HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
-
 //	printf("2nd rx0=%d,rx1=%d\n", data_rx[0], data_rx[1]);
 
 //	return (uint16_t) ((uint16_t) (data_rx[0] << 8) + (uint16_t) data_rx[1]);
-	return data_rx[1];
+	return data_rx;
 }
 
 void write_spi_en(uint8_t le_ri, uint16_t addr, uint16_t data) {
