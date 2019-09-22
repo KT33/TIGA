@@ -98,8 +98,8 @@ void Error_Handler(void);
 #define FLAG_LED_GPIO_Port GPIOA
 #define UI_LED_RIGHT_Pin GPIO_PIN_11
 #define UI_LED_RIGHT_GPIO_Port GPIOA
-#define SEN_LED_RF_Pin GPIO_PIN_12
-#define SEN_LED_RF_GPIO_Port GPIOA
+#define SENLED_RF_Pin GPIO_PIN_12
+#define SENLED_RF_GPIO_Port GPIOA
 #define MOTER_R_PWM_Pin GPIO_PIN_15
 #define MOTER_R_PWM_GPIO_Port GPIOA
 #define MOTER_L_PWM_Pin GPIO_PIN_3

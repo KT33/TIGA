@@ -30,7 +30,7 @@ Src/interrupt.o: ../Src/interrupt.c ../Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Src/variable.h ../Src/interrupt.h ../Inc/tim.h ../Inc/main.h \
- ../Src/other.h
+ ../Src/other.h ../Inc/adc.h
 
 ../Inc/main.h:
 
@@ -103,3 +103,5 @@ Src/interrupt.o: ../Src/interrupt.c ../Inc/main.h \
 ../Inc/main.h:
 
 ../Src/other.h:
+
+../Inc/adc.h:

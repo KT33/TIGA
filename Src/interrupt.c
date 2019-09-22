@@ -11,6 +11,7 @@
 #include "tim.h"
 #include "stm32f4xx_hal_tim.h"
 #include "other.h"
+#include "adc.h"
 
 void interrupt_1ms(void) {
 
@@ -41,7 +42,23 @@ void interrupt_1ms(void) {
 
 	read_gyro();
 
-	g_test=read_spi_en(RIGHT, 0xFFFc);
+	g_test = read_spi_en(LEFT, 0xFFFf);
 
+	//ADC
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+//	if ((Batt < 3.72)&&(low_batt_flag<1000)) {
+//		low_batt_flag++;
+//		if(low_batt_flag>1){
+//			low_batt_flag=0xff;
+//		}
+//	} else {
+//	//	low_batt_flag = 0;
+//	}
+	if(Batt<3.72){
+		low_batt_flag=0xff;
+	}else{
+		low_batt_flag=0;
+	}
 }
 
