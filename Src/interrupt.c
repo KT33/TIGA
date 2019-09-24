@@ -42,7 +42,11 @@ void interrupt_1ms(void) {
 
 	read_gyro();
 
+<<<<<<< HEAD
+	g_test=read_spi_en(LEFT, 0xFFFc);
+=======
 	g_test = read_spi_en(LEFT, 0xFFFf);
+>>>>>>> 9bde7ac4382873975e1aa609f10b650c56efe70c
 
 	//ADC
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,

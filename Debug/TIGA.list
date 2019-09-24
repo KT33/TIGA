@@ -11290,6 +11290,40 @@ void interrupt_1ms(void) {
 	}
 
 	read_gyro();
+<<<<<<< HEAD
+ 800460a:	f000 fa45 	bl	8004a98 <read_gyro>
+
+	g_test=read_spi_en(LEFT, 0xFFFc);
+ 800460e:	f64f 71fc 	movw	r1, #65532	; 0xfffc
+ 8004612:	2000      	movs	r0, #0
+ 8004614:	f000 fa78 	bl	8004b08 <read_spi_en>
+ 8004618:	4603      	mov	r3, r0
+ 800461a:	461a      	mov	r2, r3
+ 800461c:	4b06      	ldr	r3, [pc, #24]	; (8004638 <interrupt_1ms+0xfc>)
+ 800461e:	801a      	strh	r2, [r3, #0]
+
+}
+ 8004620:	bf00      	nop
+ 8004622:	bd80      	pop	{r7, pc}
+ 8004624:	200004a7 	.word	0x200004a7
+ 8004628:	20000a4c 	.word	0x20000a4c
+ 800462c:	200004a8 	.word	0x200004a8
+ 8004630:	2000000c 	.word	0x2000000c
+ 8004634:	200006b8 	.word	0x200006b8
+ 8004638:	200004a4 	.word	0x200004a4
+
+0800463c <main>:
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+ 800463c:	b580      	push	{r7, lr}
+ 800463e:	b086      	sub	sp, #24
+ 8004640:	af02      	add	r7, sp, #8
+  
+=======
  800473e:	f000 fa9f 	bl	8004c80 <read_gyro>
 
 	g_test = read_spi_en(LEFT, 0xFFFf);
@@ -11355,6 +11389,7 @@ void interrupt_1ms(void) {
  80047bc:	20000615 	.word	0x20000615
 
 080047c0 <main>:
+>>>>>>> 9bde7ac4382873975e1aa609f10b650c56efe70c
 
 /**
  * @brief  The application entry point.
