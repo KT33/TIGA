@@ -135,10 +135,10 @@ int main(void) {
 		printf("i=%d,pari=%d\n", i, check_parity(i));
 	}
 
-	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, 0);
-	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, 0);
-	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, 0);
-	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, 0);
+	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, RESET);
+	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, RESET);
+	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, RESET);
+	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, RESET);
 
 
 //	output_Walldata(REAL);

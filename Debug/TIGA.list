@@ -11505,22 +11505,22 @@ int main(void) {
  800489e:	d9d7      	bls.n	8004850 <main+0x90>
 	}
 
-	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, 0);
+	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, RESET);
  80048a0:	2200      	movs	r2, #0
  80048a2:	f44f 5180 	mov.w	r1, #4096	; 0x1000
  80048a6:	4847      	ldr	r0, [pc, #284]	; (80049c4 <main+0x204>)
  80048a8:	f7fd fe18 	bl	80024dc <HAL_GPIO_WritePin>
-	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, 0);
+	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, RESET);
  80048ac:	2200      	movs	r2, #0
  80048ae:	2140      	movs	r1, #64	; 0x40
  80048b0:	4844      	ldr	r0, [pc, #272]	; (80049c4 <main+0x204>)
  80048b2:	f7fd fe13 	bl	80024dc <HAL_GPIO_WritePin>
-	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, 0);
+	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, RESET);
  80048b6:	2200      	movs	r2, #0
  80048b8:	f44f 4100 	mov.w	r1, #32768	; 0x8000
  80048bc:	4847      	ldr	r0, [pc, #284]	; (80049dc <main+0x21c>)
  80048be:	f7fd fe0d 	bl	80024dc <HAL_GPIO_WritePin>
-	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, 0);
+	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, RESET);
  80048c2:	2200      	movs	r2, #0
  80048c4:	2120      	movs	r1, #32
  80048c6:	483f      	ldr	r0, [pc, #252]	; (80049c4 <main+0x204>)
