@@ -58,6 +58,7 @@ extern uint8_t mode;
 extern uint16_t buzzer_count;
 extern buzzer_t buzzer[30];
 extern uint8_t buzzer_index,buzzer_flag;
+extern uint8_t low_batt_flag;
 
 #define North 0
 #define West 1

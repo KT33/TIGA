@@ -136,7 +136,7 @@ uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み
 	uint16_t data_tx;
 	uint16_t data_rx = 7;
 
-	data_tx = 0xfffc;
+	data_tx = 0xffff;
 //	data_tx[1] = 0xfffc;
 
 	//data_tx[0] = (0x4000 | addr); //14bitが1でread 0でwrite
@@ -150,7 +150,7 @@ uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み
 	} else if (le_ri == RIGHT) {
 		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 0);
 	}
-	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) &data_tx, (uint8_t*) &data_rx, 2,
+	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) &data_tx, (uint8_t*) &data_rx, 1,
 			100);
 
 	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);

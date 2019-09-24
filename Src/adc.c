@@ -187,13 +187,13 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
 /* USER CODE BEGIN 1 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
-	printf("%4d,%4d,%4d,%4d,%4d\n", g_ADCBuffer[0], g_ADCBuffer[1],
-			g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4]);
+//	printf("%4d,%4d,%4d,%4d,%4d\n", g_ADCBuffer[0], g_ADCBuffer[1],
+//			g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4]);
 
-	printf("%d\n", g_ADCBuffer[0]);
+//	printf("%d\n", g_ADCBuffer[0]);
 	Batt = (float) g_ADCBuffer[0] / 4095 * 3.3 * 2;
-	printf("Batt=%.4f\n", Batt);
-	printf("\n");
+//	printf("Batt=%.4f\n", Batt);
+//	printf("\n");
 
 }
 /* USER CODE END 1 */
