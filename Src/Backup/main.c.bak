@@ -84,8 +84,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-	HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -122,7 +121,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	int i = -1, j;
+	u_int16_t i, j;
 	uint8_t test = 1;
 //	float pi = 3.14;
 	uint16_t en_test = 1234;
@@ -135,11 +134,16 @@ int main(void)
 		for (j = 0; j < 17; j++) {
 			step_map[i][j] = i + j * 16;
 		}
-		printf("i=%d,pari=%d\n",i,check_parity(i));
+		printf("i=%d,pari=%d\n", i, check_parity(i));
 	}
 
-	HAL_GPIO_WritePin(SEN_LED_RF_GPIO_Port, SEN_LED_RF_Pin, 1);
+	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, SET);
 
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 //	output_Walldata(REAL);
 	while (1) {
 		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
@@ -148,29 +152,75 @@ int main(void)
 			printf("%d\n", mode);
 			chattering();
 			set_led(mode);
-//			set_buzzer_mode(mode);
-			en_test=(uint16_t)mode;
+			set_buzzer_mode(mode);
+			en_test = (uint16_t) mode;
 			en_test = read_spi_en(RIGHT, 0x3FFF);
-	//		printf("RIGHT=%x\n", en_test);
+			//		printf("RIGHT=%x\n", en_test);
+		}
+
+		if (low_batt_flag == 0xff) {
+			//		while(1){
+			set_led(0);
+			HAL_Delay(100);
+			set_led(7);
+			HAL_Delay(100);
+			//		}
+		} else {
+			set_led(mode);
 		}
 
 		HAL_GPIO_TogglePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin);
+//		HAL_GPIO_TogglePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin);
+//		HAL_GPIO_TogglePin(SENLED_R_GPIO_Port, SENLED_R_Pin);
+//		HAL_GPIO_TogglePin(SENLED_L_GPIO_Port, SENLED_L_Pin);
+//		HAL_GPIO_TogglePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin);
 
 //		en_test = read_spi_en(RIGHT, 0x3FFE);
 
+//		printf("batt=%.3f\n",Batt);
 
-		HAL_Delay(1);
+//		printf("%4d,%4d,%4d,%4d,%4d\n", g_ADCBuffer[0], g_ADCBuffer[1], g_ADCBuffer[2],
+//				g_ADCBuffer[3], g_ADCBuffer[4]);
+
+		HAL_Delay(1000);
 
 		if (mode == 0) {
 
 		} else if (mode == 1) {
-			printf("%d\n", g_test);
+			HAL_GPIO_WritePin(MOTER_L_CWCCW_GPIO_Port, MOTER_L_CWCCW_Pin, SET);
+			HAL_GPIO_WritePin(MOTER_R_CWCCW_GPIO_Port, MOTER_R_CWCCW_Pin, SET);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 600);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 600);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 		} else if (mode == 2) {
-
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 200);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 200);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 		} else if (mode == 3) {
 
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+			HAL_GPIO_WritePin(MOTER_L_CWCCW_GPIO_Port, MOTER_L_CWCCW_Pin, RESET);
+			HAL_GPIO_WritePin(MOTER_R_CWCCW_GPIO_Port, MOTER_R_CWCCW_Pin, RESET);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 600);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 200);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 		} else if (mode == 4) {
-
+			HAL_GPIO_WritePin(MOTER_L_CWCCW_GPIO_Port, MOTER_L_CWCCW_Pin, RESET);
+			HAL_GPIO_WritePin(MOTER_R_CWCCW_GPIO_Port, MOTER_R_CWCCW_Pin, RESET);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 200);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 600);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 		} else if (mode == 5) {
 
 		} else if (mode == 6) {

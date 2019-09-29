@@ -24,6 +24,7 @@
 "Src/gpio.o"
 "Src/interrupt.o"
 "Src/main.o"
+"Src/moter.o"
 "Src/other.o"
 "Src/spi.o"
 "Src/stm32f4xx_hal_msp.o"

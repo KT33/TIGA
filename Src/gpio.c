@@ -56,13 +56,13 @@ void MX_GPIO_Init(void)
                           |UI_LED_RIGHT_Pin|SENLED_RF_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, UI_LED_LEFT_Pin|MOTER_R_CWCCW_Pin|MOTER_L_CWCCW_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(UI_LED_LEFT_GPIO_Port, UI_LED_LEFT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CS_GYRO_GPIO_Port, CS_GYRO_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, CS_R_EN_Pin|CS_L_EN_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, CS_R_EN_Pin|CS_L_EN_Pin|MOTER_R_CWCCW_Pin|MOTER_L_CWCCW_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : PCPin PCPin */
   GPIO_InitStruct.Pin = UI_LED_CENTER_Pin|SENLED_R_Pin;

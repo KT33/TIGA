@@ -42,15 +42,16 @@ void interrupt_1ms(void) {
 
 	read_gyro();
 
-<<<<<<< HEAD
-	g_test=read_spi_en(LEFT, 0xFFFc);
-=======
-	g_test = read_spi_en(LEFT, 0xFFFf);
->>>>>>> 9bde7ac4382873975e1aa609f10b650c56efe70c
+	g_test = read_spi_en(LEFT, 0xFFFc);
 
+
+	for (int i = 0; i < 1000; i++)
+		;
 	//ADC
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+//	printf("%d,%d,%d,%d,%d\n", g_ADCBuffer[0], g_ADCBuffer[1], g_ADCBuffer[2],
+//			g_ADCBuffer[3], g_ADCBuffer[4]);
 //	if ((Batt < 3.72)&&(low_batt_flag<1000)) {
 //		low_batt_flag++;
 //		if(low_batt_flag>1){
@@ -59,10 +60,10 @@ void interrupt_1ms(void) {
 //	} else {
 //	//	low_batt_flag = 0;
 //	}
-	if(Batt<3.72){
-		low_batt_flag=0xff;
-	}else{
-		low_batt_flag=0;
+	if (Batt < 3.72) {
+		low_batt_flag = 0xff;
+	} else {
+		low_batt_flag = 0;
 	}
 }
 
