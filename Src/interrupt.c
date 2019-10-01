@@ -12,38 +12,22 @@
 #include "stm32f4xx_hal_tim.h"
 #include "other.h"
 #include "adc.h"
+#include "moter.h"
+
+void buzzer_1ms(void);
 
 void interrupt_1ms(void) {
 
 	//buzzer
-	if (buzzer[buzzer_index].autoreload != 0xffff && buzzer_flag == 1) {
-		if (buzzer_count == 0) {
-			if (buzzer[buzzer_index].autoreload != 0) {
-				HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
-				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1,
-						buzzer[buzzer_index].autoreload / 2);
-				__HAL_TIM_SET_AUTORELOAD(&htim3,
-						buzzer[buzzer_index].autoreload);
-				HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-			} else {
-				HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
-			}
-		}
-		buzzer_count++;
-	} else {
-		HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
-		buzzer_count = 0;
-	}
-
-	if (buzzer_count == buzzer[buzzer_index].ms) {
-		buzzer_count = 0;
-		buzzer_index++;
-	}
+	buzzer_1ms();
 
 	read_gyro();
 
-	g_test = read_spi_en(LEFT, 0xFFFc);
+	real_L.vel=read_vel(LEFT);
+	real_R.vel=read_vel(RIGHT);
 
+	integlral_1ms(&real_L.dis, &real_L.vel);
+	integlral_1ms(&real_R.dis, &real_R.vel);
 
 	for (int i = 0; i < 1000; i++)
 		;
@@ -67,3 +51,28 @@ void interrupt_1ms(void) {
 	}
 }
 
+void buzzer_1ms(void) {
+	if (buzzer[buzzer_index].autoreload != 0xffff && buzzer_flag == 1) {
+		if (buzzer_count == 0) {
+			if (buzzer[buzzer_index].autoreload != 0) {
+				HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
+				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1,
+						buzzer[buzzer_index].autoreload / 2);
+				__HAL_TIM_SET_AUTORELOAD(&htim3,
+						buzzer[buzzer_index].autoreload);
+				HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+			} else {
+				HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
+			}
+		}
+		buzzer_count++;
+	} else {
+		HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
+		buzzer_count = 0;
+	}
+
+	if (buzzer_count == buzzer[buzzer_index].ms) {
+		buzzer_count = 0;
+		buzzer_index++;
+	}
+}

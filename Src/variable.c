@@ -21,3 +21,5 @@ uint16_t buzzer_count=0xffff;
 buzzer_t buzzer[30];
 uint8_t buzzer_index=0,buzzer_flag=0;
 uint8_t low_batt_flag=0;
+uint16_t before_en_val[2]={0,0};
+run_t real_R,real_L,ideal;

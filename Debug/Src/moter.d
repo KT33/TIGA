@@ -1,5 +1,5 @@
-Src/moter.o: ../Src/moter.c ../Src/moter.h ../Inc/main.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
+Src/moter.o: ../Src/moter.c ../Src/moter.h ../Src/variable.h \
+ ../Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
@@ -28,10 +28,12 @@ Src/moter.o: ../Src/moter.c ../Src/moter.h ../Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Src/variable.h ../Inc/tim.h ../Inc/main.h
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h ../Inc/tim.h \
+ ../Inc/main.h ../Src/other.h
 
 ../Src/moter.h:
+
+../Src/variable.h:
 
 ../Inc/main.h:
 
@@ -95,8 +97,8 @@ Src/moter.o: ../Src/moter.c ../Src/moter.h ../Inc/main.h \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 
-../Src/variable.h:
-
 ../Inc/tim.h:
 
 ../Inc/main.h:
+
+../Src/other.h:
