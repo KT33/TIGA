@@ -37,8 +37,45 @@ void interrupt_1ms(void) {
 
 
 	//ADC
+	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, 0);
+	for(uint8_t i=0;i<100;i++);
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, 1);
+	for(uint8_t i=0;i<100;i++);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+
+	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, 0);
+	for(uint8_t i=0;i<100;i++);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, 1);
+	for(uint8_t i=0;i<100;i++);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+
+	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, 0);
+	for(uint8_t i=0;i<100;i++);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, 1);
+	for(uint8_t i=0;i<100;i++);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+
+	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, 0);
+	for(uint8_t i=0;i<100;i++);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, 1);
+	for(uint8_t i=0;i<100;i++);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+
 //	printf("%d,%d,%d,%d,%d\n", g_ADCBuffer[0], g_ADCBuffer[1], g_ADCBuffer[2],
 //			g_ADCBuffer[3], g_ADCBuffer[4]);
 //	if ((Batt < 3.72)&&(low_batt_flag<1000)) {

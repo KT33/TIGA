@@ -83,7 +83,6 @@ int main(void) {
 	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
 	HAL_Init();
 
 	/* USER CODE BEGIN Init */
@@ -129,8 +128,8 @@ int main(void) {
 	uint16_t en_test = 1234;
 //	walldata.real.column[1]++;
 
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
-			sizeof(g_ADCBuffer) / sizeof(uint16_t));
+//	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+//			sizeof(g_ADCBuffer) / sizeof(uint16_t));
 
 	for (i = 0; i < 17; i++) {
 		for (j = 0; j < 17; j++) {
@@ -153,7 +152,7 @@ int main(void) {
 			chattering();
 			set_led(mode);
 			set_buzzer_mode(mode);
-			real_rotation.dis=0;
+			real_rotation.dis = 0;
 		}
 
 		if (low_batt_flag == 0xff) {
@@ -186,12 +185,14 @@ int main(void) {
 //			printf("LEFT=%4.2f,RIGHT=%4.8f\n",read_vel(LEFT),read_vel(RIGHT));
 
 		} else if (mode == 1) {
-			printf("%4.2f,%4.2f\n",real_rotation.dis,real_rotation.vel);
+//			printf("%4.2f,%4.2f\n",real_rotation.dis,real_rotation.vel);
+			printf("%4d,%4d,%4d,%4d,%4d,%4d,%4d,%4d,%4d\n", g_ADCBuffer[0], g_ADCBuffer[1],
+					g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4], g_ADCBuffer[5], g_ADCBuffer[6],
+					g_ADCBuffer[7], g_ADCBuffer[8]);
 		} else if (mode == 2) {
 
-
 		} else if (mode == 3) {
-			printf("LEFT=%4.2f,RIGHT=%4.2f\n",read_vel(LEFT),read_vel(RIGHT));
+			printf("LEFT=%4.2f,RIGHT=%4.2f\n", read_vel(LEFT), read_vel(RIGHT));
 		} else if (mode == 4) {
 
 		} else if (mode == 5) {

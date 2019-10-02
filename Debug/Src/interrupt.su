@@ -1,2 +1,2 @@
-interrupt.c:19:6:interrupt_1ms	8	static
-interrupt.c:59:6:buzzer_1ms	8	static
+interrupt.c:19:6:interrupt_1ms	16	static
+interrupt.c:96:6:buzzer_1ms	8	static

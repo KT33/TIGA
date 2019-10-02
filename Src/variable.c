@@ -7,7 +7,7 @@
 #include "variable.h"
 #include "stdint.h"
 
-uint16_t g_ADCBuffer[5];
+uint16_t g_ADCBuffer[9];
 float Batt;
 uint16_t g_test=0;
 walldata_t walldata;

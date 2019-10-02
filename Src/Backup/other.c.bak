@@ -120,7 +120,7 @@ float read_gyro(void) {
 	data_h = read_spi(0x37);
 	data_l = read_spi(0x38);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
-	return (float) value * 0.0610370189; //*2000/(2^15-1) return deg
+	return (float) value * 0.0610370189; //*2000/(2^15-1) return deg/sec
 }
 
 float read_accel(void) {
@@ -132,27 +132,30 @@ float read_accel(void) {
 	return (float) value * 0.00239427472762; //*9.8...*8/(2^15-1) return m/s^2
 }
 
+uint16_t check_parity(uint16_t val) {
+	val ^= val >> 8;
+	val ^= val >> 4;
+	val ^= val >> 2;
+	val ^= val >> 1;
+	return val & 0x0001;
+}
+
 uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み取る
 	uint16_t data_tx;
-	uint16_t data_rx = 7;
+	uint16_t data_rx;
 
-	data_tx = 0xffff;
-//	data_tx[1] = 0xfffc;
+//	data_tx = 0xffff;
 
-	//data_tx[0] = (0x4000 | addr); //14bitが1でread 0でwrite
-	//data_tx[0] = data_tx[0] || (check_parity(data_tx[0]) << 15);
+	data_tx = (0x4000 | addr); //14bitが1でread 0でwrite
+	data_tx = data_tx | (check_parity(data_tx) << 15);//偶パリティ
 
-//	printf("data_tx[0]=%x,%x\n", data_tx[0], data_tx[1]);
-
-//	data_tx[1] = 0x0000; //dummy
-	if (le_ri == LEFT) {
+	if (le_ri == LEFT) {//select CS
 		HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 0);
 	} else if (le_ri == RIGHT) {
 		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 0);
 	}
 	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) &data_tx, (uint8_t*) &data_rx, 1,
 			100);
-
 	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
 	HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
 
@@ -201,13 +204,7 @@ void write_spi_en(uint8_t le_ri, uint16_t addr, uint16_t data) {
 	}
 }
 
-uint16_t check_parity(uint16_t val) {
-	val ^= val >> 8;
-	val ^= val >> 4;
-	val ^= val >> 2;
-	val ^= val >> 1;
-	return val & 0x0001;
-}
+
 
 void set_led(uint8_t num) {
 	if ((0x01 & num) != 0) {

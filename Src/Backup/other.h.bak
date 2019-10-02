@@ -27,8 +27,7 @@ uint16_t check_parity(uint16_t val);
 void set_led(uint8_t);
 
 #define WHO_AM_I 0x00
-#define LEFT 0
-#define RIGHT 1
+
 
 
 #endif /* OTHER_H_ */

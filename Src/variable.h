@@ -92,7 +92,7 @@ typedef struct{
 	uint16_t ms;
 }buzzer_t;
 
-extern uint16_t g_ADCBuffer[5];
+extern uint16_t g_ADCBuffer[9];
 extern float Batt;
 extern uint16_t g_test;
 extern walldata_t walldata;
