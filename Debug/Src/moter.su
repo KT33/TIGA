@@ -1,2 +1,2 @@
 moter.c:14:7:read_vel	32	static
-moter.c:32:6:integlral_1ms	16	static
+moter.c:33:6:integlral_1ms	24	static

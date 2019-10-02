@@ -153,9 +153,7 @@ int main(void) {
 			chattering();
 			set_led(mode);
 			set_buzzer_mode(mode);
-			en_test = (uint16_t) mode;
-			en_test = read_spi_en(RIGHT, 0x3FFF);
-			//		printf("RIGHT=%x\n", en_test);
+			real_rotation.dis=0;
 		}
 
 		if (low_batt_flag == 0xff) {
@@ -185,13 +183,12 @@ int main(void) {
 		HAL_Delay(100);
 
 		if (mode == 0) {
-			printf("LEFT=%4.2f,RIGHT=%4.8f\n",read_vel(LEFT),read_vel(RIGHT));
+//			printf("LEFT=%4.2f,RIGHT=%4.8f\n",read_vel(LEFT),read_vel(RIGHT));
 
 		} else if (mode == 1) {
-			printf("LEFT=%4.2f,RIGHT=%4.4f\n",real_L.dis,real_R.dis);
+			printf("%4.2f,%4.2f\n",real_rotation.dis,real_rotation.vel);
 		} else if (mode == 2) {
 
-			printf("LEFT=%4.2f,RIGHT=%4.4f\n",real_L.vel,real_R.vel);
 
 		} else if (mode == 3) {
 			printf("LEFT=%4.2f,RIGHT=%4.2f\n",read_vel(LEFT),read_vel(RIGHT));

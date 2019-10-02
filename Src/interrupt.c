@@ -18,19 +18,24 @@ void buzzer_1ms(void);
 
 void interrupt_1ms(void) {
 
-	//buzzer
+//buzzer
 	buzzer_1ms();
+//buzzer
 
-	read_gyro();
+//gyro
+	real_rotation.vel=read_gyro();
+	integlral_1ms(&real_rotation.dis, &real_rotation.vel);//角速度から角度に
+//gyro
 
+//encoder
 	real_L.vel=read_vel(LEFT);
 	real_R.vel=read_vel(RIGHT);
 
 	integlral_1ms(&real_L.dis, &real_L.vel);
 	integlral_1ms(&real_R.dis, &real_R.vel);
+//encoder
 
-	for (int i = 0; i < 1000; i++)
-		;
+
 	//ADC
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));

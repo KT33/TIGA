@@ -26,9 +26,10 @@ float read_vel(uint8_t RorL) {
 	}
 	before_en_val[RorL] = val;
 //	vel = ((float) (val2)) / 16384.0;
-	return vel = ((float) (val2)) / 16384.0 * (0.5 * 3.14 * DIAMETER * DIAMETER);
+	return vel = ((float) (val2)) / 16384.0 * (0.5 * 3.14 * DIAMETER * DIAMETER)
+			* 1000;
 }
 
 void integlral_1ms(float* dis, float*vel) {
-	*dis += *vel ;
+	*dis += *vel * 0.001;
 }

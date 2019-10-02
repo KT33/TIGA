@@ -107,7 +107,8 @@ extern buzzer_t buzzer[30];
 extern uint8_t buzzer_index,buzzer_flag;
 extern uint8_t low_batt_flag;
 extern uint16_t before_en_val[2];
-extern run_t real_R,real_L,ideal;
+extern run_t real_R,real_L,ideal,real_rotation;
+extern run_t ideal_translation,ideal_rotation;
 
 #define North 0
 #define West 1

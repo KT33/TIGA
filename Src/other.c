@@ -120,7 +120,7 @@ float read_gyro(void) {
 	data_h = read_spi(0x37);
 	data_l = read_spi(0x38);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
-	return (float) value * 0.0610370189; //*2000/(2^15-1) return deg
+	return (float) value * 0.0610370189; //*2000/(2^15-1) return deg/sec
 }
 
 float read_accel(void) {
