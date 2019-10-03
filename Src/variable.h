@@ -24,6 +24,15 @@ typedef struct {
 } sensor_t;
 
 typedef struct{
+	int before_1ms;
+	int before_2ms;
+	int before_3ms;
+	int before_4ms;
+	int before_5ms;
+	int now;
+}SENLOG_t;
+
+typedef struct{
 	float accel;//加速度・各速度
 	float vel;//速度・各速度
 	float dis;//距離・角度
@@ -78,19 +87,18 @@ typedef struct{
 	singlewalldata_t adachi;
 }walldata_t;
 
-
 typedef struct{
 	uint8_t now;
 	uint8_t goal;
 	uint8_t pass;
 }XY_t;
 
-
-
 typedef struct{
 	uint16_t autoreload;
 	uint16_t ms;
 }buzzer_t;
+
+
 
 extern uint16_t g_ADCBuffer[9];
 extern float Batt;
@@ -101,6 +109,7 @@ extern uint16_t step_map[16][16];
 extern uint8_t add_wall_flag;
 extern uint8_t direction;
 extern sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF,SEN_F;
+extern SENLOG_t SEN_R_log, SEN_RF_log, SEN_L_log, SEN_LF_log,SEN_F_log;
 extern uint8_t mode;
 extern uint16_t buzzer_count;
 extern buzzer_t buzzer[30];
@@ -109,6 +118,13 @@ extern uint8_t low_batt_flag;
 extern uint16_t before_en_val[2];
 extern run_t real_R,real_L,ideal,real_rotation;
 extern run_t ideal_translation,ideal_rotation;
+extern uint8_t wall_control_flag;
+extern trapezoid_t translation_parameter,rotation_parameter;
+extern deviation_t rotation_deviation;
+extern uint8_t failsafe_flag;
+extern deviation_t run_right_deviation;
+extern deviation_t run_left_deviation;
+
 
 #define North 0
 #define West 1

@@ -219,7 +219,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 //			g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4]);
 
 //	printf("%d\n", g_ADCBuffer[0]);
-	Batt = (float) g_ADCBuffer[0] / 4095 * 3.3 * 2;
+//	Batt = (float) g_ADCBuffer[0] / 4095 * 3.3 * 2;
 //	printf("Batt=%.4f\n", Batt);
 //	printf("\n");
 
