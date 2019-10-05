@@ -147,9 +147,9 @@ uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み
 //	data_tx = 0xffff;
 
 	data_tx = (0x4000 | addr); //14bitが1でread 0でwrite
-	data_tx = data_tx | (check_parity(data_tx) << 15);//偶パリティ
+	data_tx = data_tx | (check_parity(data_tx) << 15); //偶パリティ
 
-	if (le_ri == LEFT) {//select CS
+	if (le_ri == LEFT) { //select CS
 		HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 0);
 	} else if (le_ri == RIGHT) {
 		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 0);
@@ -159,10 +159,7 @@ uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み
 	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
 	HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
 
-
-
 //	printf("1st rx0=%d,rx1=%d\n", data_rx[0], data_rx[1]);
-
 
 //	if (le_ri == LEFT) {
 //		HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 0);
@@ -184,7 +181,7 @@ void write_spi_en(uint8_t le_ri, uint16_t addr, uint16_t data) {
 	uint8_t data_tx[2];
 	uint16_t data_rx[2];
 	data_tx[0] = 0xBFFF & addr; //14bitが1でread 0でwrite
-	data_tx[0] = data_tx[0] && (check_parity(data_tx[0]) << 15);
+	data_tx[0] = data_tx[0] & (check_parity(data_tx[0]) << 15);
 
 	data_tx[1] = data;
 
@@ -204,7 +201,17 @@ void write_spi_en(uint8_t le_ri, uint16_t addr, uint16_t data) {
 	}
 }
 
-
+void Battery_Check(void) {
+	if (Batt < 3.72) { //7.7
+		while (1) {
+			set_led(3);
+			HAL_Delay(500);
+			set_led(6);
+			HAL_Delay(500);
+			//	myprintf("%6.2f\n",Battery);
+		}
+	}
+}
 
 void set_led(uint8_t num) {
 	if ((0x01 & num) != 0) {

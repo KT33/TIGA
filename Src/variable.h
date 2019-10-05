@@ -14,37 +14,37 @@
 #define DIAMETER 12.2
 
 typedef struct {
-	int now;//今の値
-	int reference;//真ん中にいるときのセンサー値
-	int threshold;//閾値
-	int diff;//差分
+	int now; //今の値
+	int reference; //真ん中にいるときのセンサー値
+	int threshold; //閾値
+	int diff; //差分
 	int diff_1ms;
 	int oblique_reference;
 	int oblique_threshold;
 } sensor_t;
 
-typedef struct{
+typedef struct {
 	int before_1ms;
 	int before_2ms;
 	int before_3ms;
 	int before_4ms;
 	int before_5ms;
 	int now;
-}SENLOG_t;
+} SENLOG_t;
 
-typedef struct{
-	float accel;//加速度・各速度
-	float vel;//速度・各速度
-	float dis;//距離・角度
+typedef struct {
+	float accel; //加速度・各速度
+	float vel; //速度・各速度
+	float dis; //距離・角度
 } run_t;
 
-typedef struct{
+typedef struct {
 	float Kp;
 	float Ki;
 	float Kd;
 } gain_t;
 
-typedef struct{
+typedef struct {
 	float i_distance;
 	float accel;
 //	float min_vel;
@@ -58,72 +58,78 @@ typedef struct{
 	int8_t run_flag;
 } trapezoid_t;
 
-typedef struct{
+typedef struct {
 	float vel_search;
 	float vel_max;
 	float vel_min;
 	float accel;
 } normal_para_t;
 
-typedef struct{
+typedef struct {
 	int left;
 	int right;
 } duty_t;
 
-typedef struct{
-	float now;//現在の偏差
-	float cumulative;//偏差の累積値
-	float difference;//偏差の差分
-} deviation_t;//偏差
+typedef struct {
+	float now; //現在の偏差
+	float cumulative; //偏差の累積値
+	float difference; //偏差の差分
+} deviation_t; //偏差
 
-typedef struct{
+typedef struct {
 	uint16_t row[17];
 	uint16_t column[17];
-}singlewalldata_t;
+} singlewalldata_t;
 
-typedef struct{
+typedef struct {
 	singlewalldata_t real;
 	singlewalldata_t checked;
 	singlewalldata_t adachi;
-}walldata_t;
+} walldata_t;
 
-typedef struct{
+typedef struct {
 	uint8_t now;
 	uint8_t goal;
 	uint8_t pass;
-}XY_t;
+} XY_t;
 
-typedef struct{
+typedef struct {
 	uint16_t autoreload;
 	uint16_t ms;
-}buzzer_t;
-
-
+} buzzer_t;
 
 extern uint16_t g_ADCBuffer[9];
 extern float Batt;
 extern uint16_t g_test;
 extern walldata_t walldata;
-extern XY_t x,y;
+extern XY_t x, y;
 extern uint16_t step_map[16][16];
 extern uint8_t add_wall_flag;
 extern uint8_t direction;
-extern sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF,SEN_F;
-extern SENLOG_t SEN_R_log, SEN_RF_log, SEN_L_log, SEN_LF_log,SEN_F_log;
+extern sensor_t SEN_R, SEN_RF, SEN_L, SEN_LF, SEN_F;
+extern SENLOG_t SEN_R_log, SEN_RF_log, SEN_L_log, SEN_LF_log, SEN_F_log;
 extern uint8_t mode;
 extern uint16_t buzzer_count;
 extern buzzer_t buzzer[30];
-extern uint8_t buzzer_index,buzzer_flag;
+extern uint8_t buzzer_index, buzzer_flag;
 extern uint8_t low_batt_flag;
 extern uint16_t before_en_val[2];
-extern run_t real_R,real_L,ideal,real_rotation;
-extern run_t ideal_translation,ideal_rotation;
+extern run_t real_R, real_L, ideal, real_rotation;
+extern run_t ideal_translation, ideal_rotation;
 extern uint8_t wall_control_flag;
-extern trapezoid_t translation_parameter,rotation_parameter;
+extern trapezoid_t translation_parameter, rotation_parameter;
 extern deviation_t rotation_deviation;
 extern uint8_t failsafe_flag;
 extern deviation_t run_right_deviation;
 extern deviation_t run_left_deviation;
+extern float mode_select_dis;
+extern uint8_t mode_flag;
+extern float wallcontrol_value;
+extern  duty_t duty;
+extern uint8_t failsafe_flag;
+extern uint16_t failsafe_counter;
+extern uint8_t moter_flag;
+extern uint8_t SEN_check_flag;
 
 
 #define North 0

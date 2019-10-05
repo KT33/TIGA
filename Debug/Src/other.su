@@ -11,5 +11,6 @@ other.c:116:7:read_gyro	24	static
 other.c:126:7:read_accel	24	static
 other.c:135:10:check_parity	16	static
 other.c:143:10:read_spi_en	32	static
-other.c:183:6:write_spi_en	32	static
-other.c:209:6:set_led	16	static
+other.c:180:6:write_spi_en	40	static
+other.c:204:6:Battery_Check	8	static
+other.c:216:6:set_led	16	static

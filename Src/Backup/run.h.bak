@@ -19,6 +19,6 @@ void trapezoid_preparation(trapezoid_t *trapezoid, float i_distance,
 void wait_straight(void);
 void wait_rotation(void);
 void control_accel(run_t *ideal, trapezoid_t *trapezoid,uint8_t);
-void duty_to_moter(void);
+
 
 #endif /* RUN_H_ */

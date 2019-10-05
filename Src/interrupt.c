@@ -40,21 +40,12 @@ void interrupt_1ms(void) {
 	adc_1ms();
 //ADC
 
-//	printf("%d,%d,%d,%d,%d\n", g_ADCBuffer[0], g_ADCBuffer[1], g_ADCBuffer[2],
-//			g_ADCBuffer[3], g_ADCBuffer[4]);
-//	if ((Batt < 3.72)&&(low_batt_flag<1000)) {
-//		low_batt_flag++;
-//		if(low_batt_flag>1){
-//			low_batt_flag=0xff;
-//		}
+
+//	if (Batt < 3.72) {
+//		low_batt_flag = 0xff;
 //	} else {
-//	//	low_batt_flag = 0;
+//		//low_batt_flag = 0;
 //	}
-	if (Batt < 3.72) {
-		low_batt_flag = 0xff;
-	} else {
-		low_batt_flag = 0;
-	}
 }
 
 void buzzer_1ms(void) {

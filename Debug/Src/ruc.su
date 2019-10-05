@@ -1,6 +1,6 @@
-ruc.c:11:6:set_straight	32	static
-ruc.c:26:6:set_rotation	24	static
-ruc.c:50:6:wait_straight	4	static
-ruc.c:74:6:wait_rotation	4	static
-ruc.c:93:6:trapezoid_preparation	40	static
-ruc.c:136:6:control_accel	24	static
+ruc.c:13:6:set_straight	32	static
+ruc.c:28:6:set_rotation	24	static
+ruc.c:52:6:wait_straight	4	static
+ruc.c:76:6:wait_rotation	4	static
+ruc.c:95:6:trapezoid_preparation	40	static
+ruc.c:138:6:duty_to_moter	16	static

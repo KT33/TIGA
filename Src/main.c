@@ -37,6 +37,7 @@
 #include "other.h"
 #include "buzzer.h"
 #include "moter.h"
+#include "mode.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -117,6 +118,8 @@ int main(void) {
 	init_gyro();
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
 
 	/* USER CODE END 2 */
 
@@ -145,92 +148,101 @@ int main(void) {
 
 //	output_Walldata(REAL);
 	while (1) {
-		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
-			mode++;
-			mode = mode % 8;
-			printf("%d\n", mode);
-			chattering();
-			set_led(mode);
+
+
+
+		set_led(mode);
+		if (mode_select_dis > 50) {
+			mode_select_dis = 0;
+			mode_flag++;
+			if (mode_flag >= 8) {
+				mode_flag = 0;
+			}
 			set_buzzer_mode(mode);
-			real_rotation.dis = 0;
 		}
 
-		if (low_batt_flag == 0xff) {
-			//		while(1){
+		if (mode_select_dis < -50) {
+			mode_select_dis = 0;
+			if (mode_flag == 0) {
+				mode_flag = 8;
+			}
+			mode_flag--;
+			set_buzzer_mode(mode);
+		}
+
+		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
+			mode_select_dis = 0;
 			set_led(0);
-			HAL_Delay(100);
-			set_led(7);
-			HAL_Delay(100);
-			//		}
-		} else {
-			set_led(mode);
+			set_buzzer_mode(mode);
+			chattering();
+			go_mode(mode);
 		}
-
-		HAL_GPIO_TogglePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin);
-//		HAL_GPIO_TogglePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin);
-//		HAL_GPIO_TogglePin(SENLED_R_GPIO_Port, SENLED_R_Pin);
-//		HAL_GPIO_TogglePin(SENLED_L_GPIO_Port, SENLED_L_Pin);
-//		HAL_GPIO_TogglePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin);
-
-//		en_test = read_spi_en(RIGHT, 0x3FFE);
-
-//		printf("batt=%.3f\n",Batt);
-
-//		printf("%4d,%4d,%4d,%4d,%4d\n", g_ADCBuffer[0], g_ADCBuffer[1], g_ADCBuffer[2],
-//				g_ADCBuffer[3], g_ADCBuffer[4]);
-
-		HAL_Delay(100);
-
-		if (mode == 0) {
-//			printf("LEFT=%4.2f,RIGHT=%4.8f\n",read_vel(LEFT),read_vel(RIGHT));
-
-		} else if (mode == 1) {
-//			printf("%4.2f,%4.2f\n",real_rotation.dis,real_rotation.vel);
-			printf("%4d,%4d,%4d,%4d,%4d,%4d,%4d,%4d,%4d\n", g_ADCBuffer[0], g_ADCBuffer[1],
-					g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4], g_ADCBuffer[5], g_ADCBuffer[6],
-					g_ADCBuffer[7], g_ADCBuffer[8]);
-		} else if (mode == 2) {
-
-		} else if (mode == 3) {
-			printf("LEFT=%4.2f,RIGHT=%4.2f\n", read_vel(LEFT), read_vel(RIGHT));
-		} else if (mode == 4) {
-
-		} else if (mode == 5) {
-
-		} else if (mode == 6) {
-
-		} else if (mode == 7) {
-
-		}
-
-		//			HAL_GPIO_WritePin(MOTER_L_CWCCW_GPIO_Port, MOTER_L_CWCCW_Pin, SET);
-		//			HAL_GPIO_WritePin(MOTER_R_CWCCW_GPIO_Port, MOTER_R_CWCCW_Pin, SET);
-		//			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-		//			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
-		//			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
-		//			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 50);
-		//			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-		//			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 
 //		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
-//			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-//			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 1);
-//			HAL_GPIO_WritePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin, 1);
-//			HAL_GPIO_WritePin(UI_LED_LEFT_GPIO_Port, UI_LED_LEFT_Pin, 1);
-//			HAL_GPIO_WritePin(UI_LED_RIGHT_GPIO_Port, UI_LED_RIGHT_Pin, 1);
+//			mode++;
+//			mode = mode % 8;
+//			printf("%d\n", mode);
 //			chattering();
-//			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
+//			set_led(mode);
+//			set_buzzer_mode(mode);
+//			real_rotation.dis = 0;
 //
-//			test=read_spi(WHO_AM_I);
-//			printf("who_am_i=%X\n",test);
-//
-//		} else {
-//			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, 0);
-//			HAL_GPIO_WritePin(UI_LED_CENTER_GPIO_Port, UI_LED_CENTER_Pin, 0);
-//			HAL_GPIO_WritePin(UI_LED_LEFT_GPIO_Port, UI_LED_LEFT_Pin, 0);
-//			HAL_GPIO_WritePin(UI_LED_RIGHT_GPIO_Port, UI_LED_RIGHT_Pin, 0);
+//			if (mode == 2) {
+//				HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+//				HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+//				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 400);
+//				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 400);
+//				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+//				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+//			} else {
+//				HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+//				HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+//			}
 //		}
-//		  printf("gyro=%.4f,accel=%.4f\n",read_gyro(),read_accel());
+//
+//		if (low_batt_flag == 0xff) {
+//			//		while(1){
+//			set_led(0);
+//			HAL_Delay(100);
+//			set_led(7);
+//			HAL_Delay(100);
+//			//		}
+//		} else {
+//			set_led(mode);
+//		}
+//
+//		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
+//
+//		printf("batt=%4.2f\n", Batt);
+//		HAL_Delay(100);
+//
+//		if (mode == 0) {
+////			printf("LEFT=%4.2f,RIGHT=%4.8f\n",read_vel(LEFT),read_vel(RIGHT));
+//
+//		} else if (mode == 1) {
+////			printf("%4.2f,%4.2f\n",real_rotation.dis,real_rotation.vel);
+//			printf("%4d,%4d,%4d,%4d,%4d,%4d,%4d,%4d,%4d\n", g_ADCBuffer[0],
+//					g_ADCBuffer[1], g_ADCBuffer[2], g_ADCBuffer[3],
+//					g_ADCBuffer[4], g_ADCBuffer[5], g_ADCBuffer[6],
+//					g_ADCBuffer[7], g_ADCBuffer[8]);
+//		} else if (mode == 2) {
+//			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+//			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+//			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 200);
+//			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 200);
+//			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+//			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+//		} else if (mode == 3) {
+//			printf("LEFT=%4.2f,RIGHT=%4.2f\n", read_vel(LEFT), read_vel(RIGHT));
+//		} else if (mode == 4) {
+//
+//		} else if (mode == 5) {
+//
+//		} else if (mode == 6) {
+//
+//		} else if (mode == 7) {
+//
+//		}
 
 		/* USER CODE END WHILE */
 
