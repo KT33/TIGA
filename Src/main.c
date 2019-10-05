@@ -120,6 +120,12 @@ int main(void) {
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
 	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
+	set_led(0);
+	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, SET);
+	Battery_Check();
 
 	/* USER CODE END 2 */
 
@@ -141,32 +147,28 @@ int main(void) {
 		printf("i=%d,pari=%d\n", i, check_parity(i));
 	}
 
-	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, SET);
-	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, SET);
-	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, SET);
-	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, SET);
 
 //	output_Walldata(REAL);
 	while (1) {
 
-
+	//	printf("mode:sel_dis=%3.2f,vel=%3.2f\n", mode_select_dis, real_R.vel);
 
 		set_led(mode);
-		if (mode_select_dis > 50) {
+		if (mode_select_dis > 200) {
 			mode_select_dis = 0;
-			mode_flag++;
-			if (mode_flag >= 8) {
-				mode_flag = 0;
+			mode++;
+			if (mode >= 8) {
+				mode = 0;
 			}
 			set_buzzer_mode(mode);
 		}
 
-		if (mode_select_dis < -50) {
+		if (mode_select_dis < -200) {
 			mode_select_dis = 0;
-			if (mode_flag == 0) {
-				mode_flag = 8;
+			if (mode == 0) {
+				mode = 8;
 			}
-			mode_flag--;
+			mode--;
 			set_buzzer_mode(mode);
 		}
 
@@ -175,8 +177,10 @@ int main(void) {
 			set_led(0);
 			set_buzzer_mode(mode);
 			chattering();
-			go_mode(mode);
+			go_mode();
 		}
+
+
 
 //		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
 //			mode++;

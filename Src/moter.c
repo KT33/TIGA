@@ -30,6 +30,11 @@ float read_vel(uint8_t RorL) {
 			* 1000;
 }
 
-void integlral_1ms(float* dis, float*vel) {
+void integral_1ms(float* dis, float*vel) {
 	*dis += *vel * 0.001;
+}
+
+void integral_ideal(run_t *ideal) {
+	ideal->vel += ideal->accel * 0.001;
+	ideal->dis += ideal->vel * 0.001 + ideal->accel * 0.001 * 0.001 / 2;
 }

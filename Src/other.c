@@ -11,6 +11,8 @@
 #include "string.h"
 #include "spi.h"
 #include "gpio.h"
+#include "adc.h"
+#include "tim.h"
 
 #define CHATT 10000
 #define SECTOR_BASE_ADRR 0x08160000ul
@@ -202,6 +204,26 @@ void write_spi_en(uint8_t le_ri, uint16_t addr, uint16_t data) {
 }
 
 void Battery_Check(void) {
+
+	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
+	HAL_GPIO_WritePin(SENLED_RF_GPIO_Port, SENLED_RF_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, SET);
+	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, SET);
+
+	HAL_Delay(100);
+	for(uint8_t i=0;i<9;i++){
+		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+				sizeof(g_ADCBuffer) / sizeof(uint16_t));
+	}
+	HAL_Delay(10);
+	Batt = (float) g_ADCBuffer[8] / 4095 * 3.3 * 2;
+	printf("%4.2f\n",Batt);
+
+
 	if (Batt < 3.72) { //7.7
 		while (1) {
 			set_led(3);

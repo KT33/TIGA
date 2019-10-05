@@ -30,37 +30,20 @@ void set_buzzer_mode(uint8_t mode) {
 	buzzer_flag = 0;
 	if (mode == 0) {
 		set_buzzer(0, C_4, 600);
-		set_buzzer(1, 0, 200);
-		set_buzzer(2, C_4, 600);
 	} else if (mode == 1) {
-		set_buzzer(0, 0, 200);
-		set_buzzer(1, D_4, 600);
-		set_buzzer(2, 0, 200);
-		set_buzzer(3, D_4, 600);
+		set_buzzer(0, D_4, 600);
 	} else if (mode == 2) {
 		set_buzzer(0, E_4, 600);
-		set_buzzer(1, 0, 200);
-		set_buzzer(2, E_4, 600);
 	} else if (mode == 3) {
 		set_buzzer(0, F_4, 600);
-		set_buzzer(1, 0, 200);
-		set_buzzer(2, F_4, 600);
 	} else if (mode == 4) {
 		set_buzzer(0, G_4, 600);
-		set_buzzer(1, 0, 200);
-		set_buzzer(2, G_4, 600);
 	} else if (mode == 5) {
 		set_buzzer(0, A_4, 600);
-		set_buzzer(1, 0, 200);
-		set_buzzer(2, A_4, 600);
 	} else if (mode == 6) {
 		set_buzzer(0, B_4, 600);
-		set_buzzer(1, 0, 200);
-		set_buzzer(2, B_4, 600);
 	} else if (mode == 7) {
 		set_buzzer(0, C_5, 600);
-		set_buzzer(1, 0, 200);
-		set_buzzer(2, C_5, 600);
 	}
 	buzzer_flag = 1;
 }

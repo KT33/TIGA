@@ -6,13 +6,18 @@
  */
 
 #include "main.h"
+#include "SEGGER_RTT.h"
+#include "SEGGER_RTT_Conf.h"
+#include "stdint.h"
+#include "stdio.h"
 #include "variable.h"
-#include "interrupt.h"
-#include "tim.h"
-#include "stm32f4xx_hal_tim.h"
+#include "walldata.h"
 #include "other.h"
-#include "adc.h"
+#include "buzzer.h"
 #include "moter.h"
+#include "mode.h"
+#include "tim.h"
+#include "adc.h"
 
 void buzzer_1ms(void);
 void adc_1ms(void);
@@ -23,23 +28,66 @@ void interrupt_1ms(void) {
 	buzzer_1ms();
 //buzzer
 
-//gyro
-	real_rotation.vel = read_gyro();
-	integlral_1ms(&real_rotation.dis, &real_rotation.vel); //角速度から角度に
-//gyro
-
-//encoder
-	real_L.vel = read_vel(LEFT); //mm/sec
-	real_R.vel = read_vel(RIGHT);
-
-	integlral_1ms(&real_L.dis, &real_L.vel);
-	integlral_1ms(&real_R.dis, &real_R.vel);
-//encoder
-
 //ADC
-	adc_1ms();
+	if (SEN_check_flag == 1) {
+//		adc_1ms();
+	}
 //ADC
 
+//	printf("test\n");
+
+	if (mode & 0x80) { //モード中
+		//gyro
+		real_rotation.vel = read_gyro();
+		integral_1ms(&real_rotation.dis, &real_rotation.vel); //角速度から角度に
+		//gyro
+
+		//encoder
+		real_L.vel = read_vel(LEFT); //mm/sec
+		real_R.vel = read_vel(RIGHT);
+		integral_1ms(&real_L.dis, &real_L.vel);
+		integral_1ms(&real_R.dis, &real_R.vel);
+		//encoder
+
+////		if (angle_calibration_flag == 1) {
+////			angle_calibration_counter++;
+////			angle_calibration_integral += rotation_real.velocity;
+////			if(angle_calibration_counter==1000){
+////				angle_calibration_flag=0;
+////			}
+////		}
+//
+//		printf("test1\n");
+		if (moter_flag == 1) {
+			if (translation_parameter.run_flag == 1) {
+//			printf("test2\n");
+				control_accel(&ideal_translation, &translation_parameter, 0);
+			}
+			if (rotation_parameter.run_flag == 1) {
+				control_accel(&ideal_rotation, &rotation_parameter, 1);
+				integral_ideal(&ideal_rotation);
+			}
+
+			PID_control(&ideal_translation, &real_L, &real_R,
+					&run_left_deviation, &run_right_deviation, &run_gain,
+					&translation_parameter, &duty, 0);
+			if (translation_parameter.back_rightturn_flag == 0
+					|| ideal_translation.vel > 100.0) {
+//				PID_control(&ideal_rotation, &real_rotation, &real_rotation,
+//						&rotation_deviation, &rotation_deviation,
+//						&rotation_gain, &rotation_parameter, &duty, 1);
+			}
+			integral_ideal(&ideal_translation);
+
+			duty_to_moter();
+		}
+
+	} else { //モード選択中
+//		printf("test3\n");
+		real_R.vel = read_vel(RIGHT);
+		integral_1ms(&mode_select_dis, &real_R.vel);
+		//	printf("inter:sel_dis=%3.2f,vel=%3.2f\n",mode_select_dis,real_R.vel);
+	}
 
 //	if (Batt < 3.72) {
 //		low_batt_flag = 0xff;

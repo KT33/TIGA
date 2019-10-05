@@ -22,6 +22,6 @@ void mode_5(void);
 void mode_6(void);
 void mode_7(void);
 
-void go_mode(uint8_t mode);
+void go_mode(void);
 
 #endif /* MODE_H_ */

@@ -6,6 +6,7 @@
  */
 
 #include "mode.h"
+#include "run.h"
 
 void mode_0(void) {
 //	start_SEN();
@@ -23,54 +24,29 @@ void mode_0(void) {
 }
 
 void mode_1(void) {
-//	oblique_Front_gain = 0.3;
-//	oblique_Side_gain = 0.02;
-//	wall_cntrol_gain.Kp = 0.4;
-//	wall_cntrol_gain.Kd = 0.15;
-//	oblique_offset_front = 3.0;
-//	oblique_offset_side = 6.0;
-//	para_mode();
-//	read_all_walldatas();
-//	start_SEN(1);
-//	HAL_Delay(30);
-//	make_pass(x.goal, y.goal, 4, 0);
-//	move_pass_oblique(nomal_run.accel, nomal_run.vel_max, 1200,
-//			nomal_oblique.accel, nomal_oblique.vel_max, 1);
-//	fan_off();
+	moter_flag = 1;
+//	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
+	run_gain.Kp = 0.7;
+	run_gain.Ki = 0.0;
+	rotation_gain.Kp=0.0;
+	rotation_gain.Ki=0.0;
+	set_straight(500.0, 300, 300, 0, 0);
+	wait_straight();
 }
 
 void mode_2(void) {
-//	oblique_Front_gain = 0.3;
-//	oblique_Side_gain = 0.02;
-//	wall_cntrol_gain.Kp = 0.4;
-//	wall_cntrol_gain.Kd = 0.15;
-//	oblique_offset_front = 3.0;
-//	oblique_offset_side = 6.0;
-//	para_mode();
-//	read_all_walldatas();
-//	start_SEN(1);
-//	HAL_Delay(30);
-//	make_pass(x.goal, y.goal, 4, 0);
-//	move_pass_oblique(nomal_run.accel, nomal_run.vel_max, 1300.0,
-//			nomal_oblique.accel, nomal_oblique.vel_max, 1);
-//	fan_off();
+
+	while (1) {
+		duty.left = 200;
+		duty.right = 200;
+		duty_to_moter();
+	}
 }
 
 void mode_3(void) { //253.558
-//	oblique_Front_gain = 0.3;
-//	oblique_Side_gain = 0.02;
-//	wall_cntrol_gain.Kp = 0.4;
-//	wall_cntrol_gain.Kd = 0.15;
-//	oblique_offset_front = 3.0;
-//	oblique_offset_side = 6.0;
-//	para_mode();
-//	read_all_walldatas();
-//	start_SEN(1);
-//	HAL_Delay(30);
-//	make_pass(x.goal, y.goal, 4, 0);
-//	move_pass_oblique(nomal_run.accel, nomal_run.vel_max, 1000.0,
-//			nomal_oblique.accel, nomal_oblique.vel_max, 1);
-//	fan_off();
+	while (1) {
+		control_accel(&ideal_translation, &translation_parameter, 0);
+	}
 }
 
 void mode_4(void) {
@@ -148,9 +124,11 @@ void mode_7(void) {
 //	}
 }
 
-void go_mode(uint8_t mode) {
+void go_mode(void) {
 	uint8_t i = 0;
-	mode_flag = mode_flag | 0x80;
+	printf("0,mode=%d,%d\n", mode, (mode & 0x80));
+	mode = mode | 0x80;
+	printf("1,mode=%d,%d\n", mode, (mode & 0x80));
 	Battery_Check();
 	failsafe_flag = 0;
 	HAL_Delay(1000);
@@ -166,62 +144,65 @@ void go_mode(uint8_t mode) {
 	wallcontrol_value = 0.0;
 	run_left_deviation.cumulative = 0.0;
 	run_right_deviation.cumulative = 0.0;
+	moter_flag = 0;
 	x.now = 0;
 	y.now = 0;
 	direction = 0;
-	if (mode == 0) {
+	if ((mode & 0xf) == 0) {
 		mode_0();
-	} else if (mode == 1) {
+	} else if ((mode & 0xf) == 1) {
+		printf("2,mode=%d,%d\n", mode, (mode & 0x80));
 		for (i = 0; i < 2; i++) {
-			set_led(mode);
+			set_led((mode & 0xf));
 			HAL_Delay(100);
 			set_led(0);
 			HAL_Delay(100);
 		}
 		mode_1();
-	} else if (mode == 2) {
+		printf("3,mode=%d,%d\n", mode, (mode & 0x80));
+	} else if ((mode & 0xf) == 2) {
 		for (i = 0; i < 2; i++) {
-			set_led(mode);
+			set_led((mode & 0xf));
 			HAL_Delay(100);
 			set_led(0);
 			HAL_Delay(100);
 		}
 		mode_2();
-	} else if (mode == 3) {
+	} else if ((mode & 0xf) == 3) {
 		for (i = 0; i < 2; i++) {
-			set_led(mode);
+			set_led((mode & 0xf));
 			HAL_Delay(100);
 			set_led(0);
 			HAL_Delay(100);
 		}
 		mode_3();
-	} else if (mode == 4) {
+	} else if ((mode & 0xf) == 4) {
 		for (i = 0; i < 2; i++) {
-			set_led(mode);
+			set_led((mode & 0xf));
 			HAL_Delay(100);
 			set_led(0);
 			HAL_Delay(100);
 		}
 		mode_4();
-	} else if (mode == 5) {
+	} else if ((mode & 0xf) == 5) {
 		for (i = 0; i < 2; i++) {
-			set_led(mode);
+			set_led((mode & 0xf));
 			HAL_Delay(100);
 			set_led(0);
 			HAL_Delay(100);
 		}
 		mode_5();
-	} else if (mode == 6) {
+	} else if ((mode & 0xf) == 6) {
 		for (i = 0; i < 2; i++) {
-			set_led(mode);
+			set_led((mode & 0xf));
 			HAL_Delay(100);
 			set_led(0);
 			HAL_Delay(100);
 		}
 		mode_6();
-	} else if (mode == 7) {
+	} else if ((mode & 0xf) == 7) {
 		for (i = 0; i < 2; i++) {
-			set_led(mode);
+			set_led((mode & 0xf));
 			HAL_Delay(100);
 			set_led(0);
 			HAL_Delay(100);
@@ -243,7 +224,7 @@ void go_mode(uint8_t mode) {
 		while (failsafe_counter < 1000) {
 		}
 	}
-	mode_flag = mode_flag & 0x7f;
+	mode = mode & 0x7f;
 	moter_flag = 0;
 	failsafe_flag = 0;
 	SEN_check_flag = 0;

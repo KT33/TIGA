@@ -20,5 +20,8 @@ void wait_straight(void);
 void wait_rotation(void);
 void control_accel(run_t *ideal, trapezoid_t *trapezoid,uint8_t);
 void duty_to_moter(void);
+void PID_control(run_t *ideal, run_t *left, run_t *right,
+		deviation_t *left_deviation, deviation_t *right_deviation, gain_t *gain,
+		trapezoid_t *parameter, duty_t *duty, uint8_t rotation_flag);
 
 #endif /* RUN_H_ */

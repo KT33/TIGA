@@ -9,7 +9,6 @@
 #include "variable.h"
 #include "tim.h"
 
-
 void set_straight(float i_distance, float accel, float max_vel, float strat_vel,
 		float end_vel) {
 
@@ -21,7 +20,6 @@ void set_straight(float i_distance, float accel, float max_vel, float strat_vel,
 	}
 	translation_parameter.run_flag = 1;
 	ideal_translation.vel = translation_parameter.strat_vel;
-//	log_start();
 
 }
 
@@ -51,8 +49,19 @@ void set_rotation(float i_angle, float accel, float max_vel, float center_vel) {
 
 void wait_straight(void) {
 //LEFTEING = 1;
+	printf("wait_st%6.2f\n", ideal_translation.vel);
 	while (translation_parameter.run_flag == 1 && failsafe_flag == 0) {
-		//	myprintf("%6.2f", rotation_ideal.velocity);
+//		printf("wait_st_while%6.2f\n", ideal_translation.vel);
+		printf("ideal_vel=%4.2f,real_vel=%4.2f,deviation_now=%4.2f,duty=%d\n",
+				ideal_translation.vel, real_L.vel, run_left_deviation.now,
+				duty.left);
+
+//		printf("run_flag=%d\n", translation_parameter.run_flag);
+		//			printf("ac_dis=%4.2f,deac_dis=%4.2f,max_vel=%4.2f\n",
+//					trapezoid->acceldistance, trapezoid->deacceldistance,
+//					trapezoid->max_vel);
+//			printf("ideal_vel=%4.2f,ideal_dis=%4.2f\n",ideal->vel,ideal->dis);
+
 	}
 //LEFTFRONT = 1;
 //translation_parameter.run_flag=1;
@@ -132,7 +141,9 @@ void trapezoid_preparation(trapezoid_t *trapezoid, float i_distance,
 		trapezoid->acceldistance = 0.0;
 		trapezoid->deacceldistance = 0.0;
 	}
-
+	printf("ac_dis=%4.2f,deac_dis=%4.2f,max_vel=%4.2f\n",
+			trapezoid->acceldistance, trapezoid->deacceldistance,
+			trapezoid->max_vel);
 }
 
 void duty_to_moter(void) {
@@ -153,16 +164,16 @@ void duty_to_moter(void) {
 		duty_right = (duty.right * -1);
 	}
 
-	if (duty_left > 800) {
+	if (duty_left >= 800) {
 		duty_left = 800 - 1;
 	}
-	if (duty_right > 800) {
+	if (duty_right >= 800) {
 		duty_right = 800 - 1;
 	}
-	if (duty_left < -800) {
+	if (duty_left <= -800) {
 		duty_left = -800 + 1;
 	}
-	if (duty_right < -800) {
+	if (duty_right <= -800) {
 		duty_right = -800 + 1;
 	}
 
@@ -175,4 +186,72 @@ void duty_to_moter(void) {
 
 	duty.left = 0;
 	duty.right = 0;
+}
+
+void control_accel(run_t *ideal, trapezoid_t *trapezoid, uint8_t rotation_flag) {
+	if (ideal->dis < trapezoid->acceldistance) {
+//		UI_LED1 = 1;
+		if (ideal->vel < trapezoid->max_vel) {
+			ideal->accel = trapezoid->accel;
+		} else {
+			ideal->vel = trapezoid->max_vel;
+			ideal->accel = 0;
+		}
+
+	} else if (ideal->dis
+			< (trapezoid->i_distance - trapezoid->deacceldistance)) {
+//		UI_LED2 = 1;
+		ideal->accel = 0;
+
+		ideal->vel = trapezoid->max_vel;
+	} else if (ideal->vel > trapezoid->end_vel) {
+		ideal->accel = -trapezoid->accel;
+
+	} else {
+		trapezoid->run_flag = 0;
+		ideal->accel = 0;
+		ideal->vel = trapezoid->end_vel;
+	}
+//	printf("ideal_vel=%4.2f,ideal_dis=%4.2f\n", ideal->vel, ideal->dis);
+
+}
+
+void PID_control(run_t *ideal, run_t *left, run_t *right,
+		deviation_t *left_deviation, deviation_t *right_deviation, gain_t *gain,
+		trapezoid_t *parameter, duty_t *duty, uint8_t rotation_flag) {
+	int duty_left, duty_right;
+	float Kp, Ki;
+
+	Ki = gain->Ki;
+	Kp = gain->Kp;
+
+	left->vel = (left->vel + right->vel) / 2;
+	right->vel = left->vel;
+
+	if (rotation_flag == 1) {
+		right->vel += wallcontrol_value;
+		left->vel += wallcontrol_value;
+	}
+
+	left_deviation->now = (ideal->vel - left->vel);
+	right_deviation->now = (ideal->vel - right->vel);
+	left_deviation->cumulative += left_deviation->now;
+	right_deviation->cumulative += right_deviation->now;
+
+	duty_left = (int) left_deviation->now * Kp
+			+ left_deviation->cumulative * Ki;
+	duty_right = (int) right_deviation->now * Kp
+			+ right_deviation->cumulative * Ki;
+
+	if (rotation_flag == 1) {
+		duty_left = duty_left * -1;
+
+	}
+	if (parameter->back_rightturn_flag == 1) {
+		duty_left = duty_left * -1;
+		duty_right = duty_right * -1;
+	}
+	duty->left += duty_left;
+	duty->right += duty_right;
+
 }

@@ -32,9 +32,10 @@ deviation_t run_right_deviation;
 deviation_t run_left_deviation;
 deviation_t rotation_deviation;
 float mode_select_dis=0.0;
-uint8_t mode_flag=0;
 float wallcontrol_value = 0.0;
 duty_t duty;
 uint16_t failsafe_counter=0;
 uint8_t moter_flag=0;
 uint8_t SEN_check_flag=0;
+gain_t rotation_gain = { 0.62, 0.010, 0.0 };
+gain_t run_gain = { 0.8, 0.4, 0.0 }; //p,i,d

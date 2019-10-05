@@ -123,14 +123,13 @@ extern uint8_t failsafe_flag;
 extern deviation_t run_right_deviation;
 extern deviation_t run_left_deviation;
 extern float mode_select_dis;
-extern uint8_t mode_flag;
 extern float wallcontrol_value;
 extern  duty_t duty;
-extern uint8_t failsafe_flag;
 extern uint16_t failsafe_counter;
 extern uint8_t moter_flag;
 extern uint8_t SEN_check_flag;
-
+extern gain_t run_gain;
+extern gain_t rotation_gain;
 
 #define North 0
 #define West 1

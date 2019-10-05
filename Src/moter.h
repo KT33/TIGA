@@ -11,6 +11,7 @@
 #include "variable.h"
 
 float read_vel(uint8_t RorL);
-void integlral_1ms(float* dis, float*vel);
+void integral_1ms(float* dis, float*vel);
+void integral_ideal(run_t *ideal);
 
 #endif /* MOTER_H_ */
