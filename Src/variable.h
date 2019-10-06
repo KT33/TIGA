@@ -140,7 +140,7 @@ extern uint8_t moter_flag;
 extern uint8_t SEN_check_flag;
 extern gain_t run_gain;
 extern gain_t rotation_gain;
-extern LOG_t mylog;
+extern LOG_t mylog,mylog2;
 extern uint16_t log_index,log_how_often,log_often_count;
 extern uint8_t log_flag;
 

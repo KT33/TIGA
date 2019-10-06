@@ -39,6 +39,6 @@ uint8_t moter_flag=0;
 uint8_t SEN_check_flag=0;
 gain_t rotation_gain = { 0.62, 0.010, 0.0 };
 gain_t run_gain = { 0.8, 0.4, 0.0 }; //p,i,d
-LOG_t mylog;
+LOG_t mylog,mylog2;
 uint16_t log_index=0,log_how_often=0,log_often_count=0;
 uint8_t log_flag=0;

@@ -19,6 +19,7 @@
 #define CHATT 10000
 #define SECTOR_BASE_ADRR 0x08160000ul
 #define SECTOR14_BASE_ADRR 0x08140000ul
+#define SECTOR13_BASE_ADRR 0x08120000ul
 
 void chattering(void) {
 	int i = 0;
@@ -36,15 +37,23 @@ void chattering(void) {
 void write_flash_log(uint32_t address, uint8_t *data, uint32_t size) {
 	uint32_t add = address;
 	HAL_FLASH_Unlock(); //flash unlook
-
-	FLASH_EraseInitTypeDef EraseInitStruct;
-	EraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS; //erase only sector
-	EraseInitStruct.Sector = FLASH_SECTOR_14; //sector Name
-	EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3; //2.7 to 3.6V
-	EraseInitStruct.NbSectors = 1; //Number of sectors to be erased.
-	uint32_t SectorError; //srroe sector nomber
-	HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError); //erase sector
-
+	if (address == SECTOR14_BASE_ADRR) {
+		FLASH_EraseInitTypeDef EraseInitStruct;
+		EraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS; //erase only sector
+		EraseInitStruct.Sector = FLASH_SECTOR_14; //sector Name
+		EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3; //2.7 to 3.6V
+		EraseInitStruct.NbSectors = 1; //Number of sectors to be erased.
+		uint32_t SectorError; //srroe sector nomber
+		HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError); //erase sector
+	} else if (address == SECTOR13_BASE_ADRR) {
+		FLASH_EraseInitTypeDef EraseInitStruct;
+		EraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS; //erase only sector
+		EraseInitStruct.Sector = FLASH_SECTOR_13; //sector Name
+		EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3; //2.7 to 3.6V
+		EraseInitStruct.NbSectors = 1; //Number of sectors to be erased.
+		uint32_t SectorError; //srroe sector nomber
+		HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError); //erase sector
+	}
 	for (add = address; add < (address + size); add++) {
 		HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, add, *data);
 		data++;
@@ -52,12 +61,14 @@ void write_flash_log(uint32_t address, uint8_t *data, uint32_t size) {
 	HAL_FLASH_Lock(); //flash look
 }
 
-void save_log_to_flash(void){
-	write_flash_log(SECTOR14_BASE_ADRR, (uint8_t*)&mylog, sizeof(mylog));
+void save_log_to_flash(void) {
+	write_flash_log(SECTOR14_BASE_ADRR, (uint8_t*) &mylog, sizeof(mylog));
+	write_flash_log(SECTOR13_BASE_ADRR, (uint8_t*) &mylog2, sizeof(mylog2));
 }
 
-void read_all_log_from_flash(void){
-	read_flash(SECTOR14_BASE_ADRR, (uint8_t*)&mylog, sizeof(mylog));
+void read_all_log_from_flash(void) {
+	read_flash(SECTOR14_BASE_ADRR, (uint8_t*) &mylog, sizeof(mylog));
+	read_flash(SECTOR13_BASE_ADRR, (uint8_t*) &mylog2, sizeof(mylog2));
 }
 
 void erase_flash(void) {
@@ -235,7 +246,7 @@ void Battery_Check(void) {
 	Batt = (float) g_ADCBuffer[8] / 4095 * 3.3 * 2;
 	printf("%4.2f\n", Batt);
 
-	if ((Batt < 3.72&&Batt>3.35)||(Batt<3.25)) { //7.7
+	if ((Batt < 3.72 && Batt > 3.35) || (Batt < 3.25)) { //7.7
 		while (1) {
 			set_led(3);
 			HAL_Delay(500);
@@ -281,12 +292,18 @@ void log_sampling(void) {
 	if (log_often_count == log_how_often) {
 		mylog.log_1[log_index] = real_L.vel;
 		mylog.log_2[log_index] = real_R.vel;
-		mylog.log_3[log_index] = real_L.dis;
-		mylog.log_4[log_index] = real_R.dis;
-		mylog.log_5[log_index] = ideal_translation.vel;
+		mylog.log_3[log_index] = ideal_translation.vel;
+		mylog.log_4[log_index] = real_L.dis;
+		mylog.log_5[log_index] = real_R.dis;
+		mylog2.log_1[log_index] = (real_L.dis + real_R.dis) / 2;
+		mylog2.log_2[log_index] = real_rotation.vel;
+		mylog2.log_3[log_index] = ideal_rotation.vel;
+		mylog2.log_4[log_index] = real_rotation.dis;
+		mylog2.log_5[log_index] = ideal_rotation.dis;
+
 		log_index++;
 		log_often_count = 0;
-	//	printf(",%4.8f,%4.8f,%4.8f,%4.8f\n",real_L.vel,real_R.vel,real_L.dis,real_R.dis);
+		//	printf(",%4.8f,%4.8f,%4.8f,%4.8f\n",real_L.vel,real_R.vel,real_L.dis,real_R.dis);
 		if (log_index == LOG_MAX - 1) {
 			log_flag = 0;
 			log_index = 0;
@@ -294,16 +311,21 @@ void log_sampling(void) {
 	}
 }
 
-void log_output(void){
+void log_output(void) {
 	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
 	SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
-	for(uint16_t i=0;i<LOG_MAX;i++){
+	for (uint16_t i = 0; i < LOG_MAX; i++) {
 		printf(",");
-		printf("%4.2f,",mylog.log_1[i]);
-		printf("%4.2f,",mylog.log_2[i]);
-		printf("%4.2f,",mylog.log_3[i]);
-		printf("%4.2f,",mylog.log_4[i]);
-		printf("%4.2f,",mylog.log_5[i]);
+		printf("%4.2f,", mylog.log_1[i]);
+		printf("%4.2f,", mylog.log_2[i]);
+		printf("%4.2f,", mylog.log_3[i]);
+		printf("%4.2f,", mylog.log_4[i]);
+		printf("%4.2f,", mylog.log_5[i]);
+		printf("%4.2f,", mylog2.log_1[i]);
+		printf("%4.2f,", mylog2.log_2[i]);
+		printf("%4.2f,", mylog2.log_3[i]);
+		printf("%4.2f,", mylog2.log_4[i]);
+		printf("%4.2f,", mylog2.log_5[i]);
 		printf("\n");
 	}
 	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
