@@ -36,7 +36,7 @@ void interrupt_1ms(void) {
 
 //	printf("test\n");
 
-	if (mode & 0x80) { //モード中
+	if (mode & 0x80) { //in_mode　モード中
 		//gyro
 		real_rotation.vel = read_gyro();
 		integral_1ms(&real_rotation.dis, &real_rotation.vel); //角速度から角度に
@@ -48,6 +48,10 @@ void interrupt_1ms(void) {
 		integral_1ms(&real_L.dis, &real_L.vel);
 		integral_1ms(&real_R.dis, &real_R.vel);
 		//encoder
+
+		if (log_flag == 1) {
+			log_sampling();
+		}
 
 ////		if (angle_calibration_flag == 1) {
 ////			angle_calibration_counter++;
@@ -82,7 +86,7 @@ void interrupt_1ms(void) {
 			duty_to_moter();
 		}
 
-	} else { //モード選択中
+	} else { //mode_out モード選択
 //		printf("test3\n");
 		real_R.vel = read_vel(RIGHT);
 		integral_1ms(&mode_select_dis, &real_R.vel);

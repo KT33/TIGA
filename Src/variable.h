@@ -98,6 +98,16 @@ typedef struct {
 	uint16_t ms;
 } buzzer_t;
 
+#define LOG_MAX 5000
+
+typedef struct {
+	float log_1[LOG_MAX];
+	float log_2[LOG_MAX];
+	float log_3[LOG_MAX];
+	float log_4[LOG_MAX];
+	float log_5[LOG_MAX];
+} LOG_t;
+
 extern uint16_t g_ADCBuffer[9];
 extern float Batt;
 extern uint16_t g_test;
@@ -114,7 +124,7 @@ extern buzzer_t buzzer[30];
 extern uint8_t buzzer_index, buzzer_flag;
 extern uint8_t low_batt_flag;
 extern uint16_t before_en_val[2];
-extern run_t real_R, real_L, ideal, real_rotation;
+extern run_t real_R, real_L, real_rotation;
 extern run_t ideal_translation, ideal_rotation;
 extern uint8_t wall_control_flag;
 extern trapezoid_t translation_parameter, rotation_parameter;
@@ -124,12 +134,15 @@ extern deviation_t run_right_deviation;
 extern deviation_t run_left_deviation;
 extern float mode_select_dis;
 extern float wallcontrol_value;
-extern  duty_t duty;
+extern duty_t duty;
 extern uint16_t failsafe_counter;
 extern uint8_t moter_flag;
 extern uint8_t SEN_check_flag;
 extern gain_t run_gain;
 extern gain_t rotation_gain;
+extern LOG_t mylog;
+extern uint16_t log_index,log_how_often,log_often_count;
+extern uint8_t log_flag;
 
 #define North 0
 #define West 1
@@ -143,5 +156,6 @@ extern gain_t rotation_gain;
 #define REAL 2
 #define CHECK 3
 #define ADACHI 4
+
 
 #endif /* VARIABLE_H_ */

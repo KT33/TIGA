@@ -23,7 +23,7 @@ buzzer_t buzzer[30];
 uint8_t buzzer_index=0,buzzer_flag=0;
 uint8_t low_batt_flag=0;
 uint16_t before_en_val[2]={0,0};
-run_t real_R,real_L,ideal,real_rotation;
+run_t real_R,real_L,real_rotation;
 run_t ideal_translation,ideal_rotation;
 uint8_t wall_control_flag;
 trapezoid_t translation_parameter,rotation_parameter;
@@ -39,3 +39,6 @@ uint8_t moter_flag=0;
 uint8_t SEN_check_flag=0;
 gain_t rotation_gain = { 0.62, 0.010, 0.0 };
 gain_t run_gain = { 0.8, 0.4, 0.0 }; //p,i,d
+LOG_t mylog;
+uint16_t log_index=0,log_how_often=0,log_often_count=0;
+uint8_t log_flag=0;

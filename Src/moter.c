@@ -15,19 +15,26 @@ float read_vel(uint8_t RorL) {
 	float vel;
 	uint16_t val;
 	int16_t val2;
+	uint8_t i;
+	for (i = 0; i < 50; i++)
+		;
 	read_spi_en(RorL, 0x3fff);
+	for (i = 0; i < 50; i++)
+		;
 	val = (0x3fff & read_spi_en(RorL, 0x3fff));
+	for (i = 0; i < 50; i++)
+		;
 	val2 = (int16_t) ((val - before_en_val[RorL]));
 	if (val2 < -8000) {
-		val2 += 16384;
+		val2 += 16383;
 	}
 	if (val2 > 8000) {
-		val2 -= 16384;
+		val2 -= 16383;
 	}
 	before_en_val[RorL] = val;
+
 //	vel = ((float) (val2)) / 16384.0;
-	return vel = ((float) (val2)) / 16384.0 * (0.5 * 3.14 * DIAMETER * DIAMETER)
-			* 1000;
+	return vel = ((float) (val2)) / 16384.0 * (2 * 3.14 * DIAMETER) * 1000;
 }
 
 void integral_1ms(float* dis, float*vel) {

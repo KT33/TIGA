@@ -13,9 +13,12 @@
 #include "gpio.h"
 #include "adc.h"
 #include "tim.h"
+#include "SEGGER_RTT.h"
+#include "SEGGER_RTT_Conf.h"
 
 #define CHATT 10000
 #define SECTOR_BASE_ADRR 0x08160000ul
+#define SECTOR14_BASE_ADRR 0x08140000ul
 
 void chattering(void) {
 	int i = 0;
@@ -28,6 +31,33 @@ void chattering(void) {
 	while (i < CHATT) {
 		i++;
 	}
+}
+
+void write_flash_log(uint32_t address, uint8_t *data, uint32_t size) {
+	uint32_t add = address;
+	HAL_FLASH_Unlock(); //flash unlook
+
+	FLASH_EraseInitTypeDef EraseInitStruct;
+	EraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS; //erase only sector
+	EraseInitStruct.Sector = FLASH_SECTOR_14; //sector Name
+	EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3; //2.7 to 3.6V
+	EraseInitStruct.NbSectors = 1; //Number of sectors to be erased.
+	uint32_t SectorError; //srroe sector nomber
+	HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError); //erase sector
+
+	for (add = address; add < (address + size); add++) {
+		HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, add, *data);
+		data++;
+	}
+	HAL_FLASH_Lock(); //flash look
+}
+
+void save_log_to_flash(void){
+	write_flash_log(SECTOR14_BASE_ADRR, (uint8_t*)&mylog, sizeof(mylog));
+}
+
+void read_all_log_from_flash(void){
+	read_flash(SECTOR14_BASE_ADRR, (uint8_t*)&mylog, sizeof(mylog));
 }
 
 void erase_flash(void) {
@@ -146,8 +176,6 @@ uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み
 	uint16_t data_tx;
 	uint16_t data_rx;
 
-//	data_tx = 0xffff;
-
 	data_tx = (0x4000 | addr); //14bitが1でread 0でwrite
 	data_tx = data_tx | (check_parity(data_tx) << 15); //偶パリティ
 
@@ -160,22 +188,6 @@ uint16_t read_spi_en(uint8_t le_ri, uint16_t addr) { //addrのデータを読み
 			100);
 	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
 	HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
-
-//	printf("1st rx0=%d,rx1=%d\n", data_rx[0], data_rx[1]);
-
-//	if (le_ri == LEFT) {
-//		HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 0);
-//	} else if (le_ri == RIGHT) {
-//		HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 0);
-//	}
-//	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) &data_tx[1],
-//			(uint8_t*) &data_rx[1], 1, 100);
-//
-//	HAL_GPIO_WritePin(CS_L_EN_GPIO_Port, CS_L_EN_Pin, 1);
-//	HAL_GPIO_WritePin(CS_R_EN_GPIO_Port, CS_R_EN_Pin, 1);
-//	printf("2nd rx0=%d,rx1=%d\n", data_rx[0], data_rx[1]);
-
-//	return (uint16_t) ((uint16_t) (data_rx[0] << 8) + (uint16_t) data_rx[1]);
 	return data_rx;
 }
 
@@ -215,16 +227,15 @@ void Battery_Check(void) {
 	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, SET);
 
 	HAL_Delay(100);
-	for(uint8_t i=0;i<9;i++){
+	for (uint8_t i = 0; i < 9; i++) {
 		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
 				sizeof(g_ADCBuffer) / sizeof(uint16_t));
 	}
 	HAL_Delay(10);
 	Batt = (float) g_ADCBuffer[8] / 4095 * 3.3 * 2;
-	printf("%4.2f\n",Batt);
+	printf("%4.2f\n", Batt);
 
-
-	if (Batt < 3.72) { //7.7
+	if ((Batt < 3.72&&Batt>3.35)||(Batt<3.25)) { //7.7
 		while (1) {
 			set_led(3);
 			HAL_Delay(500);
@@ -256,4 +267,45 @@ void set_led(uint8_t num) {
 	} else {
 		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, RESET);
 	}
+}
+
+void log_start(void) {
+	log_often_count = 0;
+	log_index = 0;
+	log_how_often = 1;
+	log_flag = 1;
+}
+
+void log_sampling(void) {
+	log_often_count++;
+	if (log_often_count == log_how_often) {
+		mylog.log_1[log_index] = real_L.vel;
+		mylog.log_2[log_index] = real_R.vel;
+		mylog.log_3[log_index] = real_L.dis;
+		mylog.log_4[log_index] = real_R.dis;
+		mylog.log_5[log_index] = ideal_translation.vel;
+		log_index++;
+		log_often_count = 0;
+	//	printf(",%4.8f,%4.8f,%4.8f,%4.8f\n",real_L.vel,real_R.vel,real_L.dis,real_R.dis);
+		if (log_index == LOG_MAX - 1) {
+			log_flag = 0;
+			log_index = 0;
+		}
+	}
+}
+
+void log_output(void){
+	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
+	SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
+	for(uint16_t i=0;i<LOG_MAX;i++){
+		printf(",");
+		printf("%4.2f,",mylog.log_1[i]);
+		printf("%4.2f,",mylog.log_2[i]);
+		printf("%4.2f,",mylog.log_3[i]);
+		printf("%4.2f,",mylog.log_4[i]);
+		printf("%4.2f,",mylog.log_5[i]);
+		printf("\n");
+	}
+	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
+	SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 }

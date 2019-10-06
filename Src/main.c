@@ -154,7 +154,7 @@ int main(void) {
 	//	printf("mode:sel_dis=%3.2f,vel=%3.2f\n", mode_select_dis, real_R.vel);
 
 		set_led(mode);
-		if (mode_select_dis > 200) {
+		if (mode_select_dis > 100) {
 			mode_select_dis = 0;
 			mode++;
 			if (mode >= 8) {
@@ -163,7 +163,7 @@ int main(void) {
 			set_buzzer_mode(mode);
 		}
 
-		if (mode_select_dis < -200) {
+		if (mode_select_dis < -100) {
 			mode_select_dis = 0;
 			if (mode == 0) {
 				mode = 8;

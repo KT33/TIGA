@@ -12,6 +12,8 @@
 
 void chattering(void);
 void erase_flash(void);
+void read_all_log_from_flash(void);
+void save_log_to_flash(void);
 void write_flash(uint32_t,uint8_t*,uint32_t);
 void read_flash(uint32_t,uint8_t*,uint32_t );
 void save_all_walldata(void);
@@ -26,6 +28,9 @@ uint16_t read_spi_en(uint8_t,uint16_t addr);
 uint16_t check_parity(uint16_t val);
 void set_led(uint8_t);
 void Battery_Check(void);
+void log_sampling(void);
+void log_output(void);
+void log_start(void);
 
 #define WHO_AM_I 0x00
 

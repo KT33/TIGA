@@ -7,6 +7,8 @@
 
 #include "mode.h"
 #include "run.h"
+#include "walldata.h"
+#include "other.h"
 
 void mode_0(void) {
 //	start_SEN();
@@ -28,89 +30,56 @@ void mode_1(void) {
 //	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
 	run_gain.Kp = 0.7;
 	run_gain.Ki = 0.0;
-	rotation_gain.Kp=0.0;
-	rotation_gain.Ki=0.0;
-	set_straight(500.0, 300, 300, 0, 0);
+	rotation_gain.Kp = 0.0;
+	rotation_gain.Ki = 0.0;
+	log_start();
+	set_straight(360.0, 300, 100, 0, 0);
 	wait_straight();
+	save_log_to_flash();
 }
 
 void mode_2(void) {
-
-	while (1) {
-		duty.left = 200;
-		duty.right = 200;
-		duty_to_moter();
-	}
+	uint8_t i;
+	read_all_log_from_flash();
+	log_output();
 }
 
 void mode_3(void) { //253.558
-	while (1) {
-		control_accel(&ideal_translation, &translation_parameter, 0);
-	}
+	duty.left = 200;
+	duty.right = 200;
+	duty_to_moter();
+	log_start();
+	while (log_flag)
+		;
+	save_log_to_flash();
 }
 
 void mode_4(void) {
-//	oblique_Front_gain = 0.3;
-//	oblique_Side_gain = 0.02;
-//	wall_cntrol_gain.Kp = 0.2;
-//	wall_cntrol_gain.Kd = 0.1;
-//	oblique_offset_front = 3.0;
-//	oblique_offset_side = 6.0;
-//	para_mode();
-//	read_all_walldatas();
-//	start_SEN(1);
-//	HAL_Delay(30);
-//	make_pass(x.goal, y.goal, 4, 0);
-//	move_pass_oblique(nomal_run.accel, nomal_run.vel_max, 1200,
-//			nomal_oblique.accel, nomal_oblique.vel_max, 1);
-//	fan_off();
+	while (1) {
+		while ((HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0)) {
+			duty.left = 200;
+			duty.right = 200;
+			duty_to_moter();
+			printf(",");
+			printf("%4.8f,%4.8f,%4.8f,%4.8f\n", real_R.vel, real_R.dis,
+					real_L.vel, real_L.dis);
+			HAL_Delay(1);
+		}
+		duty.left = 0;
+		duty.right = 0;
+	}
 }
 
 void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
-//	oblique_Front_gain = 0.3;
-//	oblique_Side_gain = 0.02;
-//	wall_cntrol_gain.Kp = 0.4;
-//	wall_cntrol_gain.Kd = 0.15;
-//	oblique_offset_front = 3.0;
-//	oblique_offset_side = 6.0;
-//	para_mode();
-//
-//	read_all_walldatas();
-//	start_SEN(1);
-//	HAL_Delay(30);
-//	make_pass(x.goal, y.goal, 4, 1);
-//	move_pass_oblique(nomal_run.accel, nomal_run.vel_max, 1200,
-//			nomal_oblique.accel, nomal_oblique.vel_max, 1);
-//	fan_off();
+	mylog.log_3[3] = 55;
+	save_log_to_flash();
+	read_all_log_from_flash();
+	log_output();
 }
 
 void mode_6(void) {
-//	read_all_walldatas();
-//	wall_cntrol_gain.Kp = 0.1;
-//	wall_cntrol_gain.Kd = 0.1;
-//	nomal_run.vel_search = 600.0;
-//	start_SEN(0);
-//	search_run_special(x.goal, y.goal, 4);
-//	if (u_turn_counter == 100) {
-//		write_all_walldatas(255);
-//	} else {
-//		write_all_walldatas(0);
-//	}
-
-//	nomal_run.accel = 15000.0;
-//	nomal_run.vel_max = 3500;
-//	start_SEN(0);
-//	fan_on();
-//	set_straight(142.0 + 180.0*14.0, 15000.0, 3500.0, 0.0, 0.0);
-////	wall_control_flag = 0;
-//	log_start();
-//	wait_straight();
-////	slalom_right90(nomal_run.accel, nomal_run.vel_search);
-////	turn_left_180_big(1200);
-////	set_straight(180.0, 7000.0, 1200.0, 1200.0, 0.0);
-////	wall_control_flag = 0;
-////	wait_straight();
-//	fan_off();
+	read_all_log_from_flash();
+	log_output();
 }
 
 void mode_7(void) {
