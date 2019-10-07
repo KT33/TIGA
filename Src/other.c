@@ -289,25 +289,25 @@ void log_start(void) {
 
 void log_sampling(void) {
 	log_often_count++;
-	if (log_often_count == log_how_often) {
+	if (log_index == LOG_MAX - 1) {
+		log_flag = 0;
+		log_index = 0;
+	} else if (log_often_count == log_how_often) {
 		mylog.log_1[log_index] = real_L.vel;
 		mylog.log_2[log_index] = real_R.vel;
 		mylog.log_3[log_index] = ideal_translation.vel;
-		mylog.log_4[log_index] = real_L.dis;
-		mylog.log_5[log_index] = real_R.dis;
+		mylog.log_4[log_index] = (float) duty.left / 800;
+		mylog.log_5[log_index] = (float) duty.right / 800;
 		mylog2.log_1[log_index] = (real_L.dis + real_R.dis) / 2;
-		mylog2.log_2[log_index] = real_rotation.vel;
-		mylog2.log_3[log_index] = ideal_rotation.vel;
-		mylog2.log_4[log_index] = real_rotation.dis;
-		mylog2.log_5[log_index] = ideal_rotation.dis;
+		mylog2.log_2[log_index] = test_L;
+		mylog2.log_3[log_index] = test_R;
+		mylog2.log_4[log_index] = test_L2;
+		mylog2.log_5[log_index] = test_R2;
 
 		log_index++;
 		log_often_count = 0;
 		//	printf(",%4.8f,%4.8f,%4.8f,%4.8f\n",real_L.vel,real_R.vel,real_L.dis,real_R.dis);
-		if (log_index == LOG_MAX - 1) {
-			log_flag = 0;
-			log_index = 0;
-		}
+
 	}
 }
 

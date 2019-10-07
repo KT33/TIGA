@@ -14,7 +14,6 @@
 #include "walldata.h"
 #include "other.h"
 #include "buzzer.h"
-#include "moter.h"
 #include "mode.h"
 #include "tim.h"
 #include "adc.h"
@@ -90,6 +89,7 @@ void interrupt_1ms(void) {
 //		printf("test3\n");
 		real_R.vel = read_vel(RIGHT);
 		integral_1ms(&mode_select_dis, &real_R.vel);
+
 		//	printf("inter:sel_dis=%3.2f,vel=%3.2f\n",mode_select_dis,real_R.vel);
 	}
 

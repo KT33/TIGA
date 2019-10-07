@@ -23,5 +23,9 @@ void duty_to_moter(void);
 void PID_control(run_t *ideal, run_t *left, run_t *right,
 		deviation_t *left_deviation, deviation_t *right_deviation, gain_t *gain,
 		trapezoid_t *parameter, duty_t *duty, uint8_t rotation_flag);
+float read_vel(uint8_t RorL);
+void integral_1ms(float* dis, float*vel);
+void integral_ideal(run_t *ideal);
+
 
 #endif /* RUN_H_ */

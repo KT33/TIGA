@@ -1,3 +1,0 @@
-moter.c:14:7:read_vel	40	static
-moter.c:40:6:integral_1ms	24	static
-moter.c:44:6:integral_ideal	32	static

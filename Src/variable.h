@@ -123,7 +123,7 @@ extern uint16_t buzzer_count;
 extern buzzer_t buzzer[30];
 extern uint8_t buzzer_index, buzzer_flag;
 extern uint8_t low_batt_flag;
-extern uint16_t before_en_val[2];
+extern float before_en_val[2];
 extern run_t real_R, real_L, real_rotation;
 extern run_t ideal_translation, ideal_rotation;
 extern uint8_t wall_control_flag;
@@ -140,9 +140,11 @@ extern uint8_t moter_flag;
 extern uint8_t SEN_check_flag;
 extern gain_t run_gain;
 extern gain_t rotation_gain;
-extern LOG_t mylog,mylog2;
-extern uint16_t log_index,log_how_often,log_often_count;
+extern LOG_t mylog, mylog2;
+extern uint16_t log_index, log_how_often, log_often_count;
 extern uint8_t log_flag;
+extern float test_L, test_R,test_L2, test_R2;
+extern float en_L_table[34] ;
 
 #define North 0
 #define West 1
@@ -156,6 +158,5 @@ extern uint8_t log_flag;
 #define REAL 2
 #define CHECK 3
 #define ADACHI 4
-
 
 #endif /* VARIABLE_H_ */

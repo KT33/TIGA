@@ -32,7 +32,7 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
  ../Inc/main.h ../Inc/dma.h ../Inc/spi.h ../Inc/tim.h ../Inc/gpio.h \
  ../Inc/SEGGER_RTT.h ../Inc/SEGGER_RTT_Conf.h ../Inc/SEGGER_RTT_Conf.h \
  ../Src/variable.h ../Src/walldata.h ../Src/other.h ../Src/buzzer.h \
- ../Src/moter.h ../Src/mode.h ../Src/run.h
+ ../Src/mode.h ../Src/run.h
 
 ../Inc/main.h:
 
@@ -121,8 +121,6 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
 ../Src/other.h:
 
 ../Src/buzzer.h:
-
-../Src/moter.h:
 
 ../Src/mode.h:
 

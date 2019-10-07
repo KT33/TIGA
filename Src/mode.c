@@ -11,70 +11,72 @@
 #include "other.h"
 
 void mode_0(void) {
-//	start_SEN();
-//	uint8_t i;
-//	wall_cntrol_gain.Kp = 0.1;
-//	wall_cntrol_gain.Kd = 0.1;
-//	nomal_run.vel_search = 600.0;
-//	start_SEN(0);
-//	search_run_special(x.goal, y.goal, 4);
-//	if (u_turn_counter == 100) {
-//		write_all_walldatas(255);
-//	} else {
-//		write_all_walldatas(0);
-//	}
-}
-
-void mode_1(void) {
-	moter_flag = 1;
-//	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
-	run_gain.Kp = 0.7;
-	run_gain.Ki = 0.0;
-	rotation_gain.Kp = 0.0;
-	rotation_gain.Ki = 0.0;
-	log_start();
-	set_straight(360.0, 300, 100, 0, 0);
-	wait_straight();
-	save_log_to_flash();
-}
-
-void mode_2(void) {
 	uint8_t i;
 	read_all_log_from_flash();
 	log_output();
 }
 
-void mode_3(void) { //253.558
-	duty.left = 200;
-	duty.right = 200;
-	duty_to_moter();
+void mode_1(void) {
+	moter_flag = 1;
+//	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
+	run_gain.Kp = 0.4;
+	run_gain.Ki = 0.0;
+	rotation_gain.Kp = 0.0;
+	rotation_gain.Ki = 0.0;
 	log_start();
-	while (log_flag)
-		;
+	set_straight(600.0, 3500, 300, 0, 0);
+	wait_straight();
+	save_log_to_flash();
+}
+
+void mode_2(void) {
+	moter_flag = 1;
+//	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
+	run_gain.Kp = 0.5;
+	run_gain.Ki = 0.0;
+	rotation_gain.Kp = 0.0;
+	rotation_gain.Ki = 0.0;
+	log_start();
+	set_straight(600.0, 3500, 300, 0, 0);
+	wait_straight();
+	save_log_to_flash();
+}
+
+void mode_3(void) { //253.558
+	moter_flag = 1;
+//	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
+	run_gain.Kp = 0.6;
+	run_gain.Ki = 0.0;
+	rotation_gain.Kp = 0.0;
+	rotation_gain.Ki = 0.0;
+	log_start();
+	set_straight(600.0, 3500, 300, 0, 0);
+	wait_straight();
 	save_log_to_flash();
 }
 
 void mode_4(void) {
-	while (1) {
-		while ((HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0)) {
-			duty.left = 200;
-			duty.right = 200;
-			duty_to_moter();
-			printf(",");
-			printf("%4.8f,%4.8f,%4.8f,%4.8f\n", real_R.vel, real_R.dis,
-					real_L.vel, real_L.dis);
-			HAL_Delay(1);
-		}
-		duty.left = 0;
-		duty.right = 0;
+	log_start();
+	while (log_flag) {
+		duty.left = 100;
+		duty.right = 100;
+		duty_to_moter();
 	}
+	duty.left = 0;
+	duty.right = 0;
+
+	save_log_to_flash();
 }
 
 void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
-	mylog.log_3[3] = 55;
+	log_start();
+	while (log_flag) {
+
+	}
+	duty.left = 0;
+	duty.right = 0;
+
 	save_log_to_flash();
-	read_all_log_from_flash();
-	log_output();
 }
 
 void mode_6(void) {

@@ -6,3 +6,6 @@ ruc.c:104:6:trapezoid_preparation	64	static
 ruc.c:149:6:duty_to_moter	16	static
 ruc.c:191:6:control_accel	24	static
 ruc.c:219:6:PID_control	40	static
+ruc.c:311:7:read_vel	40	static
+ruc.c:338:6:integral_1ms	24	static
+ruc.c:342:6:integral_ideal	32	static

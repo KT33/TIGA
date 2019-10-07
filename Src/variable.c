@@ -22,7 +22,7 @@ uint16_t buzzer_count=0xffff;
 buzzer_t buzzer[30];
 uint8_t buzzer_index=0,buzzer_flag=0;
 uint8_t low_batt_flag=0;
-uint16_t before_en_val[2]={0,0};
+float before_en_val[2]={0,0};
 run_t real_R,real_L,real_rotation;
 run_t ideal_translation,ideal_rotation;
 uint8_t wall_control_flag;
@@ -42,3 +42,13 @@ gain_t run_gain = { 0.8, 0.4, 0.0 }; //p,i,d
 LOG_t mylog,mylog2;
 uint16_t log_index=0,log_how_often=0,log_often_count=0;
 uint8_t log_flag=0;
+float test_L,test_R,test_L2, test_R2;
+float en_L_table[34] = { 1.009998433, 1.007563172, 1.004827295,
+		1.001972749, 0.999229336, 0.99687471, 0.99523438, 0.995031825,
+		0.99550266, 0.997374733, 0.999754893, 1.001993126, 1.003682556,
+		1.004659447, 1.005003202, 1.005024181, 1.003716193, 1.00224529,
+		1.000891179, 0.999808296, 0.999025803, 0.998447589, 0.99785227,
+		0.99774053, 0.998549181, 0.999442417, 1.000618099, 1.002036411,
+		1.00341987, 1.004253315, 1.004100496, 1.003151015, 1.001933841,
+		1.000761267 };
+

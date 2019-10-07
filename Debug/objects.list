@@ -25,7 +25,6 @@
 "Src/interrupt.o"
 "Src/main.o"
 "Src/mode.o"
-"Src/moter.o"
 "Src/other.o"
 "Src/ruc.o"
 "Src/spi.o"

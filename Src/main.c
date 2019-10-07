@@ -36,7 +36,6 @@
 #include "walldata.h"
 #include "other.h"
 #include "buzzer.h"
-#include "moter.h"
 #include "mode.h"
 /* USER CODE END Includes */
 
@@ -149,12 +148,14 @@ int main(void) {
 
 
 //	output_Walldata(REAL);
+	mode=0;
+	mode_select_dis=10;
 	while (1) {
 
-	//	printf("mode:sel_dis=%3.2f,vel=%3.2f\n", mode_select_dis, real_R.vel);
+		printf("mode:sel_dis=%3.2f,vel=%3.2f\n", mode_select_dis, real_R.vel);
 
 		set_led(mode);
-		if (mode_select_dis > 100) {
+		if (mode_select_dis > 40) {
 			mode_select_dis = 0;
 			mode++;
 			if (mode >= 8) {
@@ -163,7 +164,7 @@ int main(void) {
 			set_buzzer_mode(mode);
 		}
 
-		if (mode_select_dis < -100) {
+		if (mode_select_dis < -40) {
 			mode_select_dis = 0;
 			if (mode == 0) {
 				mode = 8;
@@ -179,6 +180,7 @@ int main(void) {
 			chattering();
 			go_mode();
 		}
+		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
 
 
 

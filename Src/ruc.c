@@ -253,5 +253,94 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 	}
 	duty->left += duty_left;
 	duty->right += duty_right;
-
 }
+
+//float read_vel(uint8_t RorL) {
+//	float vel;
+//	uint16_t val;
+//	float val2;
+//	float val_cor;
+//	uint8_t table_index;
+//	uint8_t i;
+//	for (i = 0; i < 50; i++)
+//		;
+//	read_spi_en(RorL, 0x3fff);
+//	for (i = 0; i < 50; i++)
+//		;
+//	val = (0x3fff & read_spi_en(RorL, 0x3fff));
+//	for (i = 0; i < 50; i++)
+//		;
+//
+//	table_index = val / 500;
+////	if (RorL == LEFT) {
+////		val_cor =
+////				(en_L_table[table_index]
+////						+ ((en_L_table[table_index + 1]
+////								- en_L_table[table_index]) / 500)
+////								* (float) (val % 500)) * (float) val;
+////		test_L =(float) val;
+////		test_L2 = val_cor;
+////
+////	} else {
+////		val_cor = (float) val;
+////		test_R =(float) val;
+////		test_R2 = val_cor;
+////
+////	}
+//
+//	val_cor=(float)val;
+//
+//	val2 = (float) ((val_cor - before_en_val[RorL]));
+//	if (val2 < -8000) {
+//		val2 += 16384;
+//	}
+//	if (val2 > 8000) {
+//		val2 -= 16384;
+//	}
+//	before_en_val[RorL] = val_cor;
+//
+//	vel = ((float) (val2)) / 16384.0 * (2 * 3.14 * DIAMETER) * 1000;
+//
+//	if (RorL == LEFT) {
+//		vel *= -1;
+//	}
+//
+//	return vel;
+//}
+
+float read_vel(uint8_t RorL) {
+	float vel;
+	uint16_t val;
+	int16_t val2;
+	uint8_t i;
+	for (i = 0; i < 50; i++)
+		;
+	read_spi_en(RorL, 0x3fff);
+	for (i = 0; i < 50; i++)
+		;
+	val = (0x3fff & read_spi_en(RorL, 0x3fff));
+	for (i = 0; i < 50; i++)
+		;
+	val2 = (int16_t) ((val - before_en_val[RorL]));
+	if (val2 < -8000) {
+		val2 += 16383;
+	}
+	if (val2 > 8000) {
+		val2 -= 16383;
+	}
+	before_en_val[RorL] = val;
+
+//	vel = ((float) (val2)) / 16384.0;
+	return vel = ((float) (val2)) / 16384.0 * (2 * 3.14 * DIAMETER) * 1000;
+}
+
+
+void integral_1ms(float* dis, float*vel) {
+	*dis += *vel * 0.001;
+}
+
+void integral_ideal(run_t *ideal) {
+	ideal->vel += ideal->accel * 0.001;
+	ideal->dis += ideal->vel * 0.001 + ideal->accel * 0.001 * 0.001 / 2;
+}
+
