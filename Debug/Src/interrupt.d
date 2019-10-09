@@ -31,7 +31,8 @@ Src/interrupt.o: ../Src/interrupt.c ../Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Inc/SEGGER_RTT.h ../Inc/SEGGER_RTT_Conf.h ../Inc/SEGGER_RTT_Conf.h \
  ../Src/variable.h ../Src/walldata.h ../Src/other.h ../Src/buzzer.h \
- ../Src/mode.h ../Src/run.h ../Inc/tim.h ../Inc/main.h ../Inc/adc.h
+ ../Src/mode.h ../Src/run.h ../Inc/tim.h ../Inc/main.h ../Inc/adc.h \
+ ../Src/interrupt.h
 
 ../Inc/main.h:
 
@@ -118,3 +119,5 @@ Src/interrupt.o: ../Src/interrupt.c ../Inc/main.h \
 ../Inc/main.h:
 
 ../Inc/adc.h:
+
+../Src/interrupt.h:

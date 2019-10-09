@@ -15,6 +15,7 @@
 #include "tim.h"
 #include "SEGGER_RTT.h"
 #include "SEGGER_RTT_Conf.h"
+#include "buzzer.h"
 
 #define CHATT 10000
 #define SECTOR_BASE_ADRR 0x08160000ul
@@ -163,14 +164,17 @@ float read_gyro(void) {
 	data_h = read_spi(0x37);
 	data_l = read_spi(0x38);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
-	return (float) value * 0.0610370189; //*2000/(2^15-1) return deg/sec
+	if(rotation_parameter.back_rightturn_flag==1){
+		value=-1*value;
+	}
+	return (float) value * 0.0610370189 - angle_calibration; //*2000/(2^15-1) return deg/sec
 }
 
 float read_accel(void) {
 	uint8_t data_l, data_h;
 	int16_t value;
-	data_h = read_spi(0x31);
-	data_l = read_spi(0x32);
+	data_h = read_spi(0x2d);
+	data_l = read_spi(0x2e);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
 	return (float) value * 0.00239427472762; //*9.8...*8/(2^15-1) return m/s^2
 }
@@ -296,13 +300,13 @@ void log_sampling(void) {
 		mylog.log_1[log_index] = real_L.vel;
 		mylog.log_2[log_index] = real_R.vel;
 		mylog.log_3[log_index] = ideal_translation.vel;
-		mylog.log_4[log_index] = (float) duty.left / 800;
-		mylog.log_5[log_index] = (float) duty.right / 800;
+		mylog.log_4[log_index] = run_left_deviation.cumulative;
+		mylog.log_5[log_index] = run_right_deviation.cumulative;
 		mylog2.log_1[log_index] = (real_L.dis + real_R.dis) / 2;
-		mylog2.log_2[log_index] = test_L;
-		mylog2.log_3[log_index] = test_R;
-		mylog2.log_4[log_index] = test_L2;
-		mylog2.log_5[log_index] = test_R2;
+		mylog2.log_2[log_index] = ideal_translation.dis;
+		mylog2.log_3[log_index] = real_rotation.vel;
+		mylog2.log_4[log_index] = angle_calibration_integral;
+		mylog2.log_5[log_index] = angle_calibration;
 
 		log_index++;
 		log_often_count = 0;
@@ -330,4 +334,37 @@ void log_output(void) {
 	}
 	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
 	SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+}
+
+void start_led(void) {
+	SEN_check_flag = 1;
+	while (SEN_R.now < SEN_R.threshold && SEN_RF.now < SEN_RF.threshold) {
+
+	}
+	set_buzzer(0, C_5, 800);
+	log_start();
+
+	angle_calibration_integral = 0.0;
+	angle_calibration = 0.0;
+	angle_calibration_counter = 0;
+	angle_calibration_flag = 1;
+	while (angle_calibration_flag == 1) {
+
+	}
+	angle_calibration = angle_calibration_integral / 2000.0;
+	moter_flag = 1;
+
+	rotation_deviation.cumulative = 0;
+	set_buzzer(0, E_5, 800);
+}
+
+void output_SEN(void) {
+	SEN_check_flag = 1;
+	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1) {
+		printf("LF=%5d,L=%5d,R=%5d,RF=%5d\n", SEN_LF.now, SEN_L.now, SEN_R.now,
+				SEN_RF.now);
+		HAL_Delay(100);
+	}
+	SEN_check_flag = 0;
+
 }

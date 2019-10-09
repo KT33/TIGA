@@ -14,11 +14,13 @@
 
 void set_straight(float i_distance, float accel, float max_vel, float strat_vel,
 		float end_vel);
+void set_rotation(float i_angle, float accel, float max_vel, float center_vel);
+
 void trapezoid_preparation(trapezoid_t *trapezoid, float i_distance,
 		float accel, float max_vel, float strat_vel, float end_vel);
 void wait_straight(void);
 void wait_rotation(void);
-void control_accel(run_t *ideal, trapezoid_t *trapezoid,uint8_t);
+void control_accel(run_t *ideal, trapezoid_t *trapezoid, uint8_t);
 void duty_to_moter(void);
 void PID_control(run_t *ideal, run_t *left, run_t *right,
 		deviation_t *left_deviation, deviation_t *right_deviation, gain_t *gain,
@@ -26,6 +28,5 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 float read_vel(uint8_t RorL);
 void integral_1ms(float* dis, float*vel);
 void integral_ideal(run_t *ideal);
-
 
 #endif /* RUN_H_ */

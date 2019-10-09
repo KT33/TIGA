@@ -31,6 +31,8 @@ void Battery_Check(void);
 void log_sampling(void);
 void log_output(void);
 void log_start(void);
+void start_led(void);
+void output_SEN(void);
 
 #define WHO_AM_I 0x00
 

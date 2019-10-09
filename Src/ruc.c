@@ -49,12 +49,12 @@ void set_rotation(float i_angle, float accel, float max_vel, float center_vel) {
 
 void wait_straight(void) {
 //LEFTEING = 1;
-	printf("wait_st%6.2f\n", ideal_translation.vel);
+//	printf("wait_st%6.2f\n", ideal_translation.vel);
 	while (translation_parameter.run_flag == 1 && failsafe_flag == 0) {
 //		printf("wait_st_while%6.2f\n", ideal_translation.vel);
-		printf("ideal_vel=%4.2f,real_vel=%4.2f,deviation_now=%4.2f,duty=%d\n",
-				ideal_translation.vel, real_L.vel, run_left_deviation.now,
-				duty.left);
+//		printf("ideal_vel=%4.2f,real_vel=%4.2f,deviation_now=%4.2f,duty=%d\n",
+//				ideal_translation.vel, real_L.vel, run_left_deviation.now,
+//				duty.left);
 
 //		printf("run_flag=%d\n", translation_parameter.run_flag);
 		//			printf("ac_dis=%4.2f,deac_dis=%4.2f,max_vel=%4.2f\n",
@@ -74,6 +74,9 @@ void wait_straight(void) {
 	run_right_deviation.now = 0.0;
 	run_right_deviation.difference = 0.0;
 	rotation_parameter.back_rightturn_flag = 0;
+
+	HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, SET);
+
 //	rotation_deviation.now = 0.0;
 //	rotation_deviation.cumulative = 0.0;
 
@@ -228,16 +231,21 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 	left->vel = (left->vel + right->vel) / 2;
 	right->vel = left->vel;
 
+
 	if (rotation_flag == 1) {
 		right->vel += wallcontrol_value;
-		left->vel += wallcontrol_value;
+		left->vel = right->vel;
 	}
 
 	left_deviation->now = (ideal->vel - left->vel);
 	right_deviation->now = (ideal->vel - right->vel);
-	left_deviation->cumulative += left_deviation->now;
-	right_deviation->cumulative += right_deviation->now;
-
+	if (rotation_flag == 0) {
+		left_deviation->cumulative += left_deviation->now;
+		right_deviation->cumulative += right_deviation->now;
+	}else if(rotation_flag==1){
+		left_deviation->cumulative+=left_deviation->now;
+		right_deviation->cumulative=left_deviation->cumulative;
+	}
 	duty_left = (int) left_deviation->now * Kp
 			+ left_deviation->cumulative * Ki;
 	duty_right = (int) right_deviation->now * Kp
@@ -255,12 +263,78 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 	duty->right += duty_right;
 }
 
+float read_vel(uint8_t RorL) {
+	float vel;
+	uint16_t val;
+	float val2;
+	float val_cor;
+	uint8_t table_index;
+	uint8_t i;
+	for (i = 0; i < 50; i++)
+		;
+	read_spi_en(RorL, 0x3fff);
+	for (i = 0; i < 50; i++)
+		;
+	val = (0x3fff & read_spi_en(RorL, 0x3fff));
+	for (i = 0; i < 50; i++)
+		;
+
+	en_log_L.before_5ms = en_log_L.before_4ms;
+	en_log_L.before_4ms = en_log_L.before_3ms;
+	en_log_L.before_3ms = en_log_L.before_2ms;
+	en_log_L.before_2ms = en_log_L.before_1ms;
+	en_log_L.before_1ms = en_log_L.now;
+	en_log_L.now = val;
+
+	table_index = val / 500;
+	if (RorL == LEFT) {
+//		val_cor =
+//				(en_L_table[table_index]
+//						+ ((en_L_table[table_index + 1]
+//								- en_L_table[table_index]) / 500)
+//								* (float) (val % 500)) * (float) val;
+		val_cor = LPF[0] * en_log_L.now + LPF[1] * en_log_L.before_1ms
+				+ LPF[2] * en_log_L.before_2ms + LPF[3] * en_log_L.before_3ms
+				+ LPF[4] * en_log_L.before_4ms + LPF[5] * en_log_L.before_5ms;
+
+		val_cor = (float) val;
+//		test_L = (float) val;
+//		test_L2 = val_cor;
+
+	} else {
+		val_cor = LPF[0] * en_log_R.now + LPF[1] * en_log_R.before_1ms
+				+ LPF[2] * en_log_R.before_2ms + LPF[3] * en_log_R.before_3ms
+				+ LPF[4] * en_log_R.before_4ms + LPF[5] * en_log_R.before_5ms;
+		val_cor = (float) val;
+//		test_R = (float) val;
+//		test_R2 = val_cor;
+
+	}
+
+	val_cor = (float) val;
+
+	val2 = (float) ((val_cor - before_en_val[RorL]));
+	if (val2 < -8000) {
+		val2 += 16384;
+	}
+	if (val2 > 8000) {
+		val2 -= 16384;
+	}
+	before_en_val[RorL] = val_cor;
+
+	vel = ((float) (val2)) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
+
+	if (RorL == LEFT) {
+		vel *= -1;
+	}
+
+	return vel;
+}
+
 //float read_vel(uint8_t RorL) {
 //	float vel;
 //	uint16_t val;
-//	float val2;
-//	float val_cor;
-//	uint8_t table_index;
+//	int16_t val2;
 //	uint8_t i;
 //	for (i = 0; i < 50; i++)
 //		;
@@ -271,69 +345,28 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 //	for (i = 0; i < 50; i++)
 //		;
 //
-//	table_index = val / 500;
-////	if (RorL == LEFT) {
-////		val_cor =
-////				(en_L_table[table_index]
-////						+ ((en_L_table[table_index + 1]
-////								- en_L_table[table_index]) / 500)
-////								* (float) (val % 500)) * (float) val;
-////		test_L =(float) val;
-////		test_L2 = val_cor;
-////
-////	} else {
-////		val_cor = (float) val;
-////		test_R =(float) val;
-////		test_R2 = val_cor;
-////
-////	}
+//	if(RorL==LEFT){
+//		test_L=(float)val;
+//	}else{
+//		test_R=(float)val;
+//	}
 //
-//	val_cor=(float)val;
-//
-//	val2 = (float) ((val_cor - before_en_val[RorL]));
+//	val2 = (int16_t) ((val - before_en_val[RorL]));
 //	if (val2 < -8000) {
-//		val2 += 16384;
+//		val2 += 16383;
 //	}
 //	if (val2 > 8000) {
-//		val2 -= 16384;
+//		val2 -= 16383;
 //	}
-//	before_en_val[RorL] = val_cor;
+//	before_en_val[RorL] = val;
 //
-//	vel = ((float) (val2)) / 16384.0 * (2 * 3.14 * DIAMETER) * 1000;
 //
-//	if (RorL == LEFT) {
-//		vel *= -1;
-//	}
-//
+//	vel = ((float) (val2)) / 16384.0 * ( 3.1415926 * DIAMETER) * 1000;
+//		if (RorL == LEFT) {
+//			vel *= -1;
+//		}
 //	return vel;
 //}
-
-float read_vel(uint8_t RorL) {
-	float vel;
-	uint16_t val;
-	int16_t val2;
-	uint8_t i;
-	for (i = 0; i < 50; i++)
-		;
-	read_spi_en(RorL, 0x3fff);
-	for (i = 0; i < 50; i++)
-		;
-	val = (0x3fff & read_spi_en(RorL, 0x3fff));
-	for (i = 0; i < 50; i++)
-		;
-	val2 = (int16_t) ((val - before_en_val[RorL]));
-	if (val2 < -8000) {
-		val2 += 16383;
-	}
-	if (val2 > 8000) {
-		val2 -= 16383;
-	}
-	before_en_val[RorL] = val;
-
-//	vel = ((float) (val2)) / 16384.0;
-	return vel = ((float) (val2)) / 16384.0 * (2 * 3.14 * DIAMETER) * 1000;
-}
-
 
 void integral_1ms(float* dis, float*vel) {
 	*dis += *vel * 0.001;

@@ -124,6 +124,7 @@ extern buzzer_t buzzer[30];
 extern uint8_t buzzer_index, buzzer_flag;
 extern uint8_t low_batt_flag;
 extern float before_en_val[2];
+extern SENLOG_t en_log_L,en_log_R;
 extern run_t real_R, real_L, real_rotation;
 extern run_t ideal_translation, ideal_rotation;
 extern uint8_t wall_control_flag;
@@ -145,6 +146,17 @@ extern uint16_t log_index, log_how_often, log_often_count;
 extern uint8_t log_flag;
 extern float test_L, test_R,test_L2, test_R2;
 extern float en_L_table[34] ;
+extern float LPF[6];
+extern float angle_calibration;
+extern uint8_t angle_calibration_flag;
+extern uint16_t angle_calibration_counter;
+extern float angle_calibration_integral;
+extern uint8_t failsafe_flag;
+extern uint16_t failsafe_counter;
+extern float failsafe_accel;
+extern normal_para_t nomal_run;
+extern normal_para_t nomal_rotation;
+
 
 #define North 0
 #define West 1

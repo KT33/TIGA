@@ -150,12 +150,18 @@ int main(void) {
 //	output_Walldata(REAL);
 	mode=0;
 	mode_select_dis=10;
+
+	SEN_R.reference=680;
+	SEN_R.threshold=250;
+	SEN_RF.reference=473;
+	SEN_RF.threshold=247;
 	while (1) {
 
-		printf("mode:sel_dis=%3.2f,vel=%3.2f\n", mode_select_dis, real_R.vel);
+//		printf("mode:sel_dis=%3.2f,vel=%3.2f\n", mode_select_dis, real_R.vel);
+//		printf("R=%8.2f,	L=%8.2f\n",test_R,test_L);
 
 		set_led(mode);
-		if (mode_select_dis > 40) {
+		if (mode_select_dis > 30) {
 			mode_select_dis = 0;
 			mode++;
 			if (mode >= 8) {
@@ -164,7 +170,7 @@ int main(void) {
 			set_buzzer_mode(mode);
 		}
 
-		if (mode_select_dis < -40) {
+		if (mode_select_dis < -30) {
 			mode_select_dis = 0;
 			if (mode == 0) {
 				mode = 8;

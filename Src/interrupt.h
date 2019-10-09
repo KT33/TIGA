@@ -11,6 +11,6 @@
 #include "variable.h"
 
 void interrupt_1ms(void);
-
+void failsafe(void);
 
 #endif /* INTERRUPT_H_ */

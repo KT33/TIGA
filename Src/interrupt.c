@@ -17,6 +17,7 @@
 #include "mode.h"
 #include "tim.h"
 #include "adc.h"
+#include "interrupt.h"
 
 void buzzer_1ms(void);
 void adc_1ms(void);
@@ -29,17 +30,40 @@ void interrupt_1ms(void) {
 
 //ADC
 	if (SEN_check_flag == 1) {
-//		adc_1ms();
+		adc_1ms();
 	}
 //ADC
 
-//	printf("test\n");
+//failsafe判定 //|| failsafe_accel > 3.0  real_R.vel > 2000.0 || real_L.vel > 2000.0||
+	if ((rotation_deviation.cumulative > 200000.0
+			|| rotation_deviation.cumulative < -200000.0)
+			&& translation_parameter.back_rightturn_flag == 0&&failsafe_flag==0) { //|| failsafe_accel > 39.2
+		failsafe();
+//		printf("R_vel=%6.2f,L_vel=%6.2f,rot_dev=%9.2f,acc=%5.2f\n", real_R.vel,
+//				real_L.vel, rotation_deviation.cumulative, failsafe_accel);
+	}
+
+	//failsafe処理
+	if (failsafe_flag == 1 && failsafe_counter < 1000) {
+		//	ui_led_3bit(7);
+		ideal_translation.accel = 0.0;
+		ideal_translation.vel = 0.0;
+		run_left_deviation.cumulative = 0.0;
+		run_right_deviation.cumulative = 0.0;
+		failsafe_counter++;
+
+		PID_control(&ideal_translation, &real_L, &real_R, &run_left_deviation,
+				&run_right_deviation, &run_gain, &translation_parameter, &duty,
+				0);
+		duty_to_moter();
+	}
 
 	if (mode & 0x80) { //in_mode　モード中
 		//gyro
 		real_rotation.vel = read_gyro();
 		integral_1ms(&real_rotation.dis, &real_rotation.vel); //角速度から角度に
 		//gyro
+		failsafe_accel = read_accel();
 
 		//encoder
 		real_L.vel = read_vel(LEFT); //mm/sec
@@ -52,18 +76,17 @@ void interrupt_1ms(void) {
 			log_sampling();
 		}
 
-////		if (angle_calibration_flag == 1) {
-////			angle_calibration_counter++;
-////			angle_calibration_integral += rotation_real.velocity;
-////			if(angle_calibration_counter==1000){
-////				angle_calibration_flag=0;
-////			}
-////		}
-//
-//		printf("test1\n");
-		if (moter_flag == 1) {
+		if (angle_calibration_flag == 1) {
+			angle_calibration_counter++;
+			angle_calibration_integral += real_rotation.vel;
+			if (angle_calibration_counter == 2000) {
+				angle_calibration_flag = 0;
+			}
+		}
+
+		if (moter_flag == 1 && failsafe_flag == 0) {
 			if (translation_parameter.run_flag == 1) {
-//			printf("test2\n");
+
 				control_accel(&ideal_translation, &translation_parameter, 0);
 			}
 			if (rotation_parameter.run_flag == 1) {
@@ -76,9 +99,9 @@ void interrupt_1ms(void) {
 					&translation_parameter, &duty, 0);
 			if (translation_parameter.back_rightturn_flag == 0
 					|| ideal_translation.vel > 100.0) {
-//				PID_control(&ideal_rotation, &real_rotation, &real_rotation,
-//						&rotation_deviation, &rotation_deviation,
-//						&rotation_gain, &rotation_parameter, &duty, 1);
+				PID_control(&ideal_rotation, &real_rotation, &real_rotation,
+						&rotation_deviation, &rotation_deviation,
+						&rotation_gain, &rotation_parameter, &duty, 1);
 			}
 			integral_ideal(&ideal_translation);
 
@@ -215,4 +238,24 @@ void adc_1ms(void) {
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));
 	Batt = (float) g_ADCBuffer[8] / 4095 * 3.3 * 2;
+}
+
+void failsafe(void) {
+	failsafe_flag = 1;
+	ideal_translation.accel = 0.0;
+	ideal_translation.vel = 0.0;
+	duty_to_moter();
+	set_buzzer(0, C_4, 300);
+	set_buzzer(1, 0, 300);
+	set_buzzer(2, D_4, 300);
+	set_buzzer(3, 0, 300);
+	set_buzzer(4, E_4, 300);
+	set_buzzer(5, 0, 300);
+	set_buzzer(6, F_4, 300);
+	x.now = 0;
+	y.now = 0;
+	direction = 0;
+
+	failsafe_flag = 1;
+	failsafe_counter = 0;
 }
