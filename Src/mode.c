@@ -46,7 +46,7 @@ void mode_2(void) {
 	wait_rotation();
 	HAL_Delay(100);
 	set_rotation(180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-		wait_rotation();
+	wait_rotation();
 //	moter_flag = 0;
 //	save_log_to_flash();
 }
@@ -93,7 +93,7 @@ void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
 void mode_6(void) {
 
 	run_gain.Kp = 0.6;
-	run_gain.Ki = 0.2;
+	run_gain.Ki = 0.15;
 	rotation_gain.Kp = 0.6;
 	rotation_gain.Ki = 0.003;
 	start_led();

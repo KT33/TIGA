@@ -14084,7 +14084,7 @@ void mode_2(void) {
  800593a:	eef0 0a67 	vmov.f32	s1, s15
  800593e:	ed9f 0a0c 	vldr	s0, [pc, #48]	; 8005970 <mode_2+0x98>
  8005942:	f001 f8fb 	bl	8006b3c <set_rotation>
-		wait_rotation();
+	wait_rotation();
  8005946:	f001 f9f3 	bl	8006d30 <wait_rotation>
 //	moter_flag = 0;
 //	save_log_to_flash();
@@ -14267,7 +14267,7 @@ void mode_6(void) {
  8005aa4:	4b0b      	ldr	r3, [pc, #44]	; (8005ad4 <mode_6+0x34>)
  8005aa6:	4a0c      	ldr	r2, [pc, #48]	; (8005ad8 <mode_6+0x38>)
  8005aa8:	601a      	str	r2, [r3, #0]
-	run_gain.Ki = 0.2;
+	run_gain.Ki = 0.15;
  8005aaa:	4b0a      	ldr	r3, [pc, #40]	; (8005ad4 <mode_6+0x34>)
  8005aac:	4a0b      	ldr	r2, [pc, #44]	; (8005adc <mode_6+0x3c>)
  8005aae:	605a      	str	r2, [r3, #4]
@@ -14297,7 +14297,7 @@ void mode_6(void) {
  8005ad2:	bd80      	pop	{r7, pc}
  8005ad4:	2000001c 	.word	0x2000001c
  8005ad8:	3f19999a 	.word	0x3f19999a
- 8005adc:	3e4ccccd 	.word	0x3e4ccccd
+ 8005adc:	3e19999a 	.word	0x3e19999a
  8005ae0:	20000010 	.word	0x20000010
  8005ae4:	3b449ba6 	.word	0x3b449ba6
  8005ae8:	2000066a 	.word	0x2000066a
