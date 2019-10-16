@@ -26,7 +26,6 @@ void mode_1(void) {
 //	moter_flag = 1;
 //	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
 
-
 	start_led();
 	log_start();
 	set_straight(90.0 * 2 * 3, 3500, 300, 0.0, 0.0);
@@ -39,7 +38,6 @@ void mode_1(void) {
 
 void mode_2(void) {
 
-
 	start_led();
 //	log_start();
 	adachi_search_run(x.goal, y.goal, 4, 3500, 300, 0, 0);
@@ -48,23 +46,21 @@ void mode_2(void) {
 void mode_3(void) { //253.558
 
 	start_led();
-	set_straight(90 * 5, 3500, 300, 0, 0);
-	wait_straight();
-	moter_flag = 0;
-	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1)
-		;
-	printf("x=%d,y=%d\n", x.now, y.now);
-	output_Walldata(ALL);
+	log_start();
+	go_entrance(nomal_run.accel, nomal_run.vel_search);
+	pass_180(nomal_run.accel, nomal_run.vel_search);
+	slalom_left90(nomal_run.accel, nomal_run.vel_search);
+	stop90(nomal_run.accel, nomal_run.vel_search);
+	save_log_to_flash();
 }
 
 void mode_4(void) {
 	start_led();
 	log_start();
-	set_rotation(180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
-	HAL_Delay(1000);
-	set_rotation(-180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
+	go_entrance(nomal_run.accel, nomal_run.vel_search);
+	pass_180(nomal_run.accel, nomal_run.vel_search);
+	slalom_right90(nomal_run.accel, nomal_run.vel_search);
+	stop90(nomal_run.accel, nomal_run.vel_search);
 	save_log_to_flash();
 }
 
@@ -72,20 +68,28 @@ void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
 
 	start_led();
 	log_start();
-	set_rotation(90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
+	set_rotation(-90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
 	wait_rotation();
 	HAL_Delay(1000);
-	set_rotation(-90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
+	set_rotation(90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
 	wait_rotation();
 	save_log_to_flash();
 }
 
 void mode_6(void) {
 
+	while(1){
+		mode=0;
+		duty.left=100;
+		duty.right=100
+;
+		duty_to_moter();
+	}
+
 	start_led();
 	log_start();
 //	moter_flag = 0;
-	while (failsafe_flag == 0){
+	while (failsafe_flag == 0) {
 
 	}
 
@@ -104,7 +108,6 @@ void mode_7(void) {
 //	while (failsafe_flag == 0) {
 //		printf("rot_Dev=%8.3f\n", rotation_deviation.cumulative);
 //	}
-
 
 	output_SEN();
 //	fan_on();

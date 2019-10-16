@@ -51,16 +51,6 @@ void wait_straight(void) {
 //LEFTEING = 1;
 //	printf("wait_st%6.2f\n", ideal_translation.vel);
 	while (translation_parameter.run_flag == 1 && failsafe_flag == 0) {
-//		printf("wait_st_while%6.2f\n", ideal_translation.vel);
-//		printf("ideal_vel=%4.2f,real_vel=%4.2f,deviation_now=%4.2f,duty=%d\n",
-//				ideal_translation.vel, real_L.vel, run_left_deviation.now,
-//				duty.left);
-
-//		printf("run_flag=%d\n", translation_parameter.run_flag);
-		//			printf("ac_dis=%4.2f,deac_dis=%4.2f,max_vel=%4.2f\n",
-//					trapezoid->acceldistance, trapezoid->deacceldistance,
-//					trapezoid->max_vel);
-//			printf("ideal_vel=%4.2f,ideal_dis=%4.2f\n",ideal->vel,ideal->dis);
 
 	}
 //LEFTFRONT = 1;
@@ -75,14 +65,7 @@ void wait_straight(void) {
 	run_right_deviation.difference = 0.0;
 	rotation_parameter.back_rightturn_flag = 0;
 
-	HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, SET);
 
-//	rotation_deviation.now = 0.0;
-//	rotation_deviation.cumulative = 0.0;
-
-//	duty.left = 0;
-//	duty.right = 0;
-//	duty_to_moter();
 }
 
 void wait_rotation(void) {
@@ -144,9 +127,7 @@ void trapezoid_preparation(trapezoid_t *trapezoid, float i_distance,
 		trapezoid->acceldistance = 0.0;
 		trapezoid->deacceldistance = 0.0;
 	}
-	printf("ac_dis=%4.2f,deac_dis=%4.2f,max_vel=%4.2f\n",
-			trapezoid->acceldistance, trapezoid->deacceldistance,
-			trapezoid->max_vel);
+
 }
 
 void duty_to_moter(void) {
@@ -196,6 +177,12 @@ void duty_to_moter(void) {
 }
 
 void control_accel(run_t *ideal, trapezoid_t *trapezoid, uint8_t rotation_flag) {
+	if (trapezoid->back_rightturn_flag == 1) {
+		ideal->dis *= -1.0;
+		ideal->vel *= -1.0;
+		ideal->accel*=-1.0;
+	}
+
 	if (ideal->dis < trapezoid->acceldistance) {
 //		UI_LED1 = 1;
 		if (ideal->vel < trapezoid->max_vel) {
@@ -219,6 +206,13 @@ void control_accel(run_t *ideal, trapezoid_t *trapezoid, uint8_t rotation_flag) 
 		ideal->accel = 0;
 		ideal->vel = trapezoid->end_vel;
 	}
+
+	if (trapezoid->back_rightturn_flag == 1) {
+		ideal->dis *= -1.0;
+		ideal->vel *= -1.0;
+		ideal->accel*=-1.0;
+	}
+
 //	printf("ideal_vel=%4.2f,ideal_dis=%4.2f\n", ideal->vel, ideal->dis);
 
 }
@@ -240,6 +234,10 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 		left->vel = right->vel;
 	}
 
+//	if (parameter->back_rightturn_flag == 1) {
+//		ideal->vel *= -1.0;
+//	}
+
 	left_deviation->now = (ideal->vel - left->vel);
 	right_deviation->now = (ideal->vel - right->vel);
 	if (rotation_flag == 0) {
@@ -258,10 +256,10 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 		duty_left = duty_left * -1;
 
 	}
-	if (parameter->back_rightturn_flag == 1) {
-		duty_left = duty_left * -1;
-		duty_right = duty_right * -1;
-	}
+//	if (parameter->back_rightturn_flag == 1) {
+//		duty_left = duty_left * -1;
+//		duty_right = duty_right * -1;
+//	}
 	duty->left += duty_left;
 	duty->right += duty_right;
 }
@@ -331,9 +329,9 @@ float read_vel(uint8_t RorL) {
 		vel *= -1;
 	}
 
-	if (translation_parameter.back_rightturn_flag == 1) { //バックするとき速度マイナスにするバカ
-		vel *= -1;
-	}
+//	if (translation_parameter.back_rightturn_flag == 1) { //バックするとき速度マイナスにするバカ
+//		vel *= -1;
+//	}
 
 	return vel;
 }

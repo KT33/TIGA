@@ -170,12 +170,12 @@ int main(void) {
 	run_gain.Kp = 0.6;
 	run_gain.Ki = 0.15;
 	rotation_gain.Kp = 0.41;
-	rotation_gain.Ki = 0.004;//3
+	rotation_gain.Ki = 0.005;//3
 	wall_cntrol_gain.Kp = 0.05;
 	wall_cntrol_gain.Kd = 0.0;
 
-	nomal_run.vel_search = 300.0;
-	nomal_run.accel = 3500.0;
+	nomal_run.vel_search = 280.0;
+	nomal_run.accel = 1000.0;
 	nomal_rotation.vel_search=750.0;
 	nomal_rotation.accel=1700.0;
 

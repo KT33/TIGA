@@ -164,9 +164,9 @@ float read_gyro(void) {
 	data_h = read_spi(0x37);
 	data_l = read_spi(0x38);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
-	if (rotation_parameter.back_rightturn_flag == 1) {
-		value = -1 * value;
-	}
+//	if (rotation_parameter.back_rightturn_flag == 1) {
+//		value = -1 * value;
+//	}
 	return (float) value * 0.0610370189 - angle_calibration; //*2000/(2^15-1) return deg/sec
 }
 
@@ -307,8 +307,8 @@ void log_sampling(void) {
 		mylog2.log_1[log_index] = real_rotation.dis;
 		mylog2.log_2[log_index] = ideal_rotation.dis;
 		mylog2.log_3[log_index] = rotation_deviation.cumulative;
-		mylog2.log_4[log_index] = 0;
-		mylog2.log_5[log_index] = 0;
+		mylog2.log_4[log_index] = run_left_deviation.cumulative;
+		mylog2.log_5[log_index] = run_right_deviation.cumulative;
 //		mylog.log_1[log_index] = test_L;
 //		mylog.log_2[log_index] = test_R;
 //		mylog.log_3[log_index] = test_L2;
@@ -350,10 +350,8 @@ void log_output(void) {
 
 void start_led(void) {
 	SEN_check_flag = 1;
-	while (SEN_R.now < SEN_R.reference + 600
-			&& SEN_RF.now < SEN_RF.reference + 600
-			&& SEN_L.now < SEN_L.reference + 600
-			&& SEN_LF.now < SEN_LF.reference + 600) {
+	while (SEN_R.now < 1000 || SEN_RF.now < 1000 ){
+//			||SEN_L.now < 1000&& SEN_LF.now < 1000) {
 
 	}
 	set_buzzer(0, C_5, 800);

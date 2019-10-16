@@ -35,8 +35,8 @@ void interrupt_1ms(void) {
 //ADC
 
 //failsafe判定 //|| failsafe_accel > 3.0  real_R.vel > 2000.0 || real_L.vel > 2000.0||
-	if ((rotation_deviation.cumulative > 20000.0//200000
-			|| rotation_deviation.cumulative < -20000.0)
+	if ((rotation_deviation.cumulative > 20000.0 //200000
+	|| rotation_deviation.cumulative < -20000.0)
 			&& translation_parameter.back_rightturn_flag == 0
 			&& failsafe_flag == 0) { //|| failsafe_accel > 39.2
 		failsafe();
@@ -87,7 +87,7 @@ void interrupt_1ms(void) {
 
 		wall_control();
 
-//		wallcontrol_value=0.0;
+//		wallcontrol_value = 0.0;
 
 		if (moter_flag == 1 && failsafe_flag == 0) {
 
@@ -103,7 +103,7 @@ void interrupt_1ms(void) {
 					&run_left_deviation, &run_right_deviation, &run_gain,
 					&translation_parameter, &duty, 0);
 			if (translation_parameter.back_rightturn_flag == 0
-					|| ideal_translation.vel > 100.0) {
+					|| ideal_translation.vel > 50.0) {
 				PID_control(&ideal_rotation, &real_rotation, &real_rotation,
 						&rotation_deviation, &rotation_deviation,
 						&rotation_gain, &rotation_parameter, &duty, 1);
@@ -113,10 +113,10 @@ void interrupt_1ms(void) {
 			duty_to_moter();
 		}
 
-		if(moter_flag==0){
-//			duty.left=0;
-//			duty.right=0;
-//			duty_to_moter();
+		if (moter_flag == 0) {
+			duty.left=0;
+			duty.right=0;
+			duty_to_moter();
 		}
 
 	} else { //mode_out モード選択

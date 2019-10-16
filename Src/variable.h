@@ -11,7 +11,7 @@
 #include "stdint.h"
 #include "stdio.h"
 
-#define DIAMETER 12.2
+#define DIAMETER 12.44
 
 typedef struct {
 	int now; //今の値
@@ -175,9 +175,6 @@ extern uint8_t goal_x, goal_y;
 extern char flag;
 extern uint8_t special_goal_flag;
 extern uint8_t u_turn_counter;
-extern slarom_para_t slarom_500;
-extern slarom_para_t slarom_600;
-extern slarom_para_t slarom_700;
 extern float oblique_front_box;
 extern float oblique_side_box;
 extern float oblique_offset_front;

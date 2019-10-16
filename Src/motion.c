@@ -253,25 +253,11 @@ void non_ketuate_goal(float accel, float vel) {
 
 void slalom_left90(float run_accel, float run_vel) {
 	float rota_accel, rota_vel, in_offset, out_offset, angle_offset = 0.0;
-	if (run_vel == 500.0) {
-		rota_accel = slarom_500.accel;
-		rota_vel = slarom_500.max_vel;
-		in_offset = slarom_500.left.in_offset;
-		out_offset = slarom_500.left.out_offset;
-	} else if (run_vel == 600.0) {
-		rota_accel = slarom_600.accel;
-		rota_vel = slarom_600.max_vel;
-		in_offset = slarom_600.left.in_offset + 1.0;
-		out_offset = slarom_600.left.out_offset;
-		angle_offset = 1.0;
-	} else if (run_vel == 700.0) {
-		rotation_gain.Kp = 0.60;
-		rotation_gain.Ki = 0.005;
-		rota_accel = slarom_700.accel;
-		rota_vel = slarom_700.max_vel;
-		in_offset = slarom_700.left.in_offset;
-		out_offset = slarom_700.left.out_offset;
-		angle_offset = -0.0;
+	if (run_vel == 280.0) {
+		rota_accel = 1700;
+		rota_vel = 750;
+		in_offset = 7;
+		out_offset = 17;
 	}
 	set_straight(in_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();
@@ -286,26 +272,11 @@ void slalom_left90(float run_accel, float run_vel) {
 void slalom_right90(float run_accel, float run_vel) {
 	float rota_accel, rota_vel, in_offset, out_offset;
 	float angle_offset = 0.0;
-	if (run_vel == 500.0) {
-		rota_accel = slarom_500.accel;
-		rota_vel = slarom_500.max_vel;
-		in_offset = slarom_500.right.in_offset;
-		out_offset = slarom_500.right.out_offset;
-		angle_offset = 1.0;
-	} else if (run_vel == 600.0) {
-		rota_accel = slarom_600.accel;
-		rota_vel = slarom_600.max_vel;
-		in_offset = slarom_600.right.in_offset - 2.0;
-		out_offset = slarom_600.right.out_offset + 3.0;
-		angle_offset = 2.0;
-	} else if (run_vel == 700.0) {
-		rotation_gain.Kp = 0.62;
-		rotation_gain.Ki = 0.002;
-		rota_accel = slarom_700.accel;
-		rota_vel = slarom_700.max_vel;
-		in_offset = slarom_700.right.in_offset;
-		out_offset = slarom_700.right.out_offset;
-		angle_offset = -0.0;
+	if (run_vel == 280.0) {
+		rota_accel = 1700;
+		rota_vel = 750;
+		in_offset = 7;
+		out_offset = 17;
 	}
 	set_straight(in_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();
