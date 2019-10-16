@@ -25,7 +25,6 @@ uint8_t low_batt_flag = 0;
 float before_en_val[2] = { 0, 0 };
 run_t real_R, real_L, real_rotation;
 run_t ideal_translation, ideal_rotation;
-uint8_t wall_control_flag;
 trapezoid_t translation_parameter, rotation_parameter;
 uint8_t failsafe_flag = 0;
 deviation_t run_right_deviation;
@@ -42,7 +41,7 @@ gain_t run_gain = { 0.8, 0.4, 0.0 }; //p,i,d
 LOG_t mylog, mylog2;
 uint16_t log_index = 0, log_how_often = 0, log_often_count = 0;
 uint8_t log_flag = 0;
-float test_L, test_R, test_L2, test_R2;
+float test_L, test_R, test_L2, test_R2,test_float;
 float en_L_table[34] = { 1.009998433, 1.007563172, 1.004827295, 1.001972749,
 		0.999229336, 0.99687471, 0.99523438, 0.995031825, 0.99550266,
 		0.997374733, 0.999754893, 1.001993126, 1.003682556, 1.004659447,
@@ -59,5 +58,20 @@ uint16_t angle_calibration_counter;
 float angle_calibration_integral = 0.0;
 float failsafe_accel = 0.0;
 normal_para_t nomal_run = { 300.0, 300.0, 20.0, 3500.0 }; //search,max,min,accel
-normal_para_t nomal_rotation = { 750.0, 670.0, 0.0, 2500.0 }; //deg/sec //400.0, 400.0, 0.0, 500.0
+normal_para_t nomal_rotation = { 750.0, 670.0, 0.0, 1700.0 }; //deg/sec //400.0, 400.0, 0.0, 500.0
+uint8_t wall_control_oblique_flag=0,wall_control_flag=0;
+gain_t wall_cntrol_gain; //0.046
+float oblique_Front_gain = 0.6; //0.6
+float oblique_Side_gain = 0.01; //0.1
+uint8_t goal_x,goal_y;
+char flag;
+uint8_t special_goal_flag=0;
+uint8_t u_turn_counter=0;
+slarom_para_t slarom_500 = { 7000.0, 6000.0, { 15.0, 35.0 }, { 15.0, 22.0 } };
+slarom_para_t slarom_600 = { 12500.0, 6000.0, { 18.0, 45.0 }, { 21.0, 38.0 } };
+slarom_para_t slarom_700 = { 15000.0, 3600.0, { 8.0, 46.0 }, { 8.0, 39.0 } };
+float oblique_front_box;
+float oblique_side_box;
+float oblique_offset_front=1.0;
+float oblique_offset_side=1.0;
 

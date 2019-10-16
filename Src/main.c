@@ -124,6 +124,11 @@ int main(void) {
 	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, SET);
 	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, SET);
 	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, SET);
+	clear_Map(&walldata.real);
+	clear_Map(&walldata.checked);
+	clear_adachiMap(&walldata.adachi);
+
+	HAL_Delay(10);
 	Battery_Check();
 
 	/* USER CODE END 2 */
@@ -131,9 +136,9 @@ int main(void) {
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	u_int16_t i, j;
-	uint8_t test = 1;
+//	uint8_t test = 1;
 //	float pi = 3.14;
-	uint16_t en_test = 1234;
+
 //	walldata.real.column[1]++;
 
 //	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
@@ -146,16 +151,43 @@ int main(void) {
 		printf("i=%d,pari=%d\n", i, check_parity(i));
 	}
 
-
 //	output_Walldata(REAL);
-	mode=0;
-	mode_select_dis=10;
+	mode = 0;
+	mode_select_dis = 10;
 
-	SEN_R.reference=680;
-	SEN_R.threshold=250;
-	SEN_RF.reference=473;
-	SEN_RF.threshold=247;
+	SEN_R.reference = 436;
+	SEN_R.threshold = 120;
+	SEN_RF.reference = 350;
+	SEN_RF.threshold = 88;
+	SEN_L.reference = 456;
+	SEN_L.threshold = 11;
+	SEN_LF.reference = 535;
+	SEN_LF.threshold = 268;
+
+	SEN_F.threshold = (int) (SEN_RF.threshold + SEN_LF.threshold) / 2;
+	SEN_F.reference = (int) (SEN_RF.reference + SEN_LF.reference) / 2;
+
+	run_gain.Kp = 0.6;
+	run_gain.Ki = 0.15;
+	rotation_gain.Kp = 0.41;
+	rotation_gain.Ki = 0.004;//3
+	wall_cntrol_gain.Kp = 0.05;
+	wall_cntrol_gain.Kd = 0.0;
+
+	nomal_run.vel_search = 300.0;
+	nomal_run.accel = 3500.0;
+	nomal_rotation.vel_search=750.0;
+	nomal_rotation.accel=1700.0;
+
+	x.goal = 4;
+	y.goal = 0;
 	while (1) {
+//		while (1) {
+//			set_led(2);
+//			HAL_Delay(500);
+//			set_led(5);
+//			HAL_Delay(500);
+//		}
 
 //		printf("mode:sel_dis=%3.2f,vel=%3.2f\n", mode_select_dis, real_R.vel);
 //		printf("R=%8.2f,	L=%8.2f\n",test_R,test_L);
@@ -187,8 +219,6 @@ int main(void) {
 			go_mode();
 		}
 		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
-
-
 
 //		if (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 0) {
 //			mode++;

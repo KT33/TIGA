@@ -35,9 +35,10 @@ void interrupt_1ms(void) {
 //ADC
 
 //failsafe判定 //|| failsafe_accel > 3.0  real_R.vel > 2000.0 || real_L.vel > 2000.0||
-	if ((rotation_deviation.cumulative > 200000.0
-			|| rotation_deviation.cumulative < -200000.0)
-			&& translation_parameter.back_rightturn_flag == 0&&failsafe_flag==0) { //|| failsafe_accel > 39.2
+	if ((rotation_deviation.cumulative > 20000.0//200000
+			|| rotation_deviation.cumulative < -20000.0)
+			&& translation_parameter.back_rightturn_flag == 0
+			&& failsafe_flag == 0) { //|| failsafe_accel > 39.2
 		failsafe();
 //		printf("R_vel=%6.2f,L_vel=%6.2f,rot_dev=%9.2f,acc=%5.2f\n", real_R.vel,
 //				real_L.vel, rotation_deviation.cumulative, failsafe_accel);
@@ -84,9 +85,13 @@ void interrupt_1ms(void) {
 			}
 		}
 
-		if (moter_flag == 1 && failsafe_flag == 0) {
-			if (translation_parameter.run_flag == 1) {
+		wall_control();
 
+//		wallcontrol_value=0.0;
+
+		if (moter_flag == 1 && failsafe_flag == 0) {
+
+			if (translation_parameter.run_flag == 1) {
 				control_accel(&ideal_translation, &translation_parameter, 0);
 			}
 			if (rotation_parameter.run_flag == 1) {
@@ -106,6 +111,12 @@ void interrupt_1ms(void) {
 			integral_ideal(&ideal_translation);
 
 			duty_to_moter();
+		}
+
+		if(moter_flag==0){
+//			duty.left=0;
+//			duty.right=0;
+//			duty_to_moter();
 		}
 
 	} else { //mode_out モード選択
@@ -169,8 +180,8 @@ void adc_1ms(void) {
 	SEN_RF_log.before_2ms = SEN_RF_log.before_1ms;
 	SEN_RF_log.before_1ms = SEN_RF_log.now;
 	SEN_RF_log.now = SEN_RF.now;
-	SEN_RF.diff_1ms = SEN_RF_log.before_1ms;
-	SEN_RF.diff = SEN_RF_log.before_3ms;
+	SEN_RF.diff_1ms = SEN_RF_log.now - SEN_RF_log.before_1ms;
+	SEN_RF.diff = SEN_RF_log.now - SEN_RF_log.before_3ms;
 
 	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, 0);
 	for (uint8_t i = 0; i < 100; i++)
@@ -190,8 +201,8 @@ void adc_1ms(void) {
 	SEN_L_log.before_2ms = SEN_L_log.before_1ms;
 	SEN_L_log.before_1ms = SEN_L_log.now;
 	SEN_L_log.now = SEN_L.now;
-	SEN_L.diff_1ms = SEN_L_log.before_1ms;
-	SEN_L.diff = SEN_L_log.before_3ms;
+	SEN_L.diff_1ms = SEN_L_log.now - SEN_L_log.before_1ms;
+	SEN_L.diff = SEN_L_log.now - SEN_L_log.before_3ms;
 
 	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, 0);
 	for (uint8_t i = 0; i < 100; i++)
@@ -211,8 +222,8 @@ void adc_1ms(void) {
 	SEN_R_log.before_2ms = SEN_R_log.before_1ms;
 	SEN_R_log.before_1ms = SEN_R_log.now;
 	SEN_R_log.now = SEN_R.now;
-	SEN_R.diff_1ms = SEN_R_log.before_1ms;
-	SEN_R.diff = SEN_R_log.before_3ms;
+	SEN_R.diff_1ms = SEN_R_log.now - SEN_R_log.before_1ms;
+	SEN_R.diff = SEN_R_log.now - SEN_R_log.before_3ms;
 
 	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, 0);
 	for (uint8_t i = 0; i < 100; i++)
@@ -234,6 +245,8 @@ void adc_1ms(void) {
 	SEN_LF_log.now = SEN_LF.now;
 	SEN_LF.diff_1ms = SEN_LF_log.before_1ms;
 	SEN_LF.diff = SEN_LF_log.before_3ms;
+
+	SEN_F.now = (int) ((SEN_RF.now + SEN_LF.now) / 2);
 
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));

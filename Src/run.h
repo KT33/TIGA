@@ -28,5 +28,8 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 float read_vel(uint8_t RorL);
 void integral_1ms(float* dis, float*vel);
 void integral_ideal(run_t *ideal);
+void wall_control(void);
+void coordinate(void);
+
 
 #endif /* RUN_H_ */

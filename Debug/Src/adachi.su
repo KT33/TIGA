@@ -1,0 +1,17 @@
+adachi.c:25:6:queue_pop	32	static
+adachi.c:37:6:queue_push	24	static
+adachi.c:48:6:adachi_map	544	static
+adachi.c:213:6:adachi_map_straight	544	static
+adachi.c:337:6:adachi_search_run	120	static
+adachi.c:458:9:how_to_move	32	static
+adachi.c:513:9:how_to_move_pass	32	static
+adachi.c:583:6:right_hand	24	static
+adachi.c:609:6:adachi_search_run_known	120	static
+adachi.c:737:9:how_to_move_search_known	112	static
+adachi.c:811:6:search_run_special	40	static
+adachi.c:887:10:make_temporary_goal_XY	112	static
+adachi.c:958:9:how_to_move_special	32	static
+adachi.c:1022:6:adachi_special_move	120	static
+adachi.c:1146:9:check_flag	24	static
+adachi.c:1165:6:stop_move	16	static
+adachi.c:1203:6:adachi_map_special	552	static

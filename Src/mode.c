@@ -9,108 +9,102 @@
 #include "run.h"
 #include "walldata.h"
 #include "other.h"
+#include "motion.h"
+#include "adachi.h"
 
 void mode_0(void) {
-	uint8_t i;
+//	uint8_t i;
 	read_all_log_from_flash();
 	log_output();
+
+//	read_all_walldata();
+//	adachi_map(x.goal, y.goal, 4, walldata.real);
+//	output_Walldata(REAL);
 }
 
 void mode_1(void) {
 //	moter_flag = 1;
 //	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
-	run_gain.Kp = 0.6;
-	run_gain.Ki = 0.15;
-	rotation_gain.Kp = 0.6;
-	rotation_gain.Ki = 0.003;
+
+
 	start_led();
 	log_start();
-	set_straight(90.0, 3500, 300, 0.0, 0.0);
+	set_straight(90.0 * 2 * 3, 3500, 300, 0.0, 0.0);
 	wait_straight();
-	set_straight(90.0, 3500, 300, 0.0, 0.0);
-	wait_straight();
-//	moter_flag = 0;
-//	save_log_to_flash();
+//	set_straight(90.0, 3500, 300, 0.0, 0.0);
+//	wait_straight();
+	moter_flag = 0;
+	save_log_to_flash();
 }
 
 void mode_2(void) {
-//	moter_flag = 1;
-//	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
-	run_gain.Kp = 0.6;
-	run_gain.Ki = 0.15;
-	rotation_gain.Kp = 0.6;
-	rotation_gain.Ki = 0.003;
+
+
 	start_led();
-	log_start();
-	set_rotation(-180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
-	HAL_Delay(100);
-	set_rotation(180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
-//	moter_flag = 0;
-//	save_log_to_flash();
+//	log_start();
+	adachi_search_run(x.goal, y.goal, 4, 3500, 300, 0, 0);
 }
 
 void mode_3(void) { //253.558
-	run_gain.Kp = 0.6;
-	run_gain.Ki = 0.15;
-	rotation_gain.Kp = 0.6;
-	rotation_gain.Ki = 0.003;
+
 	start_led();
-	log_start();
-	set_rotation(-90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
-	HAL_Delay(100);
-	set_rotation(90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
+	set_straight(90 * 5, 3500, 300, 0, 0);
+	wait_straight();
+	moter_flag = 0;
+	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1)
+		;
+	printf("x=%d,y=%d\n", x.now, y.now);
+	output_Walldata(ALL);
 }
 
 void mode_4(void) {
+	start_led();
 	log_start();
-	while (log_flag) {
-		duty.left = 60;
-		duty.right = 60;
-		duty_to_moter();
-	}
-	duty.left = 0;
-	duty.right = 0;
-
+	set_rotation(180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
+	wait_rotation();
+	HAL_Delay(1000);
+	set_rotation(-180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
+	wait_rotation();
 	save_log_to_flash();
 }
 
 void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
 
-	run_gain.Kp = 0.6;
-	run_gain.Ki = 0.2;
-	rotation_gain.Kp = 0.6;
-	rotation_gain.Ki = 0.005;
 	start_led();
-	moter_flag = 1;
-	while (failsafe_flag == 0)
-		;
+	log_start();
+	set_rotation(90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
+	wait_rotation();
+	HAL_Delay(1000);
+	set_rotation(-90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
+	wait_rotation();
+	save_log_to_flash();
 }
 
 void mode_6(void) {
 
-	run_gain.Kp = 0.6;
-	run_gain.Ki = 0.15;
-	rotation_gain.Kp = 0.6;
-	rotation_gain.Ki = 0.003;
 	start_led();
-	moter_flag = 1;
-	while (failsafe_flag == 0)
-		;
+	log_start();
+//	moter_flag = 0;
+	while (failsafe_flag == 0){
+
+	}
+
+	log_flag = 0;
+	moter_flag = 0;
+
+	save_log_to_flash();
 }
 
 void mode_7(void) {
-	start_led();
-	run_gain.Kp = 0.6;
-	run_gain.Ki = 0.2;
-	rotation_gain.Kp = 0.0;
-	rotation_gain.Ki = 0.001;
-	while (failsafe_flag == 0) {
-		printf("rot_Dev=%8.3f\n", rotation_deviation.cumulative);
-	}
+//	start_led();
+//	run_gain.Kp = 0.6;
+//	run_gain.Ki = 0.2;
+//	rotation_gain.Kp = 0.0;
+//	rotation_gain.Ki = 0.001;
+//	while (failsafe_flag == 0) {
+//		printf("rot_Dev=%8.3f\n", rotation_deviation.cumulative);
+//	}
+
 
 	output_SEN();
 //	fan_on();

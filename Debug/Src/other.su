@@ -15,10 +15,10 @@ other.c:173:7:read_accel	24	static
 other.c:182:10:check_parity	16	static
 other.c:190:10:read_spi_en	32	static
 other.c:209:6:write_spi_en	40	static
-other.c:233:6:Battery_Check	24	static
-other.c:264:6:set_led	16	static
-other.c:287:6:log_start	4	static
-other.c:294:6:log_sampling	4	static
-other.c:318:6:log_output	32	static
-other.c:339:6:start_led	8	static
-other.c:361:6:output_SEN	16	static
+other.c:233:6:Battery_Check	8	static
+other.c:266:6:set_led	16	static
+other.c:289:6:log_start	4	static
+other.c:296:6:log_sampling	4	static
+other.c:330:6:log_output	32	static
+other.c:351:6:start_led	8	static
+other.c:378:6:output_SEN	48	static

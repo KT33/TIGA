@@ -165,13 +165,13 @@ void init_walldata(void) {
 }
 
 void output_Walldata(uint8_t i) {
-	if (i == 1 || i == 2) {
+	if (i == ALL || i == REAL) {
 		read_Walldata(&walldata.real);
 	}
-	if (i == 1 || i == 3) {
+	if (i == ALL || i == CHECK) {
 		read_Walldata(&walldata.checked);
 	}
-	if (i == 1 || i == 4) {
+	if (i == ALL || i == ADACHI) {
 		read_Walldata(&walldata.adachi);
 	}
 }

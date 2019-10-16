@@ -108,6 +108,18 @@ typedef struct {
 	float log_5[LOG_MAX];
 } LOG_t;
 
+typedef struct{
+	float in_offset;
+	float out_offset;
+}sla_t;
+
+typedef struct{
+	float accel;
+	float max_vel;
+	sla_t left;
+	sla_t right;
+}slarom_para_t;
+
 extern uint16_t g_ADCBuffer[9];
 extern float Batt;
 extern uint16_t g_test;
@@ -124,10 +136,9 @@ extern buzzer_t buzzer[30];
 extern uint8_t buzzer_index, buzzer_flag;
 extern uint8_t low_batt_flag;
 extern float before_en_val[2];
-extern SENLOG_t en_log_L,en_log_R;
+extern SENLOG_t en_log_L, en_log_R;
 extern run_t real_R, real_L, real_rotation;
 extern run_t ideal_translation, ideal_rotation;
-extern uint8_t wall_control_flag;
 extern trapezoid_t translation_parameter, rotation_parameter;
 extern deviation_t rotation_deviation;
 extern uint8_t failsafe_flag;
@@ -144,8 +155,8 @@ extern gain_t rotation_gain;
 extern LOG_t mylog, mylog2;
 extern uint16_t log_index, log_how_often, log_often_count;
 extern uint8_t log_flag;
-extern float test_L, test_R,test_L2, test_R2;
-extern float en_L_table[34] ;
+extern float test_L, test_R, test_L2, test_R2, test_float;
+extern float en_L_table[34];
 extern float LPF[6];
 extern float angle_calibration;
 extern uint8_t angle_calibration_flag;
@@ -156,6 +167,21 @@ extern uint16_t failsafe_counter;
 extern float failsafe_accel;
 extern normal_para_t nomal_run;
 extern normal_para_t nomal_rotation;
+extern uint8_t wall_control_oblique_flag, wall_control_flag;
+extern gain_t wall_cntrol_gain;
+extern float oblique_Front_gain; //0.6
+extern float oblique_Side_gain; //0.1
+extern uint8_t goal_x, goal_y;
+extern char flag;
+extern uint8_t special_goal_flag;
+extern uint8_t u_turn_counter;
+extern slarom_para_t slarom_500;
+extern slarom_para_t slarom_600;
+extern slarom_para_t slarom_700;
+extern float oblique_front_box;
+extern float oblique_side_box;
+extern float oblique_offset_front;
+extern float oblique_offset_side;
 
 
 #define North 0

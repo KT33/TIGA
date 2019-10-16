@@ -164,8 +164,8 @@ float read_gyro(void) {
 	data_h = read_spi(0x37);
 	data_l = read_spi(0x38);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
-	if(rotation_parameter.back_rightturn_flag==1){
-		value=-1*value;
+	if (rotation_parameter.back_rightturn_flag == 1) {
+		value = -1 * value;
 	}
 	return (float) value * 0.0610370189 - angle_calibration; //*2000/(2^15-1) return deg/sec
 }
@@ -241,14 +241,16 @@ void Battery_Check(void) {
 	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, SET);
 	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, SET);
 
-	HAL_Delay(100);
-	for (uint8_t i = 0; i < 9; i++) {
-		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
-				sizeof(g_ADCBuffer) / sizeof(uint16_t));
-	}
+	SEN_check_flag = 1;
 	HAL_Delay(10);
-	Batt = (float) g_ADCBuffer[8] / 4095 * 3.3 * 2;
-	printf("%4.2f\n", Batt);
+	SEN_check_flag = 0;
+//	for (uint8_t i = 0; i < 9; i++) {
+//		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
+//				sizeof(g_ADCBuffer) / sizeof(uint16_t));
+//	}
+
+//	Batt = (float) g_ADCBuffer[8] / 4095 * 3.3 * 2;
+//	printf("%4.2f\n", Batt);
 
 	if ((Batt < 3.72 && Batt > 3.35) || (Batt < 3.25)) { //7.7
 		while (1) {
@@ -300,13 +302,23 @@ void log_sampling(void) {
 		mylog.log_1[log_index] = real_L.vel;
 		mylog.log_2[log_index] = real_R.vel;
 		mylog.log_3[log_index] = ideal_translation.vel;
-		mylog.log_4[log_index] = run_left_deviation.cumulative;
-		mylog.log_5[log_index] = run_right_deviation.cumulative;
-		mylog2.log_1[log_index] = (real_L.dis + real_R.dis) / 2;
-		mylog2.log_2[log_index] = ideal_translation.dis;
-		mylog2.log_3[log_index] = real_rotation.vel;
-		mylog2.log_4[log_index] = angle_calibration_integral;
-		mylog2.log_5[log_index] = angle_calibration;
+		mylog.log_4[log_index] = real_rotation.vel;
+		mylog.log_5[log_index] = ideal_rotation.vel;
+		mylog2.log_1[log_index] = real_rotation.dis;
+		mylog2.log_2[log_index] = ideal_rotation.dis;
+		mylog2.log_3[log_index] = rotation_deviation.cumulative;
+		mylog2.log_4[log_index] = 0;
+		mylog2.log_5[log_index] = 0;
+//		mylog.log_1[log_index] = test_L;
+//		mylog.log_2[log_index] = test_R;
+//		mylog.log_3[log_index] = test_L2;
+//		mylog.log_4[log_index] = test_R2;
+//		mylog.log_5[log_index] = 0;
+//		mylog2.log_1[log_index] = SEN_L.now;
+//		mylog2.log_2[log_index] = SEN_R.now;
+//		mylog2.log_3[log_index] = SEN_F.now;
+//		mylog2.log_4[log_index] = test_float;
+//		mylog2.log_5[log_index] = 0;
 
 		log_index++;
 		log_often_count = 0;
@@ -320,16 +332,16 @@ void log_output(void) {
 	SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
 	for (uint16_t i = 0; i < LOG_MAX; i++) {
 		printf(",");
-		printf("%4.2f,", mylog.log_1[i]);
-		printf("%4.2f,", mylog.log_2[i]);
-		printf("%4.2f,", mylog.log_3[i]);
-		printf("%4.2f,", mylog.log_4[i]);
-		printf("%4.2f,", mylog.log_5[i]);
-		printf("%4.2f,", mylog2.log_1[i]);
-		printf("%4.2f,", mylog2.log_2[i]);
-		printf("%4.2f,", mylog2.log_3[i]);
-		printf("%4.2f,", mylog2.log_4[i]);
-		printf("%4.2f,", mylog2.log_5[i]);
+		printf("%8.2f,", mylog.log_1[i]);
+		printf("%8.2f,", mylog.log_2[i]);
+		printf("%8.2f,", mylog.log_3[i]);
+		printf("%8.2f,", mylog.log_4[i]);
+		printf("%8.2f,", mylog.log_5[i]);
+		printf("%8.2f,", mylog2.log_1[i]);
+		printf("%8.2f,", mylog2.log_2[i]);
+		printf("%8.2f,", mylog2.log_3[i]);
+		printf("%8.2f,", mylog2.log_4[i]);
+		printf("%8.2f,", mylog2.log_5[i]);
 		printf("\n");
 	}
 	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
@@ -338,11 +350,14 @@ void log_output(void) {
 
 void start_led(void) {
 	SEN_check_flag = 1;
-	while (SEN_R.now < SEN_R.threshold && SEN_RF.now < SEN_RF.threshold) {
+	while (SEN_R.now < SEN_R.reference + 600
+			&& SEN_RF.now < SEN_RF.reference + 600
+			&& SEN_L.now < SEN_L.reference + 600
+			&& SEN_LF.now < SEN_LF.reference + 600) {
 
 	}
 	set_buzzer(0, C_5, 800);
-	log_start();
+//	log_start();
 
 	angle_calibration_integral = 0.0;
 	angle_calibration = 0.0;
@@ -352,10 +367,12 @@ void start_led(void) {
 
 	}
 	angle_calibration = angle_calibration_integral / 2000.0;
-	moter_flag = 1;
+	real_rotation.dis = 0.0;
+	ideal_translation.vel = 0.0;
 
 	rotation_deviation.cumulative = 0;
 	set_buzzer(0, E_5, 800);
+	moter_flag = 1;
 }
 
 void output_SEN(void) {
@@ -363,6 +380,9 @@ void output_SEN(void) {
 	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1) {
 		printf("LF=%5d,L=%5d,R=%5d,RF=%5d\n", SEN_LF.now, SEN_L.now, SEN_R.now,
 				SEN_RF.now);
+		printf("%5d,%5d,%5d,%5d,%5d,%5d,%5d,%5d,%5d\n", g_ADCBuffer[0],
+				g_ADCBuffer[1], g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4],
+				g_ADCBuffer[5], g_ADCBuffer[6], g_ADCBuffer[7], g_ADCBuffer[8]);
 		HAL_Delay(100);
 	}
 	SEN_check_flag = 0;

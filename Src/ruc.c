@@ -20,10 +20,10 @@ void set_straight(float i_distance, float accel, float max_vel, float strat_vel,
 	}
 	translation_parameter.run_flag = 1;
 	ideal_translation.vel = translation_parameter.strat_vel;
-
 }
 
 void set_rotation(float i_angle, float accel, float max_vel, float center_vel) {
+	rotation_parameter.back_rightturn_flag = 0;
 	trapezoid_preparation(&rotation_parameter, i_angle, accel, max_vel, 0.0,
 			0.0);
 
@@ -96,7 +96,7 @@ void wait_rotation(void) {
 	ideal_rotation.accel = 0.0;
 	ideal_rotation.dis = 0.0;
 	ideal_rotation.vel = 0.0;
-	rotation_parameter.back_rightturn_flag = 0;
+//	rotation_parameter.back_rightturn_flag = 0;
 	rotation_deviation.now = 0.0;
 //	rotation_deviation.cumulative = 0.0;
 //	duty.left = 0;
@@ -182,10 +182,14 @@ void duty_to_moter(void) {
 
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty_right); //MOTER_R
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, duty_left); //MOTER_L
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+	if (duty_left == 0 && duty_right == 0) {
+
+	} else {
+		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty_right); //MOTER_R
+		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, duty_left); //MOTER_L
+		HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+		HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+	}
 
 	duty.left = 0;
 	duty.right = 0;
@@ -231,7 +235,6 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 	left->vel = (left->vel + right->vel) / 2;
 	right->vel = left->vel;
 
-
 	if (rotation_flag == 1) {
 		right->vel += wallcontrol_value;
 		left->vel = right->vel;
@@ -242,9 +245,9 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 	if (rotation_flag == 0) {
 		left_deviation->cumulative += left_deviation->now;
 		right_deviation->cumulative += right_deviation->now;
-	}else if(rotation_flag==1){
-		left_deviation->cumulative+=left_deviation->now;
-		right_deviation->cumulative=left_deviation->cumulative;
+	} else if (rotation_flag == 1) {
+		left_deviation->cumulative += left_deviation->now;
+		right_deviation->cumulative = left_deviation->cumulative;
 	}
 	duty_left = (int) left_deviation->now * Kp
 			+ left_deviation->cumulative * Ki;
@@ -268,7 +271,7 @@ float read_vel(uint8_t RorL) {
 	uint16_t val;
 	float val2;
 	float val_cor;
-	uint8_t table_index;
+//	uint8_t table_index;
 	uint8_t i;
 	for (i = 0; i < 50; i++)
 		;
@@ -286,7 +289,7 @@ float read_vel(uint8_t RorL) {
 	en_log_L.before_1ms = en_log_L.now;
 	en_log_L.now = val;
 
-	table_index = val / 500;
+//	table_index = val / 500;
 	if (RorL == LEFT) {
 //		val_cor =
 //				(en_L_table[table_index]
@@ -325,6 +328,10 @@ float read_vel(uint8_t RorL) {
 	vel = ((float) (val2)) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
 
 	if (RorL == LEFT) {
+		vel *= -1;
+	}
+
+	if (translation_parameter.back_rightturn_flag == 1) { //バックするとき速度マイナスにするバカ
 		vel *= -1;
 	}
 
@@ -377,3 +384,121 @@ void integral_ideal(run_t *ideal) {
 	ideal->dis += ideal->vel * 0.001 + ideal->accel * 0.001 * 0.001 / 2;
 }
 
+void wall_control(void) {
+	test_L = (float) SEN_L.diff;
+	test_R = (float) SEN_R.diff;
+	test_L2 = (float) SEN_F.reference;
+
+	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) {
+		test_R2 = 1;
+		if (((ideal_translation.vel) > 100.0) && (SEN_L.diff < 15 * 10)
+				&& (SEN_R.diff < 15 * 10)
+				&& (SEN_F.now < SEN_F.reference * 10)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
+			test_R2 = 2;
+			if (SEN_L.now > SEN_L.threshold && SEN_R.now > SEN_R.threshold) {
+				test_R2 = 3;
+				wallcontrol_value = wall_cntrol_gain.Kp
+						* (((float) SEN_L.now - (float) SEN_L.reference)
+								- ((float) SEN_R.now - (float) SEN_R.reference))
+						+ wall_cntrol_gain.Kd
+								* (float) (SEN_L.diff_1ms - SEN_R.diff_1ms);
+				set_led(5);
+			} else if (SEN_L.now < SEN_L.threshold
+					&& SEN_R.now > SEN_R.threshold) {
+				test_R2 = 4;
+				wallcontrol_value = -2.0 * wall_cntrol_gain.Kp
+						* ((float) SEN_R.now - (float) SEN_R.reference)
+						+ wall_cntrol_gain.Kd * (float) (-2 * SEN_R.diff_1ms);
+				set_led(4);
+			} else if (SEN_L.now > SEN_L.threshold
+					&& SEN_R.now < SEN_R.threshold) {
+				test_R2 = 5;
+				wallcontrol_value = 2.0 * wall_cntrol_gain.Kp
+						* ((float) SEN_L.now - (float) SEN_L.reference)
+						+ wall_cntrol_gain.Kd * (float) (2 * SEN_L.diff_1ms);
+				set_led(1);
+			} else {
+				test_R2 = 6;
+				wallcontrol_value = 0.0;
+				set_led(2);
+			}
+		}
+//		  else if ((SEN_L.now > SEN_L.reference)
+//				&& ((ideal_translation.vel) < 1800.0)
+//				&& (SEN_F.now < SEN_F.threshold)) {
+//			wallcontrol_value = 2.0 * wall_cntrol_gain.Kp
+//					* ((float) SEN_L.now - (float) SEN_L.reference)
+//					+ wall_cntrol_gain.Kd * (float) (2 * SEN_L.diff_1ms);
+//			if (ideal_translation.vel > 1600.0) {
+//				wallcontrol_value *= 0.2;
+//			}
+//		} else if ((SEN_R.now > SEN_R.reference)
+//				&& ((ideal_translation.vel) < 1800.0)
+//				&& (SEN_F.now < SEN_F.threshold)) {
+//			wallcontrol_value = -2.0 * wall_cntrol_gain.Kp
+//					* ((float) SEN_R.now - (float) SEN_R.reference)
+//					+ wall_cntrol_gain.Kd * (float) (-2 * SEN_R.diff_1ms);
+//			if (ideal_translation.vel > 1600.0) {
+//				wallcontrol_value *= 0.2;
+//			}
+//		} else {
+//			wallcontrol_value = 0.0;
+//
+//		}
+	} else if ((wall_control_flag == 1) && (wall_control_oblique_flag >= 1)) {
+		test_R2 = 7;
+		wallcontrol_value = 0.0; //ここに斜め壁制御を書く
+		if (wall_control_oblique_flag == 1 || wall_control_oblique_flag == 2) {
+			test_R2 = 8;
+			if (SEN_L.now > SEN_L.oblique_threshold && SEN_L.diff_1ms < 180) {
+				test_R2 = 9;
+				wallcontrol_value += (float) oblique_Side_gain
+						* (float) (SEN_L.now - SEN_L.oblique_reference);
+			}
+			if (SEN_LF.now > SEN_LF.oblique_threshold && SEN_LF.diff < 20) {
+				test_R2 = 10;
+				wallcontrol_value += (float) oblique_Front_gain
+						* (float) (SEN_LF.now - SEN_LF.oblique_reference);
+			}
+		}
+		if (wall_control_oblique_flag == 1 || wall_control_oblique_flag == 3) {
+			test_R2 = 11;
+			if (SEN_R.now > SEN_R.oblique_threshold && SEN_R.diff_1ms < 180) {
+				test_R2 = 12;
+				wallcontrol_value -= (float) oblique_Side_gain
+						* (float) (SEN_R.now - SEN_R.oblique_reference) * 2.0;
+
+			}
+			if (SEN_RF.now > SEN_RF.oblique_threshold && SEN_RF.diff < 30) {
+				test_R2 = 13;
+				wallcontrol_value -= (float) oblique_Front_gain
+						* (float) (SEN_RF.now - SEN_RF.oblique_reference);
+			}
+		}
+		if (wallcontrol_value > 300.0) {
+			wallcontrol_value = 300.0;
+		}
+		if (wallcontrol_value < -300.0) {
+			wallcontrol_value = -300.0;
+		}
+
+	} else {
+		test_R2 = 33;
+		wallcontrol_value = 0.0;
+		set_led(7);
+	}
+	test_float = wallcontrol_value;
+
+}
+
+void coordinate(void) {
+	if (direction == North) {
+		y.now++;
+	} else if (direction == West) {
+		x.now--;
+	} else if (direction == South) {
+		y.now--;
+	} else if (direction == East) {
+		x.now++;
+	}
+}
