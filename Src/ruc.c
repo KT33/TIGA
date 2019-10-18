@@ -64,8 +64,6 @@ void wait_straight(void) {
 	run_right_deviation.now = 0.0;
 	run_right_deviation.difference = 0.0;
 	rotation_parameter.back_rightturn_flag = 0;
-
-
 }
 
 void wait_rotation(void) {
@@ -180,7 +178,7 @@ void control_accel(run_t *ideal, trapezoid_t *trapezoid, uint8_t rotation_flag) 
 	if (trapezoid->back_rightturn_flag == 1) {
 		ideal->dis *= -1.0;
 		ideal->vel *= -1.0;
-		ideal->accel*=-1.0;
+		ideal->accel *= -1.0;
 	}
 
 	if (ideal->dis < trapezoid->acceldistance) {
@@ -210,7 +208,7 @@ void control_accel(run_t *ideal, trapezoid_t *trapezoid, uint8_t rotation_flag) 
 	if (trapezoid->back_rightturn_flag == 1) {
 		ideal->dis *= -1.0;
 		ideal->vel *= -1.0;
-		ideal->accel*=-1.0;
+		ideal->accel *= -1.0;
 	}
 
 //	printf("ideal_vel=%4.2f,ideal_dis=%4.2f\n", ideal->vel, ideal->dis);
@@ -280,39 +278,41 @@ float read_vel(uint8_t RorL) {
 	for (i = 0; i < 50; i++)
 		;
 
-	en_log_L.before_5ms = en_log_L.before_4ms;
-	en_log_L.before_4ms = en_log_L.before_3ms;
-	en_log_L.before_3ms = en_log_L.before_2ms;
-	en_log_L.before_2ms = en_log_L.before_1ms;
-	en_log_L.before_1ms = en_log_L.now;
-	en_log_L.now = val;
-
 //	table_index = val / 500;
 	if (RorL == LEFT) {
-//		val_cor =
-//				(en_L_table[table_index]
-//						+ ((en_L_table[table_index + 1]
-//								- en_L_table[table_index]) / 500)
-//								* (float) (val % 500)) * (float) val;
+		en_log_L.before_5ms = en_log_L.before_4ms;
+		en_log_L.before_4ms = en_log_L.before_3ms;
+		en_log_L.before_3ms = en_log_L.before_2ms;
+		en_log_L.before_2ms = en_log_L.before_1ms;
+		en_log_L.before_1ms = en_log_L.now;
+		en_log_L.now = val;
+
 		val_cor = LPF[0] * en_log_L.now + LPF[1] * en_log_L.before_1ms
 				+ LPF[2] * en_log_L.before_2ms + LPF[3] * en_log_L.before_3ms
 				+ LPF[4] * en_log_L.before_4ms + LPF[5] * en_log_L.before_5ms;
 
 		val_cor = (float) val;
 //		test_L = (float) val;
-//		test_L2 = val_cor;
+		test_L = val_cor;
+		test_L2 = val_cor - before_en_val[RorL];
 
 	} else {
+		en_log_R.before_5ms = en_log_R.before_4ms;
+		en_log_R.before_4ms = en_log_R.before_3ms;
+		en_log_R.before_3ms = en_log_R.before_2ms;
+		en_log_R.before_2ms = en_log_R.before_1ms;
+		en_log_R.before_1ms = en_log_R.now;
+		en_log_R.now = val;
+
 		val_cor = LPF[0] * en_log_R.now + LPF[1] * en_log_R.before_1ms
 				+ LPF[2] * en_log_R.before_2ms + LPF[3] * en_log_R.before_3ms
 				+ LPF[4] * en_log_R.before_4ms + LPF[5] * en_log_R.before_5ms;
 		val_cor = (float) val;
 //		test_R = (float) val;
-//		test_R2 = val_cor;
+		test_R = val_cor;
+		test_R2 = val_cor - before_en_val[RorL];
 
 	}
-
-	val_cor = (float) val;
 
 	val2 = (float) ((val_cor - before_en_val[RorL]));
 	if (val2 < -8000) {
@@ -389,9 +389,9 @@ void wall_control(void) {
 
 	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) {
 		test_R2 = 1;
-		if (((ideal_translation.vel) > 100.0) && (SEN_L.diff < 15 * 10)
-				&& (SEN_R.diff < 15 * 10)
-				&& (SEN_F.now < SEN_F.reference * 10)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
+		if (((ideal_translation.vel) > 100.0) && (SEN_L.diff < 15 )
+				&& (SEN_R.diff < 15 )
+				&& (SEN_F.now < SEN_F.reference )) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
 			test_R2 = 2;
 			if (SEN_L.now > SEN_L.threshold && SEN_R.now > SEN_R.threshold) {
 				test_R2 = 3;

@@ -31,10 +31,10 @@ void go_center(float accel, float vel) {
 void turn_left(float accel, float vel) {
 	set_straight(45.0, accel, vel, vel, 0.0);
 	wait_straight();
-	HAL_Delay(50);
+	HAL_Delay(200);
 	set_rotation(90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
 	wait_rotation();
-	HAL_Delay(50);
+	HAL_Delay(200);
 	set_straight(45.0, accel, vel, 0.0, vel);
 	wait_straight();
 }
@@ -42,10 +42,10 @@ void turn_left(float accel, float vel) {
 void turn_right(float accel, float vel) {
 	set_straight(45.0, accel, vel, vel, 0.0);
 	wait_straight();
-	HAL_Delay(50);
+	HAL_Delay(200);
 	set_rotation(-90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
 	wait_rotation();
-	HAL_Delay(50);
+	HAL_Delay(200);
 	set_straight(45.0, accel, vel, 0.0, vel);
 	wait_straight();
 }
@@ -254,10 +254,10 @@ void non_ketuate_goal(float accel, float vel) {
 void slalom_left90(float run_accel, float run_vel) {
 	float rota_accel, rota_vel, in_offset, out_offset, angle_offset = 0.0;
 	if (run_vel == 280.0) {
-		rota_accel = 1700;
-		rota_vel = 750;
-		in_offset = 7;
-		out_offset = 17;
+		rota_accel = 2300;
+		rota_vel = 1000;
+		in_offset = 0;
+		out_offset = 0;
 	}
 	set_straight(in_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();
@@ -265,18 +265,16 @@ void slalom_left90(float run_accel, float run_vel) {
 	wait_rotation();
 	set_straight(out_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();
-	rotation_gain.Kp = 0.62;
-	rotation_gain.Ki = 0.01;
 }
 
 void slalom_right90(float run_accel, float run_vel) {
 	float rota_accel, rota_vel, in_offset, out_offset;
 	float angle_offset = 0.0;
 	if (run_vel == 280.0) {
-		rota_accel = 1700;
-		rota_vel = 750;
-		in_offset = 7;
-		out_offset = 17;
+		rota_accel = 2700;
+		rota_vel = 1000;
+		in_offset = 0;
+		out_offset = 0;
 	}
 	set_straight(in_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();
@@ -284,8 +282,7 @@ void slalom_right90(float run_accel, float run_vel) {
 	wait_rotation();
 	set_straight(out_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();
-	rotation_gain.Kp = 0.62;
-	rotation_gain.Ki = 0.01;
+
 }
 
 void stop90(float run_accel, float run_vel) {

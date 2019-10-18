@@ -179,7 +179,8 @@ extern float oblique_front_box;
 extern float oblique_side_box;
 extern float oblique_offset_front;
 extern float oblique_offset_side;
-
+extern float front_wall_gain;
+extern uint8_t front_wall_flag;
 
 #define North 0
 #define West 1

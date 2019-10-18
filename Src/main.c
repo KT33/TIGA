@@ -155,14 +155,15 @@ int main(void) {
 	mode = 0;
 	mode_select_dis = 10;
 
-	SEN_R.reference = 436;
-	SEN_R.threshold = 120;
-	SEN_RF.reference = 350;
-	SEN_RF.threshold = 88;
-	SEN_L.reference = 456;
-	SEN_L.threshold = 11;
-	SEN_LF.reference = 535;
-	SEN_LF.threshold = 268;
+
+	SEN_L.reference = 376;
+	SEN_L.threshold = 61;
+	SEN_R.reference = 394;
+	SEN_R.threshold = 100;
+	SEN_LF.reference = 496;
+	SEN_LF.threshold = 228;
+	SEN_RF.reference = 550;
+	SEN_RF.threshold = 220;
 
 	SEN_F.threshold = (int) (SEN_RF.threshold + SEN_LF.threshold) / 2;
 	SEN_F.reference = (int) (SEN_RF.reference + SEN_LF.reference) / 2;

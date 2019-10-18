@@ -72,3 +72,6 @@ float oblique_side_box;
 float oblique_offset_front=1.0;
 float oblique_offset_side=1.0;
 
+uint8_t front_wall_flag=0;
+float front_wall_gain;
+

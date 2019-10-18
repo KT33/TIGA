@@ -309,11 +309,23 @@ void log_sampling(void) {
 		mylog2.log_3[log_index] = rotation_deviation.cumulative;
 		mylog2.log_4[log_index] = run_left_deviation.cumulative;
 		mylog2.log_5[log_index] = run_right_deviation.cumulative;
-//		mylog.log_1[log_index] = test_L;
-//		mylog.log_2[log_index] = test_R;
-//		mylog.log_3[log_index] = test_L2;
-//		mylog.log_4[log_index] = test_R2;
-//		mylog.log_5[log_index] = 0;
+
+//		mylog.log_1[log_index] = real_L.vel;
+//		mylog.log_2[log_index] = real_R.vel;
+//		mylog.log_3[log_index] = ideal_translation.vel;
+//		mylog.log_4[log_index] = test_L;
+//		mylog.log_5[log_index] = test_L2;
+//		mylog2.log_1[log_index] = test_R;
+//		mylog2.log_2[log_index] = test_R2;
+//		mylog2.log_3[log_index] = rotation_deviation.cumulative;
+//		mylog2.log_4[log_index] = run_left_deviation.cumulative;
+//		mylog2.log_5[log_index] = run_right_deviation.cumulative;
+
+//		mylog.log_1[log_index] = (float)SEN_L.now;
+//		mylog.log_2[log_index] = (float)SEN_R.now;
+//		mylog.log_3[log_index] = (float)SEN_LF.now;
+//		mylog.log_4[log_index] = (float)SEN_RF.now;
+////		mylog.log_5[log_index] = 0;
 //		mylog2.log_1[log_index] = SEN_L.now;
 //		mylog2.log_2[log_index] = SEN_R.now;
 //		mylog2.log_3[log_index] = SEN_F.now;
@@ -378,9 +390,9 @@ void output_SEN(void) {
 	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1) {
 		printf("LF=%5d,L=%5d,R=%5d,RF=%5d\n", SEN_LF.now, SEN_L.now, SEN_R.now,
 				SEN_RF.now);
-		printf("%5d,%5d,%5d,%5d,%5d,%5d,%5d,%5d,%5d\n", g_ADCBuffer[0],
-				g_ADCBuffer[1], g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4],
-				g_ADCBuffer[5], g_ADCBuffer[6], g_ADCBuffer[7], g_ADCBuffer[8]);
+//		printf("%5d,%5d,%5d,%5d,%5d,%5d,%5d,%5d,%5d\n", g_ADCBuffer[0],
+//				g_ADCBuffer[1], g_ADCBuffer[2], g_ADCBuffer[3], g_ADCBuffer[4],
+//				g_ADCBuffer[5], g_ADCBuffer[6], g_ADCBuffer[7], g_ADCBuffer[8]);
 		HAL_Delay(100);
 	}
 	SEN_check_flag = 0;

@@ -30,7 +30,7 @@ Src/mode.o: ../Src/mode.c ../Src/mode.h ../Src/variable.h ../Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Src/other.h ../Src/run.h ../Src/walldata.h ../Src/motion.h \
- ../Src/adachi.h
+ ../Src/adachi.h ../Src/buzzer.h
 
 ../Src/mode.h:
 
@@ -107,3 +107,5 @@ Src/mode.o: ../Src/mode.c ../Src/mode.h ../Src/variable.h ../Inc/main.h \
 ../Src/motion.h:
 
 ../Src/adachi.h:
+
+../Src/buzzer.h:

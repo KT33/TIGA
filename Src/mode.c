@@ -11,6 +11,7 @@
 #include "other.h"
 #include "motion.h"
 #include "adachi.h"
+#include "buzzer.h"
 
 void mode_0(void) {
 //	uint8_t i;
@@ -26,77 +27,75 @@ void mode_1(void) {
 //	moter_flag = 1;
 //	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
 
+//	run_gain.Ki=0;
+
 	start_led();
-	log_start();
-	set_straight(90.0 * 2 * 3, 3500, 300, 0.0, 0.0);
+//	log_start();
+	set_straight(90.0 * 2, 3500, 300, 0.0, 0.0);
 	wait_straight();
-//	set_straight(90.0, 3500, 300, 0.0, 0.0);
-//	wait_straight();
-	moter_flag = 0;
-	save_log_to_flash();
+//	HAL_Delay(500);/
+//	log_flag = 0;
+//	HAL_Delay(5);
+//	log_flag=0;
+	//	run_left_deviation.cumulative = 0.0;
+//	run_right_deviation.cumulative = 0.0;
+//	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
+////	wait_straight();
+//	moter_flag = 0;
+//	save_log_to_flash();
 }
 
 void mode_2(void) {
 
 	start_led();
 //	log_start();
-	adachi_search_run(x.goal, y.goal, 4, 3500, 300, 0, 0);
+//	adachi_search_run_known(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search, 0, 0);
+	search_run_special(x.goal, y.goal, 4);
 }
 
 void mode_3(void) { //253.558
-
+	rotation_gain.Kp = 0.41 / 2;
+	rotation_gain.Ki = 0.005 / 10; //3
 	start_led();
 	log_start();
 	go_entrance(nomal_run.accel, nomal_run.vel_search);
 	pass_180(nomal_run.accel, nomal_run.vel_search);
 	slalom_left90(nomal_run.accel, nomal_run.vel_search);
-	stop90(nomal_run.accel, nomal_run.vel_search);
-	save_log_to_flash();
+	set_straight(45.0 * 3, nomal_run.accel, nomal_run.vel_search,
+			nomal_run.vel_search, 0.0);
+	wait_straight();
+//	save_log_to_flash();
 }
 
 void mode_4(void) {
 	start_led();
-	log_start();
+	//log_start();
 	go_entrance(nomal_run.accel, nomal_run.vel_search);
 	pass_180(nomal_run.accel, nomal_run.vel_search);
 	slalom_right90(nomal_run.accel, nomal_run.vel_search);
 	stop90(nomal_run.accel, nomal_run.vel_search);
-	save_log_to_flash();
+	//save_log_to_flash();
 }
 
 void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
 
 	start_led();
 	log_start();
-	set_rotation(-90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
-	HAL_Delay(1000);
-	set_rotation(90.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
-	save_log_to_flash();
+	for (uint8_t i = 0; i < 8; i++) {
+		turn_left(nomal_run.accel, nomal_run.vel_search);
+	}
 }
 
 void mode_6(void) {
 
-	while(1){
-		mode=0;
-		duty.left=100;
-		duty.right=100
-;
-		duty_to_moter();
-	}
-
 	start_led();
 	log_start();
-//	moter_flag = 0;
-	while (failsafe_flag == 0) {
 
-	}
+	front_wall_gain = 0.4;
+	front_wall_flag = 1;
+	while (1)
+		;
 
-	log_flag = 0;
-	moter_flag = 0;
-
-	save_log_to_flash();
 }
 
 void mode_7(void) {
@@ -109,8 +108,46 @@ void mode_7(void) {
 //		printf("rot_Dev=%8.3f\n", rotation_deviation.cumulative);
 //	}
 
-	output_SEN();
-//	fan_on();
+	start_led();
+	moter_flag = 0;
+	log_start();
+	while (log_index < 1000) {
+
+	}
+	set_buzzer(0, C_4, 600);
+	log_flag = 0;
+	start_led();
+	moter_flag = 0;
+	log_flag = 1;
+	while (log_index < 2000) {
+
+	}
+	set_buzzer(0, C_4, 600);
+	log_flag = 0;
+	start_led();
+	moter_flag = 0;
+	log_flag = 1;
+	while (log_index < 3000) {
+
+	}
+	set_buzzer(0, C_4, 600);
+	log_flag = 0;
+	start_led();
+	moter_flag = 0;
+	log_flag = 1;
+	while (log_index < 4000) {
+
+	}
+	set_buzzer(0, C_4, 600);
+	while (log_flag == 1) {
+
+	}
+	set_buzzer(0, C_4, 600);
+	save_log_to_flash();
+
+//output_SEN();
+
+	//	fan_on();
 
 //	out_put_pass(pass);
 //	while (SWITCH == 1) {
@@ -223,4 +260,8 @@ void go_mode(void) {
 	failsafe_flag = 0;
 	SEN_check_flag = 0;
 	set_led(0);
+
+	if (log_index != 0) {
+		save_log_to_flash();
+	}
 }

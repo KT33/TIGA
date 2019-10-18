@@ -24,9 +24,19 @@ void adc_1ms(void);
 
 void interrupt_1ms(void) {
 
+	//encoder
+	real_L.vel = read_vel(LEFT); //mm/sec
+	real_R.vel = read_vel(RIGHT);
+	integral_1ms(&real_L.dis, &real_L.vel);
+	integral_1ms(&real_R.dis, &real_R.vel);
+	//encoder
 //buzzer
 	buzzer_1ms();
 //buzzer
+
+	if (log_flag == 1) {
+		log_sampling();
+	}
 
 //ADC
 	if (SEN_check_flag == 1) {
@@ -66,17 +76,6 @@ void interrupt_1ms(void) {
 		//gyro
 		failsafe_accel = read_accel();
 
-		//encoder
-		real_L.vel = read_vel(LEFT); //mm/sec
-		real_R.vel = read_vel(RIGHT);
-		integral_1ms(&real_L.dis, &real_L.vel);
-		integral_1ms(&real_R.dis, &real_R.vel);
-		//encoder
-
-		if (log_flag == 1) {
-			log_sampling();
-		}
-
 		if (angle_calibration_flag == 1) {
 			angle_calibration_counter++;
 			angle_calibration_integral += real_rotation.vel;
@@ -87,41 +86,49 @@ void interrupt_1ms(void) {
 
 		wall_control();
 
-//		wallcontrol_value = 0.0;
+		//	wallcontrol_value = 0.0;
 
 		if (moter_flag == 1 && failsafe_flag == 0) {
+			if (front_wall_flag == 0) {
+				if (translation_parameter.run_flag == 1) {
+					control_accel(&ideal_translation, &translation_parameter,
+							0);
+				}
+				if (rotation_parameter.run_flag == 1) {
+					control_accel(&ideal_rotation, &rotation_parameter, 1);
+					integral_ideal(&ideal_rotation);
+				}
 
-			if (translation_parameter.run_flag == 1) {
-				control_accel(&ideal_translation, &translation_parameter, 0);
-			}
-			if (rotation_parameter.run_flag == 1) {
-				control_accel(&ideal_rotation, &rotation_parameter, 1);
-				integral_ideal(&ideal_rotation);
-			}
+				PID_control(&ideal_translation, &real_L, &real_R,
+						&run_left_deviation, &run_right_deviation, &run_gain,
+						&translation_parameter, &duty, 0);
+				if (translation_parameter.back_rightturn_flag == 0
+						|| ideal_translation.vel > 50.0) {
+					PID_control(&ideal_rotation, &real_rotation, &real_rotation,
+							&rotation_deviation, &rotation_deviation,
+							&rotation_gain, &rotation_parameter, &duty, 1);
+				}
+				integral_ideal(&ideal_translation);
 
-			PID_control(&ideal_translation, &real_L, &real_R,
-					&run_left_deviation, &run_right_deviation, &run_gain,
-					&translation_parameter, &duty, 0);
-			if (translation_parameter.back_rightturn_flag == 0
-					|| ideal_translation.vel > 50.0) {
-				PID_control(&ideal_rotation, &real_rotation, &real_rotation,
-						&rotation_deviation, &rotation_deviation,
-						&rotation_gain, &rotation_parameter, &duty, 1);
+			} else {
+				duty.left -= (int) (front_wall_gain
+						* (SEN_L.now - SEN_L.reference));
+				duty.right -= (int) (front_wall_gain
+						* (SEN_R.now - SEN_R.reference));
 			}
-			integral_ideal(&ideal_translation);
 
 			duty_to_moter();
 		}
 
 		if (moter_flag == 0) {
-			duty.left=0;
-			duty.right=0;
+			duty.left = 0;
+			duty.right = 0;
 			duty_to_moter();
 		}
 
 	} else { //mode_out モード選択
 //		printf("test3\n");
-		real_R.vel = read_vel(RIGHT);
+//		real_R.vel = read_vel(RIGHT);
 		integral_1ms(&mode_select_dis, &real_R.vel);
 
 		//	printf("inter:sel_dis=%3.2f,vel=%3.2f\n",mode_select_dis,real_R.vel);
@@ -173,7 +180,7 @@ void adc_1ms(void) {
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) g_ADCBuffer,
 			sizeof(g_ADCBuffer) / sizeof(uint16_t));
 
-	SEN_RF.now = g_ADCBuffer[0] - g_ADCBuffer[1];
+	SEN_RF.now = (g_ADCBuffer[0] - g_ADCBuffer[1]) * 2;
 	SEN_RF_log.before_5ms = SEN_RF_log.before_4ms;
 	SEN_RF_log.before_4ms = SEN_RF_log.before_3ms;
 	SEN_RF_log.before_3ms = SEN_RF_log.before_2ms;
