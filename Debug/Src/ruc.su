@@ -4,10 +4,10 @@ ruc.c:50:6:wait_straight	4	static
 ruc.c:69:6:wait_rotation	4	static
 ruc.c:88:6:trapezoid_preparation	40	static
 ruc.c:131:6:duty_to_moter	16	static
-ruc.c:177:6:control_accel	32	static
-ruc.c:218:6:PID_control	40	static
-ruc.c:265:7:read_vel	40	static
-ruc.c:376:6:integral_1ms	24	static
-ruc.c:380:6:integral_ideal	32	static
-ruc.c:385:6:wall_control	16	static
-ruc.c:492:6:coordinate	4	static
+ruc.c:180:6:control_accel	32	static
+ruc.c:221:6:PID_control	40	static
+ruc.c:268:7:read_vel	40	static
+ruc.c:379:6:integral_1ms	24	static
+ruc.c:383:6:integral_ideal	32	static
+ruc.c:388:6:wall_control	16	static
+ruc.c:493:6:coordinate	4	static

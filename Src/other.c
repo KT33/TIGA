@@ -63,6 +63,7 @@ void write_flash_log(uint32_t address, uint8_t *data, uint32_t size) {
 }
 
 void save_log_to_flash(void) {
+	log_flag = 0;
 	write_flash_log(SECTOR14_BASE_ADRR, (uint8_t*) &mylog, sizeof(mylog));
 	write_flash_log(SECTOR13_BASE_ADRR, (uint8_t*) &mylog2, sizeof(mylog2));
 }
@@ -362,12 +363,21 @@ void log_output(void) {
 
 void start_led(void) {
 	SEN_check_flag = 1;
-	while (SEN_R.now < 1000 || SEN_RF.now < 1000 ){
+	wall_control_flag = 0;
+	while (SEN_R.now < 1000 || SEN_RF.now < 1000) {
 //			||SEN_L.now < 1000&& SEN_LF.now < 1000) {
 
 	}
 	set_buzzer(0, C_5, 800);
-//	log_start();
+	set_led(7);
+	HAL_Delay(200);
+	set_led(0);
+	HAL_Delay(200);
+	set_led(7);
+	HAL_Delay(200);
+	set_led(0);
+	HAL_Delay(200);
+	//	log_start();
 
 	angle_calibration_integral = 0.0;
 	angle_calibration = 0.0;
@@ -383,6 +393,7 @@ void start_led(void) {
 	rotation_deviation.cumulative = 0;
 	set_buzzer(0, E_5, 800);
 	moter_flag = 1;
+	wall_control_flag = 1;
 }
 
 void output_SEN(void) {

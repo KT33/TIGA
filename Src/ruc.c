@@ -146,6 +146,9 @@ void duty_to_moter(void) {
 		duty_right = (duty.right * -1);
 	}
 
+	test_L = duty_left;
+	test_R = duty_right;
+
 	if (duty_left >= 800) {
 		duty_left = 800 - 1;
 	}
@@ -293,8 +296,8 @@ float read_vel(uint8_t RorL) {
 
 		val_cor = (float) val;
 //		test_L = (float) val;
-		test_L = val_cor;
-		test_L2 = val_cor - before_en_val[RorL];
+//		test_L = val_cor;
+//		test_L2 = val_cor - before_en_val[RorL];
 
 	} else {
 		en_log_R.before_5ms = en_log_R.before_4ms;
@@ -309,8 +312,8 @@ float read_vel(uint8_t RorL) {
 				+ LPF[4] * en_log_R.before_4ms + LPF[5] * en_log_R.before_5ms;
 		val_cor = (float) val;
 //		test_R = (float) val;
-		test_R = val_cor;
-		test_R2 = val_cor - before_en_val[RorL];
+//		test_R = val_cor;
+//		test_R2 = val_cor - before_en_val[RorL];
 
 	}
 
@@ -383,15 +386,14 @@ void integral_ideal(run_t *ideal) {
 }
 
 void wall_control(void) {
-	test_L = (float) SEN_L.diff;
-	test_R = (float) SEN_R.diff;
-	test_L2 = (float) SEN_F.reference;
+//	test_L = (float) SEN_L.diff;
+//	test_R = (float) SEN_R.diff;
+//	test_L2 = (float) SEN_F.reference;
 
 	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) {
 		test_R2 = 1;
-		if (((ideal_translation.vel) > 100.0) && (SEN_L.diff < 15 )
-				&& (SEN_R.diff < 15 )
-				&& (SEN_F.now < SEN_F.reference )) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
+		if (((ideal_translation.vel) > 100.0) && (SEN_L.diff < 8)
+				&& (SEN_R.diff < 8) && (SEN_F.now < SEN_F.reference)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
 			test_R2 = 2;
 			if (SEN_L.now > SEN_L.threshold && SEN_R.now > SEN_R.threshold) {
 				test_R2 = 3;
@@ -481,9 +483,8 @@ void wall_control(void) {
 		}
 
 	} else {
-		test_R2 = 33;
 		wallcontrol_value = 0.0;
-		set_led(7);
+
 	}
 	test_float = wallcontrol_value;
 

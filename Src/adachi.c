@@ -342,7 +342,7 @@ void adachi_search_run(uint8_t goal_x, uint8_t goal_y, uint8_t goal_scale,
 	addWall();
 	moter_flag = 1;
 	while (failsafe_flag == 0) {
-		if (step_map[x.now][y.now] == 999) {
+		if (step_map[x.now][y.now] ==  0xffff) {
 			stop90(accel, vel);
 			failsafe_flag = 1;
 			break;
@@ -375,42 +375,43 @@ void adachi_search_run(uint8_t goal_x, uint8_t goal_y, uint8_t goal_scale,
 						|| (x.now == goal_x + 1 && y.now == goal_y)
 						|| (x.now == goal_x && y.now == goal_y + 1)
 						|| (x.now == goal_x + 1 && y.now == goal_y + 1))) {
-
-			if (getWall(x.now, y.now, direction + 1, &walldata.real)) {
-				set_straight(95.0, accel, vel, vel, 0.0);
-				wait_straight();
-				HAL_Delay(50);
-				set_rotation(-90.0, nomal_rotation.accel,
-						nomal_rotation.vel_search, 0.0);
-				wait_rotation();
-				HAL_Delay(50);
-				back_100();
-				HAL_Delay(50);
-				rotation_deviation.cumulative = 0.0;
-			} else if (getWall(x.now, y.now, direction + 3, &walldata.real)) {
-				set_straight(95.0, accel, vel, vel, 0.0);
-				wait_straight();
-				HAL_Delay(50);
-				set_rotation(90.0, nomal_rotation.accel,
-						nomal_rotation.vel_search, 0.0);
-				wait_rotation();
-				HAL_Delay(50);
-				back_100();
-				HAL_Delay(50);
-				rotation_deviation.cumulative = 0.0;
-			} else {
-				set_straight(93.0, accel, vel, vel, 0.0);
-				wait_straight();
-				HAL_Delay(50);
-				set_rotation(-180.0, nomal_rotation.accel,
-						nomal_rotation.vel_search, 0.0);
-				wait_rotation();
-				HAL_Delay(50);
-				set_straight(-50.0, 500, 150, 0.0, 0.0);
-				wall_control_flag = 0;
-				wait_straight();
-				HAL_Delay(50);
-			}
+			set_straight(135.0, accel, vel, vel, 0.0);
+							wait_straight();
+//			if (getWall(x.now, y.now, direction + 1, &walldata.real)) {
+//				set_straight(95.0, accel, vel, vel, 0.0);
+//				wait_straight();
+//				HAL_Delay(50);
+//				set_rotation(-90.0, nomal_rotation.accel,
+//						nomal_rotation.vel_search, 0.0);
+//				wait_rotation();
+//				HAL_Delay(50);
+//				back_100();
+//				HAL_Delay(50);
+//				rotation_deviation.cumulative = 0.0;
+//			} else if (getWall(x.now, y.now, direction + 3, &walldata.real)) {
+//				set_straight(95.0, accel, vel, vel, 0.0);
+//				wait_straight();
+//				HAL_Delay(50);
+//				set_rotation(90.0, nomal_rotation.accel,
+//						nomal_rotation.vel_search, 0.0);
+//				wait_rotation();
+//				HAL_Delay(50);
+//				back_100();
+//				HAL_Delay(50);
+//				rotation_deviation.cumulative = 0.0;
+//			} else {
+//				set_straight(93.0, accel, vel, vel, 0.0);
+//				wait_straight();
+//				HAL_Delay(50);
+//				set_rotation(-180.0, nomal_rotation.accel,
+//						nomal_rotation.vel_search, 0.0);
+//				wait_rotation();
+//				HAL_Delay(50);
+//				set_straight(-50.0, 500, 150, 0.0, 0.0);
+//				wall_control_flag = 0;
+//				wait_straight();
+//				HAL_Delay(50);
+//			}
 			break;
 		}
 		flag = how_to_move(direction, (int8_t) x.now, (int8_t) y.now,

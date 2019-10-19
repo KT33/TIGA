@@ -86,7 +86,7 @@ void interrupt_1ms(void) {
 
 		wall_control();
 
-		//	wallcontrol_value = 0.0;
+//			wallcontrol_value = 0.0;
 
 		if (moter_flag == 1 && failsafe_flag == 0) {
 			if (front_wall_flag == 0) {
@@ -111,10 +111,16 @@ void interrupt_1ms(void) {
 				integral_ideal(&ideal_translation);
 
 			} else {
-				duty.left -= (int) (front_wall_gain
-						* (SEN_L.now - SEN_L.reference));
-				duty.right -= (int) (front_wall_gain
-						* (SEN_R.now - SEN_R.reference));
+				duty.left = (int) (front_wall_gain
+						* (front_wall_value_L - SEN_LF.now));
+				if (duty.left > 70) {
+					duty.left = 70;
+				}
+				duty.right = (int) (front_wall_gain * 0.5
+						* (front_wall_value_R - SEN_RF.now));
+				if (duty.right > 70) {
+					duty.right = 70;
+				}
 			}
 
 			duty_to_moter();

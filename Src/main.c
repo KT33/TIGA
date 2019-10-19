@@ -83,6 +83,7 @@ int main(void) {
 	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+
 	HAL_Init();
 
 	/* USER CODE BEGIN Init */
@@ -155,33 +156,32 @@ int main(void) {
 	mode = 0;
 	mode_select_dis = 10;
 
-
 	SEN_L.reference = 376;
 	SEN_L.threshold = 61;
 	SEN_R.reference = 394;
 	SEN_R.threshold = 100;
 	SEN_LF.reference = 496;
-	SEN_LF.threshold = 228;
+	SEN_LF.threshold = 374;
 	SEN_RF.reference = 550;
-	SEN_RF.threshold = 220;
+	SEN_RF.threshold = 380;
 
-	SEN_F.threshold = (int) (SEN_RF.threshold + SEN_LF.threshold) / 2;
+	SEN_F.threshold = (int) (SEN_RF.threshold + SEN_LF.threshold) / 2*0.45;
 	SEN_F.reference = (int) (SEN_RF.reference + SEN_LF.reference) / 2;
 
 	run_gain.Kp = 0.6;
 	run_gain.Ki = 0.15;
 	rotation_gain.Kp = 0.41;
-	rotation_gain.Ki = 0.005;//3
+	rotation_gain.Ki = 0.005; //3
 	wall_cntrol_gain.Kp = 0.05;
 	wall_cntrol_gain.Kd = 0.0;
 
 	nomal_run.vel_search = 280.0;
 	nomal_run.accel = 1000.0;
-	nomal_rotation.vel_search=750.0;
-	nomal_rotation.accel=1700.0;
+	nomal_rotation.vel_search = 750.0;
+	nomal_rotation.accel = 1700.0;
 
-	x.goal = 4;
-	y.goal = 0;
+	x.goal = 6;
+	y.goal = 9;
 	while (1) {
 //		while (1) {
 //			set_led(2);

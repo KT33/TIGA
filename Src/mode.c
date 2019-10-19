@@ -30,9 +30,13 @@ void mode_1(void) {
 //	run_gain.Ki=0;
 
 	start_led();
+	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
+			1, 0);
+
+//	start_led();
 //	log_start();
-	set_straight(90.0 * 2, 3500, 300, 0.0, 0.0);
-	wait_straight();
+//	set_straight(90.0 * 5, nomal_run.accel, nomal_run.vel_search, 0.0, 0.0);
+//	wait_straight();
 //	HAL_Delay(500);/
 //	log_flag = 0;
 //	HAL_Delay(5);
@@ -48,32 +52,48 @@ void mode_1(void) {
 void mode_2(void) {
 
 	start_led();
+	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
+			0, 0);
 //	log_start();
 //	adachi_search_run_known(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search, 0, 0);
-	search_run_special(x.goal, y.goal, 4);
+//	search_run_special(x.goal, y.goal, 4);
 }
 
 void mode_3(void) { //253.558
-	rotation_gain.Kp = 0.41 / 2;
-	rotation_gain.Ki = 0.005 / 10; //3
+	wall_cntrol_gain.Kp=0.03;
 	start_led();
-	log_start();
-	go_entrance(nomal_run.accel, nomal_run.vel_search);
-	pass_180(nomal_run.accel, nomal_run.vel_search);
-	slalom_left90(nomal_run.accel, nomal_run.vel_search);
-	set_straight(45.0 * 3, nomal_run.accel, nomal_run.vel_search,
-			nomal_run.vel_search, 0.0);
-	wait_straight();
+	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
+			1, 0);
+//	start_led();
+//	log_start();
+//	go_entrance(nomal_run.accel, nomal_run.vel_search);
+//	for (uint8_t i = 0; i < 12; i++) {
+//		pass_180(nomal_run.accel, nomal_run.vel_search);
+//		slalom_left90(nomal_run.accel, nomal_run.vel_search);
+//	}
+//	set_straight(45.0, nomal_run.accel, nomal_run.vel_search,
+//			nomal_run.vel_search, 0.0);
+//	wall_control_flag = 0;
+//	wait_straight();
 //	save_log_to_flash();
 }
 
 void mode_4(void) {
+	wall_cntrol_gain.Kp=0.03;
 	start_led();
-	//log_start();
-	go_entrance(nomal_run.accel, nomal_run.vel_search);
-	pass_180(nomal_run.accel, nomal_run.vel_search);
-	slalom_right90(nomal_run.accel, nomal_run.vel_search);
-	stop90(nomal_run.accel, nomal_run.vel_search);
+	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
+			0, 0);
+//	start_led();
+//	log_start();
+//	go_entrance(nomal_run.accel, nomal_run.vel_search);
+//	for (uint8_t i = 0; i < 12; i++) {
+//		pass_180(nomal_run.accel, nomal_run.vel_search);
+//		slalom_right90(nomal_run.accel, nomal_run.vel_search);
+//	}
+//	set_straight(45.0, nomal_run.accel, nomal_run.vel_search,
+//			nomal_run.vel_search, 0.0);
+//	wall_control_flag = 0;
+//	wait_straight();
 	//save_log_to_flash();
 }
 
@@ -89,12 +109,16 @@ void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
 void mode_6(void) {
 
 	start_led();
-	log_start();
+//	log_start();
 
-	front_wall_gain = 0.4;
-	front_wall_flag = 1;
-	while (1)
-		;
+//	front_wall_flag=0;
+//	front_wall_value_L=SEN_LF.reference;
+//	front_wall_value_R=SEN_RF.reference;
+//	front_wall_gain=1;
+//	front_wall_flag=1;
+//	while(1);
+
+	set_center_by_front_Wall();
 
 }
 
@@ -157,6 +181,7 @@ void mode_7(void) {
 
 void go_mode(void) {
 	uint8_t i = 0;
+	wall_control_flag = 0;
 	printf("0,mode=%d,%d\n", mode, (mode & 0x80));
 	mode = mode | 0x80;
 	printf("1,mode=%d,%d\n", mode, (mode & 0x80));

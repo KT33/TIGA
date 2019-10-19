@@ -8,7 +8,7 @@
 #ifndef MOTION_H_
 #define MOTION_H_
 
-
+void set_center_by_front_Wall(void);
 void slalom_left90(float run_accel, float run_vel);
 void slalom_right90(float run_accel, float run_vel);
 void ketuate(float accel, float vel);
