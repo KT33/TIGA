@@ -341,7 +341,7 @@ void slalom_left90(float run_accel, float run_vel) {
 		rotation_gain.Kp *= 1;
 		rota_accel = 10000;
 		rota_vel = 1300;
-		in_offset = 6;
+		in_offset = 5;
 		out_offset = 13;
 	}
 	if (SEN_F.now > SEN_F.threshold) {
@@ -366,11 +366,11 @@ void slalom_right90(float run_accel, float run_vel) {
 	box.Ki = rotation_gain.Ki;
 	box.Kp = rotation_gain.Kp;
 	if (run_vel == 280.0) {
-		rotation_gain.Ki *= 1;
+		rotation_gain.Ki *= 1.2;
 		rotation_gain.Kp *= 1;
 		rota_accel = 10000;
 		rota_vel = 1300;
-		in_offset = 7;
+		in_offset = 5;
 		out_offset = 14;
 	}
 	if (SEN_F.now > SEN_F.threshold) {

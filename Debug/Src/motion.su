@@ -14,7 +14,7 @@ motion.c:292:6:ketuate_goal_right	16	static
 motion.c:311:6:non_ketuate_goal_turn	16	static
 motion.c:324:6:non_ketuate_goal	16	static
 motion.c:334:6:slalom_left90	48	static
-motion.c:362:6:slalom_right90	48	static
+motion.c:362:6:slalom_right90	56	static
 motion.c:392:6:stop90	16	static
 motion.c:397:6:slalom_left_check	16	static
 motion.c:405:6:slalom_right_check	16	static
