@@ -197,6 +197,7 @@ int main(void) {
 
 //		printf("mode:sel_dis=%3.2f,vel=%3.2f\n", mode_select_dis, real_R.vel);
 //		printf("R=%8.2f,	L=%8.2f\n",test_R,test_L);
+		printf("%8.3f\n",real_acc);
 
 		set_led(mode);
 		if (mode_select_dis > 30) {

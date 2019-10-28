@@ -77,3 +77,5 @@ float front_wall_gain;
 int front_wall_value_R,front_wall_value_L;
 float known_acc,known_vel;
 
+float real_acc;
+

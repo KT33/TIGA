@@ -177,7 +177,7 @@ float read_accel(void) {
 	data_h = read_spi(0x2d);
 	data_l = read_spi(0x2e);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
-	return (float) value * 0.00239427472762; //*9.8...*8/(2^15-1) return m/s^2
+	return (float) value * 2.39427472762; //*9.8...*8/(2^15-1)*1000 return mm/ms^2
 }
 
 uint16_t check_parity(uint16_t val) {
