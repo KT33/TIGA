@@ -32,7 +32,7 @@ void mode_1(void) {
 	start_led();
 	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
 			1, 0);
-
+	save_all_walldata();
 //	start_led();
 //	log_start();
 //	set_straight(90.0 * 5, nomal_run.accel, nomal_run.vel_search, 0.0, 0.0);
@@ -60,10 +60,8 @@ void mode_2(void) {
 }
 
 void mode_3(void) { //253.558
-	wall_cntrol_gain.Kp=0.03;
 	start_led();
-	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
-			1, 0);
+	search_run_special(x.goal, y.goal, 4);
 //	start_led();
 //	log_start();
 //	go_entrance(nomal_run.accel, nomal_run.vel_search);
@@ -79,10 +77,8 @@ void mode_3(void) { //253.558
 }
 
 void mode_4(void) {
-	wall_cntrol_gain.Kp=0.03;
 	start_led();
-	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
-			0, 0);
+	search_run_special(0, 3, 4);
 //	start_led();
 //	log_start();
 //	go_entrance(nomal_run.accel, nomal_run.vel_search);
@@ -99,25 +95,39 @@ void mode_4(void) {
 
 void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
 
-		start_led();
-		log_start();
-		go_entrance(nomal_run.accel, nomal_run.vel_search);
-		for (uint8_t i = 0; i < 1; i++) {
-			pass_180(nomal_run.accel, nomal_run.vel_search);
-			slalom_left90(nomal_run.accel, nomal_run.vel_search);
-		}
-		set_straight(45.0, nomal_run.accel, nomal_run.vel_search,
-				nomal_run.vel_search, 0.0);
-		wall_control_flag = 0;
-		wait_straight();
+	start_led();
+	log_start();
+	go_entrance(nomal_run.accel, nomal_run.vel_search);
+	for (uint8_t i = 0; i < 1; i++) {
+		pass_180(nomal_run.accel, nomal_run.vel_search);
+		slalom_left90(nomal_run.accel, nomal_run.vel_search);
+	}
+	set_straight(45.0, nomal_run.accel, nomal_run.vel_search,
+			nomal_run.vel_search, 0.0);
+	wall_control_flag = 0;
+	wait_straight();
 }
 
 void mode_6(void) {
+	read_all_walldata();
 
-		start_led();
-		log_start();
-		set_straight(90*14, nomal_run.accel, nomal_run.vel_search, 0, 0);
-		wait_straight();
+//	uint16_t test, wall_direction;
+//	uint8_t Next_XY_8bit, y_local, x_local;
+//
+//	uint8_t flag= how_to_move_special(0, 0, 0);
+
+//	test = make_temporary_goal_XY(7, 7, 4);
+//	wall_direction = check_flag(test);
+//	Next_XY_8bit = (uint8_t) (test & 0x00ff);
+//	y_local = Next_XY_8bit / 16;
+//	x_local = Next_XY_8bit % 16;
+	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1);
+	make_temporary_goal_XY(2,0,4);
+	output_Walldata(ALL);
+//		start_led();
+//		log_start();
+//		set_straight(90*14, nomal_run.accel, nomal_run.vel_search, 0, 0);
+//		wait_straight();
 //		go_entrance(nomal_run.accel, nomal_run.vel_search);
 //		for (uint8_t i = 0; i < 1; i++) {
 //			pass_180(nomal_run.accel, nomal_run.vel_search);

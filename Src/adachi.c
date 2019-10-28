@@ -5,7 +5,6 @@
  *      Author: kt33_
  */
 
-
 #include "adachi.h"
 #include "variable.h"
 #include "run.h"
@@ -13,6 +12,7 @@
 #include "stdint.h"
 #include "walldata.h"
 #include "motion.h"
+#include "buzzer.h"
 
 #define QUEUE_SIZE 255
 
@@ -342,7 +342,7 @@ void adachi_search_run(uint8_t goal_x, uint8_t goal_y, uint8_t goal_scale,
 	addWall();
 	moter_flag = 1;
 	while (failsafe_flag == 0) {
-		if (step_map[x.now][y.now] ==  0xffff) {
+		if (step_map[x.now][y.now] == 0xffff) {
 			stop90(accel, vel);
 			failsafe_flag = 1;
 			break;
@@ -376,7 +376,7 @@ void adachi_search_run(uint8_t goal_x, uint8_t goal_y, uint8_t goal_scale,
 						|| (x.now == goal_x && y.now == goal_y + 1)
 						|| (x.now == goal_x + 1 && y.now == goal_y + 1))) {
 			set_straight(135.0, accel, vel, vel, 0.0);
-							wait_straight();
+			wait_straight();
 //			if (getWall(x.now, y.now, direction + 1, &walldata.real)) {
 //				set_straight(95.0, accel, vel, vel, 0.0);
 //				wait_straight();
@@ -456,7 +456,8 @@ void adachi_search_run(uint8_t goal_x, uint8_t goal_y, uint8_t goal_scale,
 	}
 }
 
-uint8_t how_to_move(uint8_t direction, int8_t x, int8_t y, singlewalldata_t walldata) {
+uint8_t how_to_move(uint8_t direction, int8_t x, int8_t y,
+		singlewalldata_t walldata) {
 	uint8_t flag, i;
 	int8_t a, b;
 	uint16_t step;
@@ -562,7 +563,7 @@ uint8_t how_to_move_pass(uint8_t direction, int8_t x, int8_t y,
 			} else {
 				flag = 3;
 				step = step_map[x + a][y + b];
-	//			//myprintf("flag=3\n");
+				//			//myprintf("flag=3\n");
 			}
 		} else if (step_map[x + a][y + b] <= step) {
 			flag = 3;
@@ -838,7 +839,7 @@ void search_run_special(uint8_t goal_x, uint8_t goal_y, uint8_t goal_scale) {
 	coordinate();
 	addWall();
 	while (failsafe_flag == 0) {
-//		speaker_on( C_4, 6.0, 1300);
+		set_buzzer(0, D_4, 600);
 //		adachi_map(goal_x, goal_y, goal_scale, walldata.real); //歩数マップ展開
 		Next_XY_16bit = make_temporary_goal_XY(goal_x, goal_y, goal_scale); //見たい壁の位置からゴールを算出
 		if (Next_XY_16bit == 0xffff) {
@@ -860,13 +861,8 @@ void search_run_special(uint8_t goal_x, uint8_t goal_y, uint8_t goal_scale) {
 				Next_XY_16bit); //見たい壁に対する位置と壁の絶対方角を入力
 
 	}
-	/////////////////////////
-//	failsafe_flag = 1;
-//	speaker_on( F_4, 6.0, 700);
-	/////////////////////////////////////
+
 	u_turn_counter = 100;
-//	speaker_on( D_4, 6.0, 1200);
-//	add_wall_flag = 0;
 	if (special_goal_flag == 0) {
 //		speaker_on( C_5, 6.0, 700);
 		adachi_special_move(goal_x, goal_y, goal_scale, nomal_run.accel,
@@ -895,7 +891,8 @@ uint16_t make_temporary_goal_XY(uint8_t ture_goal_x, uint8_t ture_goal_y,
 
 	while (failsafe_flag == 0) {
 		flag = how_to_move_special(x_local, y_local, local_direction);
-//		//myprintf("flag:%d.x:%d,y:%d,dire:%d\n",flag,x_local,y_local,local_direction);
+		printf("flag:%d.x:%d,y:%d,dire:%d\n", flag, x_local, y_local,
+				local_direction);
 
 		if (flag > 9) { //相対方角から絶対方角に変換
 			flag -= 10;
@@ -952,7 +949,7 @@ uint16_t make_temporary_goal_XY(uint8_t ture_goal_x, uint8_t ture_goal_y,
 	if (shift == 255) { //経路内に未知壁なし
 		Next_XY = 0xffff;
 	}
-//	//myprintf("%d\n",Next_XY);
+	printf("%d\n",Next_XY);
 	return Next_XY; //一時的なゴール座標を返す
 }
 
@@ -980,7 +977,7 @@ uint8_t how_to_move_special(uint8_t x, uint8_t y, uint8_t direction) {
 
 	step = step_map[x][y];
 	if (step == 0xffff) {
-		stop90(7000.0, 600.0);
+		stop90(nomal_run.accel, nomal_run.vel_search);
 		failsafe_flag = 1;
 	}
 
@@ -1133,7 +1130,7 @@ void adachi_special_move(uint8_t goal_x, uint8_t goal_y, uint8_t wall_direction,
 			turn_180(accel, vel);
 		}
 		if (flag > 11) {
-			set_straight(180.0 * (flag - 10), 5000.0, 1500.0, vel, vel);
+			set_straight(180.0 * (flag - 10), known_acc, known_vel, vel, vel);
 			wait_straight();
 			for (i = 0; i < flag - 10 - 1; i++) {
 				coordinate();

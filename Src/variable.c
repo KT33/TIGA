@@ -75,4 +75,5 @@ float oblique_offset_side=1.0;
 uint8_t front_wall_flag=0;
 float front_wall_gain;
 int front_wall_value_R,front_wall_value_L;
+float known_acc,known_vel;
 

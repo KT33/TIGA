@@ -182,6 +182,7 @@ extern float oblique_offset_side;
 extern float front_wall_gain;
 extern uint8_t front_wall_flag;
 extern int front_wall_value_R,front_wall_value_L;
+extern float known_acc,known_vel;
 
 #define North 0
 #define West 1

@@ -128,6 +128,7 @@ int main(void) {
 	clear_Map(&walldata.real);
 	clear_Map(&walldata.checked);
 	clear_adachiMap(&walldata.adachi);
+	walldata.checked.row[1] = 0x1;
 
 	HAL_Delay(10);
 	Battery_Check();
@@ -165,7 +166,7 @@ int main(void) {
 	SEN_RF.reference = 550;
 	SEN_RF.threshold = 380;
 
-	SEN_F.threshold = (int) (SEN_RF.threshold + SEN_LF.threshold) / 2*0.45;
+	SEN_F.threshold = (int) (SEN_RF.threshold + SEN_LF.threshold) / 2 * 0.45;
 	SEN_F.reference = (int) (SEN_RF.reference + SEN_LF.reference) / 2;
 
 	run_gain.Kp = 0.6;
@@ -177,11 +178,15 @@ int main(void) {
 
 	nomal_run.vel_search = 280.0;
 	nomal_run.accel = 1000.0;
+
+	known_acc = 1000.0;
+	known_vel = 350.0;
+
 	nomal_rotation.vel_search = 750.0;
 	nomal_rotation.accel = 1700.0;
 
-	x.goal = 6;
-	y.goal = 9;
+	x.goal = 2;
+	y.goal = 0;
 	while (1) {
 //		while (1) {
 //			set_led(2);
