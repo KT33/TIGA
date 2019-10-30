@@ -183,6 +183,10 @@ extern float front_wall_gain;
 extern uint8_t front_wall_flag;
 extern int front_wall_value_R,front_wall_value_L;
 extern float known_acc,known_vel;
+extern float enc_buff_l[100],enc_buff_r[100];
+extern uint8_t enc_buff_index;
+extern float acc_buff[50];
+extern uint8_t acc_buff_index;
 
 #define North 0
 #define West 1

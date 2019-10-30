@@ -501,3 +501,67 @@ void coordinate(void) {
 		x.now++;
 	}
 }
+
+void read_vel2(float*left_vel,float*right_vel) {
+	uint8_t RorL;
+	float vel;
+	uint16_t val;
+	float val2;
+	float val_cor;
+//	uint8_t table_index;
+	uint8_t i;
+	for (i = 0; i < 50; i++)
+		;
+	read_spi_en(RorL, 0x3fff);
+	for (i = 0; i < 50; i++)
+		;
+	val = (0x3fff & read_spi_en(RorL, 0x3fff));
+	for (i = 0; i < 50; i++)
+		;
+
+//	table_index = val / 500;
+	if (RorL == LEFT) {
+		en_log_L.before_5ms = en_log_L.before_4ms;
+		en_log_L.before_4ms = en_log_L.before_3ms;
+		en_log_L.before_3ms = en_log_L.before_2ms;
+		en_log_L.before_2ms = en_log_L.before_1ms;
+		en_log_L.before_1ms = en_log_L.now;
+		en_log_L.now = val;
+
+		val_cor = LPF[0] * en_log_L.now + LPF[1] * en_log_L.before_1ms
+				+ LPF[2] * en_log_L.before_2ms + LPF[3] * en_log_L.before_3ms
+				+ LPF[4] * en_log_L.before_4ms + LPF[5] * en_log_L.before_5ms;
+
+		val_cor = (float) val;
+	} else {
+		en_log_R.before_5ms = en_log_R.before_4ms;
+		en_log_R.before_4ms = en_log_R.before_3ms;
+		en_log_R.before_3ms = en_log_R.before_2ms;
+		en_log_R.before_2ms = en_log_R.before_1ms;
+		en_log_R.before_1ms = en_log_R.now;
+		en_log_R.now = val;
+
+		val_cor = LPF[0] * en_log_R.now + LPF[1] * en_log_R.before_1ms
+				+ LPF[2] * en_log_R.before_2ms + LPF[3] * en_log_R.before_3ms
+				+ LPF[4] * en_log_R.before_4ms + LPF[5] * en_log_R.before_5ms;
+		val_cor = (float) val;
+
+	}
+
+	val2 = (float) ((val_cor - before_en_val[RorL]));
+	if (val2 < -8000) {
+		val2 += 16384;
+	}
+	if (val2 > 8000) {
+		val2 -= 16384;
+	}
+	before_en_val[RorL] = val_cor;
+
+	vel = ((float) (val2)) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
+
+	if (RorL == LEFT) {
+		vel *= -1;
+	}
+
+//	return vel;
+}
