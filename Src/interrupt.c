@@ -34,6 +34,8 @@ void interrupt_1ms(void) {
 	buzzer_1ms();
 //buzzer
 
+	real_acc=read_accel();
+
 	if (log_flag == 1) {
 		log_sampling();
 	}
