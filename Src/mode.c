@@ -12,9 +12,46 @@
 #include "motion.h"
 #include "adachi.h"
 #include "buzzer.h"
+#include "SEGGER_RTT.h"
+#include "SEGGER_RTT_Conf.h"
 
 void mode_0(void) {
-//	uint8_t i;
+//	uint16_t i;
+//	int16_t enc_sum_l = 0, enc_sum_r = 0, left_diff = 0, right_diff = 0;
+//	int16_t enc_buff_l[100], enc_buff_r[100];
+//	uint8_t enc_buff_index = 0;
+//
+//	SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0,
+//			SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
+//
+//	for (i = 0; i < 50; i++) {
+//		enc_buff_l[i] = 0;
+//		enc_buff_r[i] = 0;
+//	}
+//	for (i = 50; i < 100; i++) {
+//		enc_buff_l[i] = 0;
+//		enc_buff_r[i] = 0;
+//	}
+//
+//	for (i = 0; i < 300; i++) {
+//		left_diff = i;
+//		if (left_diff > 100) {
+//			left_diff = 100;
+//		}
+//		enc_sum_l += (left_diff - enc_buff_l[enc_buff_index]);
+////		enc_sum_r += (right_diff - enc_buff_r[enc_buff_index]);
+//		enc_buff_l[enc_buff_index] = left_diff;
+////		enc_buff_r[enc_buff_index] = right_diff;
+//		enc_buff_index++;
+//		if (enc_buff_index == 100) {
+//			enc_buff_index = 0;
+//		}
+//		printf(",%d,%d,%f,%d\n", i, enc_buff_index, (float)enc_sum_l/100,left_diff);
+//	}
+//
+//	while (1)
+//		;
+
 	read_all_log_from_flash();
 	log_output();
 
@@ -29,31 +66,39 @@ void mode_1(void) {
 
 //	run_gain.Ki=0;
 
-	start_led();
-	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
-			1, 0);
-	save_all_walldata();
 //	start_led();
-//	log_start();
-//	set_straight(90.0 * 5, nomal_run.accel, nomal_run.vel_search, 0.0, 0.0);
+//	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
+//			1, 0);
+//	save_all_walldata();
+
+
+	start_led();
+	log_start();
+	set_straight(90.0 * 6, nomal_run.accel, nomal_run.vel_search, 0.0, 0.0);
+	wait_straight();
+	HAL_Delay(50);
+	log_flag = 0;
+	HAL_Delay(5);
+	log_flag = 0;
+	run_left_deviation.cumulative = 0.0;
+	run_right_deviation.cumulative = 0.0;
+	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
 //	wait_straight();
-//	HAL_Delay(500);/
-//	log_flag = 0;
-//	HAL_Delay(5);
-//	log_flag=0;
-	//	run_left_deviation.cumulative = 0.0;
-//	run_right_deviation.cumulative = 0.0;
-//	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
-////	wait_straight();
-//	moter_flag = 0;
-//	save_log_to_flash();
+	moter_flag = 0;
+	save_log_to_flash();
 }
 
 void mode_2(void) {
 
-	start_led();
-	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
-			0, 0);
+	log_start();
+	while(log_flag==1){
+
+	}
+	save_log_to_flash();
+
+//	start_led();
+//	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
+//			0, 0);
 //	log_start();
 //	adachi_search_run_known(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search, 0, 0);
 //	search_run_special(x.goal, y.goal, 4);
@@ -121,8 +166,9 @@ void mode_6(void) {
 //	Next_XY_8bit = (uint8_t) (test & 0x00ff);
 //	y_local = Next_XY_8bit / 16;
 //	x_local = Next_XY_8bit % 16;
-	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1);
-	make_temporary_goal_XY(2,0,4);
+	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1)
+		;
+	make_temporary_goal_XY(2, 0, 4);
 	output_Walldata(ALL);
 //		start_led();
 //		log_start();

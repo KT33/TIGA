@@ -19,6 +19,6 @@ other.c:234:6:Battery_Check	8	static
 other.c:267:6:set_led	16	static
 other.c:290:6:log_start	4	static
 other.c:297:6:log_sampling	4	static
-other.c:343:6:log_output	32	static
-other.c:364:6:start_led	8	static
-other.c:399:6:output_SEN	16	static
+other.c:345:6:log_output	32	static
+other.c:366:6:start_led	8	static
+other.c:401:6:output_SEN	16	static

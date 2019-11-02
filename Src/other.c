@@ -177,7 +177,7 @@ float read_accel(void) {
 	data_h = read_spi(0x2d);
 	data_l = read_spi(0x2e);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
-	return (float) value * 2.39427472762; //*9.8...*8/(2^15-1)*1000 return mm/ms^2
+	return (float) value * 2.39427472762 * -1; //*9.8...*8/(2^15-1)*1000 return mm/ms^2
 }
 
 uint16_t check_parity(uint16_t val) {
@@ -307,9 +307,11 @@ void log_sampling(void) {
 		mylog.log_5[log_index] = ideal_rotation.vel;
 		mylog2.log_1[log_index] = real_rotation.dis;
 		mylog2.log_2[log_index] = ideal_rotation.dis;
-		mylog2.log_3[log_index] = rotation_deviation.cumulative;
-		mylog2.log_4[log_index] = run_left_deviation.cumulative;
-		mylog2.log_5[log_index] = run_right_deviation.cumulative;
+		mylog2.log_3[log_index] = test_L;
+		mylog2.log_4[log_index] = test_R;
+		mylog2.log_5[log_index] = test_L2;
+
+		//	mylog.log_1[log_index] = real_acc;
 
 //		mylog.log_1[log_index] = real_L.vel;
 //		mylog.log_2[log_index] = real_R.vel;

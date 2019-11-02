@@ -11,4 +11,4 @@ ruc.c:379:6:integral_1ms	24	static
 ruc.c:383:6:integral_ideal	32	static
 ruc.c:388:6:wall_control	16	static
 ruc.c:493:6:coordinate	4	static
-ruc.c:505:6:read_vel2	40	static
+ruc.c:505:6:read_vel2	64	static

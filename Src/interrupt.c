@@ -24,9 +24,21 @@ void adc_1ms(void);
 
 void interrupt_1ms(void) {
 
-	//encoder
-	real_L.vel = read_vel(LEFT); //mm/sec
-	real_R.vel = read_vel(RIGHT);
+//	real_L.vel = read_vel(LEFT); //mm/sec
+//	real_R.vel = read_vel(RIGHT);
+
+//encoder
+	if (mode & 0x80) { //in_mode　モード中
+//		test_L = read_vel(LEFT); //mm/sec
+//		test_R = read_vel(RIGHT);
+		read_vel2(&real_L.vel, &real_R.vel);
+
+//		real_L.vel = read_vel(LEFT); //mm/sec
+//		real_R.vel = read_vel(RIGHT);
+	} else {
+		real_L.vel = read_vel(LEFT); //mm/sec
+		real_R.vel = read_vel(RIGHT);
+	}
 	integral_1ms(&real_L.dis, &real_L.vel);
 	integral_1ms(&real_R.dis, &real_R.vel);
 	//encoder
@@ -34,7 +46,7 @@ void interrupt_1ms(void) {
 	buzzer_1ms();
 //buzzer
 
-	real_acc=read_accel();
+//	real_acc=read_accel();
 
 	if (log_flag == 1) {
 		log_sampling();

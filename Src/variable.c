@@ -77,12 +77,14 @@ float front_wall_gain;
 int front_wall_value_R,front_wall_value_L;
 float known_acc,known_vel;
 
-<<<<<<< HEAD
-float enc_buff_l[100],enc_buff_r[100];
+int32_t enc_buff_l[100],enc_buff_r[100];
 uint8_t enc_buff_index=0;
 float acc_buff[50];
 uint8_t acc_buff_index=0;
-=======
+uint16_t left_enc_before,right_enc_before;
+int32_t enc_sum_l=0,enc_sum_r=0;
+float acc_sum=0;
+
 float real_acc;
->>>>>>> b86b32cdccc32b039d8c0ca9f00e1ce9c0b8f809
+
 

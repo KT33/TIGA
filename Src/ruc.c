@@ -502,66 +502,99 @@ void coordinate(void) {
 	}
 }
 
-void read_vel2(float*left_vel,float*right_vel) {
-	uint8_t RorL;
-	float vel;
-	uint16_t val;
-	float val2;
-	float val_cor;
-//	uint8_t table_index;
+void read_vel2(float*left_vel, float*right_vel) {
 	uint8_t i;
+	uint16_t left_enc_val, right_enc_val;
+	int32_t left_diff, right_diff;
+	float vel_enc_l, vel_enc_r, vel_acc;
+	float l_vel_box;
+	float r_vel_box;
+	l_vel_box = *left_vel;
+	r_vel_box = *right_vel;
+//	uint8_t table_index;
+
+	real_acc = read_accel();
+	acc_sum += real_acc - acc_buff[acc_buff_index];
+	acc_buff[acc_buff_index] = real_acc;
+	acc_buff_index++;
+	if (acc_buff_index == 50) {
+		acc_buff_index = 0;
+	}
+	vel_acc = acc_sum * 0.001;
+	test_L2 = vel_acc;
+
+//leftの実際の測定値
 	for (i = 0; i < 50; i++)
 		;
-	read_spi_en(RorL, 0x3fff);
+	read_spi_en(LEFT, 0x3fff);
 	for (i = 0; i < 50; i++)
 		;
-	val = (0x3fff & read_spi_en(RorL, 0x3fff));
+	left_enc_val = (0x3fff & read_spi_en(LEFT, 0x3fff));
+	for (i = 0; i < 25; i++)
+		;
+
+//rightの実際の測定値
+	for (i = 0; i < 25; i++)
+		;
+	read_spi_en(RIGHT, 0x3fff);
+	for (i = 0; i < 50; i++)
+		;
+	right_enc_val = (0x3fff & read_spi_en(RIGHT, 0x3fff));
 	for (i = 0; i < 50; i++)
 		;
 
-//	table_index = val / 500;
-	if (RorL == LEFT) {
-		en_log_L.before_5ms = en_log_L.before_4ms;
-		en_log_L.before_4ms = en_log_L.before_3ms;
-		en_log_L.before_3ms = en_log_L.before_2ms;
-		en_log_L.before_2ms = en_log_L.before_1ms;
-		en_log_L.before_1ms = en_log_L.now;
-		en_log_L.now = val;
+	left_diff = (int32_t) (left_enc_val - left_enc_before) * -1;
+	right_diff = (int32_t) (right_enc_val - right_enc_before);
+	left_enc_before = left_enc_val;
+	right_enc_before = right_enc_val;
 
-		val_cor = LPF[0] * en_log_L.now + LPF[1] * en_log_L.before_1ms
-				+ LPF[2] * en_log_L.before_2ms + LPF[3] * en_log_L.before_3ms
-				+ LPF[4] * en_log_L.before_4ms + LPF[5] * en_log_L.before_5ms;
-
-		val_cor = (float) val;
-	} else {
-		en_log_R.before_5ms = en_log_R.before_4ms;
-		en_log_R.before_4ms = en_log_R.before_3ms;
-		en_log_R.before_3ms = en_log_R.before_2ms;
-		en_log_R.before_2ms = en_log_R.before_1ms;
-		en_log_R.before_1ms = en_log_R.now;
-		en_log_R.now = val;
-
-		val_cor = LPF[0] * en_log_R.now + LPF[1] * en_log_R.before_1ms
-				+ LPF[2] * en_log_R.before_2ms + LPF[3] * en_log_R.before_3ms
-				+ LPF[4] * en_log_R.before_4ms + LPF[5] * en_log_R.before_5ms;
-		val_cor = (float) val;
-
+	if (left_diff < -8000) {
+		left_diff += 16384;
+	}
+	if (left_diff > 8000) {
+		left_diff -= 16384;
 	}
 
-	val2 = (float) ((val_cor - before_en_val[RorL]));
-	if (val2 < -8000) {
-		val2 += 16384;
+	if (right_diff < -8000) {
+		right_diff += 16384;
 	}
-	if (val2 > 8000) {
-		val2 -= 16384;
+	if (right_diff > 8000) {
+		right_diff -= 16384;
 	}
-	before_en_val[RorL] = val_cor;
 
-	vel = ((float) (val2)) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
-
-	if (RorL == LEFT) {
-		vel *= -1;
+	enc_sum_l += (left_diff - enc_buff_l[enc_buff_index]);
+	enc_sum_r += (right_diff - enc_buff_r[enc_buff_index]);
+	enc_buff_l[enc_buff_index] = left_diff;
+	enc_buff_r[enc_buff_index] = right_diff;
+	enc_buff_index++;
+	if (enc_buff_index == 100) {
+		enc_buff_index = 0;
 	}
+
+	test_L = (float) ((enc_sum_l / 100) / 16384.0 * (3.1415926 * DIAMETER)
+			* 1000) + vel_acc; //
+	test_R = (float) ((enc_sum_r / 100) / 16384.0 * (3.1415926 * DIAMETER)
+			* 1000) + vel_acc;
+
+//	enc_sum_l = (int32_t)left_diff * 100;
+//	enc_sum_r = (int32_t)right_diff * 100;
+//
+//	vel_enc_l = (float) (enc_sum_l / 100) / 16384.0 * (3.1415926 * DIAMETER)
+//			* 1000;
+//	vel_enc_r = (float) (enc_sum_r / 100) / 16384.0 * (3.1415926 * DIAMETER)
+//			* 1000;
+
+	vel_enc_l = (float) (left_diff) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
+	vel_enc_r = (float) (right_diff) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
+
+	*left_vel = vel_enc_l; //vel_acc +
+	*right_vel = vel_enc_r; //vel_acc +
+
+//	vel = ((float) (val2)) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
+
+//	if (RorL == LEFT) {
+//		vel *= -1;
+//	}
 
 //	return vel;
 }
