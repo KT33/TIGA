@@ -64,21 +64,21 @@ void mode_1(void) {
 //	moter_flag = 1;
 //	printf("4,mode=%d,%d\n", mode, (mode & 0x80));
 
-//	run_gain.Ki=0;
+//	run_gain.Ki = 0;
+//	run_gain.Kp*=0.5;
 
 //	start_led();
 //	adachi_search_run(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search,
 //			1, 0);
 //	save_all_walldata();
 
-
 	start_led();
+	real_diss_from_acc = 0.0;
+	real_vel_from_acc = 0.0;
 	log_start();
 	set_straight(90.0 * 6, nomal_run.accel, nomal_run.vel_search, 0.0, 0.0);
 	wait_straight();
-	HAL_Delay(50);
-	log_flag = 0;
-	HAL_Delay(5);
+	HAL_Delay(1000);
 	log_flag = 0;
 	run_left_deviation.cumulative = 0.0;
 	run_right_deviation.cumulative = 0.0;
@@ -90,8 +90,15 @@ void mode_1(void) {
 
 void mode_2(void) {
 
+	start_led();
+	real_diss_from_acc = 0.0;
+	real_vel_from_acc = 0.0;
+	moter_flag=2;
 	log_start();
-	while(log_flag==1){
+	duty.left = 40;
+	duty.right = 40;
+	duty_to_moter();
+	while (log_flag == 1) {
 
 	}
 	save_log_to_flash();

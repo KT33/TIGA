@@ -31,7 +31,11 @@ void interrupt_1ms(void) {
 	if (mode & 0x80) { //in_mode　モード中
 //		test_L = read_vel(LEFT); //mm/sec
 //		test_R = read_vel(RIGHT);
-		read_vel2(&real_L.vel, &real_R.vel);
+//		read_vel2(&real_L.vel, &real_R.vel);
+		real_L.vel = read_vel(LEFT); //mm/sec
+		real_R.vel = read_vel(RIGHT);
+		integral_1ms(&real_vel_from_acc, &real_acc);
+		integral_1ms(&real_diss_from_acc, &real_vel_from_acc);
 
 //		real_L.vel = read_vel(LEFT); //mm/sec
 //		real_R.vel = read_vel(RIGHT);
@@ -93,6 +97,7 @@ void interrupt_1ms(void) {
 		if (angle_calibration_flag == 1) {
 			angle_calibration_counter++;
 			angle_calibration_integral += real_rotation.vel;
+			accel_calibration_integral += real_acc;
 			if (angle_calibration_counter == 2000) {
 				angle_calibration_flag = 0;
 			}

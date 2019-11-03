@@ -7,8 +7,8 @@ ruc.c:131:6:duty_to_moter	16	static
 ruc.c:180:6:control_accel	32	static
 ruc.c:221:6:PID_control	40	static
 ruc.c:268:7:read_vel	40	static
-ruc.c:379:6:integral_1ms	24	static
-ruc.c:383:6:integral_ideal	32	static
-ruc.c:388:6:wall_control	16	static
-ruc.c:493:6:coordinate	4	static
-ruc.c:505:6:read_vel2	64	static
+ruc.c:408:6:integral_1ms	24	static
+ruc.c:412:6:integral_ideal	32	static
+ruc.c:417:6:wall_control	16	static
+ruc.c:522:6:coordinate	4	static
+ruc.c:534:6:read_vel2	64	static

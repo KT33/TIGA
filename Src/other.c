@@ -149,7 +149,7 @@ void init_gyro(void) {
 	HAL_Delay(10);
 	write_spi(0x01, 0x06); //GYRO_CONFIG_1 +-2000dps non-filter
 	HAL_Delay(10);
-	write_spi(0x14, 0x04); //ACCEL_CONFIG +-8g non-filter
+	write_spi(0x14, 0x00); //ACCEL_CONFIG +-2g non-filter
 
 	HAL_Delay(10);
 	write_spi(0x7f, 0x00); //REG_BANK_SEL bank0に移動
@@ -177,7 +177,20 @@ float read_accel(void) {
 	data_h = read_spi(0x2d);
 	data_l = read_spi(0x2e);
 	value = (int16_t) (data_h << 8) | (int16_t) data_l;
-	return (float) value * 2.39427472762 * -1; //*9.8...*8/(2^15-1)*1000 return mm/ms^2
+
+//	acc_log[acc_log_index] = value;
+//	value = LPF[0] * acc_log[((acc_log_index) % 6)]
+//			+ LPF[1] * acc_log[((acc_log_index - 1 + 6) % 6)]
+//			+ LPF[2] * acc_log[((acc_log_index - 2 + 6) % 6)]
+//			+ LPF[3] * acc_log[((acc_log_index - 3 + 6) % 6)]
+//			+ LPF[4] * acc_log[((acc_log_index - 4 + 6) % 6)]
+//			+ LPF[5] * acc_log[((acc_log_index - 5 + 6) % 6)];
+//	acc_log_index++;
+//	if (acc_log_index == 6) {
+//		acc_log_index = 0;
+//	}
+
+	return ((float) (value * 0.598568681905 * -1) - accel_calibration)*1.02; //*9.8...*2/(2^15-1)*1000 return mm/ms^2
 }
 
 uint16_t check_parity(uint16_t val) {
@@ -300,29 +313,29 @@ void log_sampling(void) {
 		log_flag = 0;
 		log_index = 0;
 	} else if (log_often_count == log_how_often) {
-		mylog.log_1[log_index] = real_L.vel;
-		mylog.log_2[log_index] = real_R.vel;
-		mylog.log_3[log_index] = ideal_translation.vel;
-		mylog.log_4[log_index] = real_rotation.vel;
-		mylog.log_5[log_index] = ideal_rotation.vel;
-		mylog2.log_1[log_index] = real_rotation.dis;
-		mylog2.log_2[log_index] = ideal_rotation.dis;
-		mylog2.log_3[log_index] = test_L;
-		mylog2.log_4[log_index] = test_R;
-		mylog2.log_5[log_index] = test_L2;
-
-		//	mylog.log_1[log_index] = real_acc;
-
 //		mylog.log_1[log_index] = real_L.vel;
 //		mylog.log_2[log_index] = real_R.vel;
 //		mylog.log_3[log_index] = ideal_translation.vel;
-//		mylog.log_4[log_index] = test_L;
-//		mylog.log_5[log_index] = test_L2;
-//		mylog2.log_1[log_index] = test_R;
-//		mylog2.log_2[log_index] = test_R2;
-//		mylog2.log_3[log_index] = rotation_deviation.cumulative;
-//		mylog2.log_4[log_index] = run_left_deviation.cumulative;
-//		mylog2.log_5[log_index] = run_right_deviation.cumulative;
+//		mylog.log_4[log_index] = real_rotation.vel;
+//		mylog.log_5[log_index] = ideal_rotation.vel;
+//		mylog2.log_1[log_index] = real_rotation.dis;
+//		mylog2.log_2[log_index] = ideal_rotation.dis;
+//		mylog2.log_3[log_index] = test_L;
+//		mylog2.log_4[log_index] = test_R;
+//		mylog2.log_5[log_index] = test_L2;
+
+		//	mylog.log_1[log_index] = real_acc;
+
+		mylog.log_1[log_index] = real_L.vel;
+		mylog.log_2[log_index] = real_R.vel;
+		mylog.log_3[log_index] = ideal_translation.vel;
+		mylog.log_4[log_index] = test_L;
+		mylog.log_5[log_index] = test_L2;
+		mylog2.log_1[log_index] = test_R;
+		mylog2.log_2[log_index] = test_R2;
+		mylog2.log_3[log_index] = rotation_deviation.cumulative;
+		mylog2.log_4[log_index] = run_left_deviation.cumulative;
+		mylog2.log_5[log_index] = run_right_deviation.cumulative;
 
 //		mylog.log_1[log_index] = (float)SEN_L.now;
 //		mylog.log_2[log_index] = (float)SEN_R.now;
@@ -334,6 +347,17 @@ void log_sampling(void) {
 //		mylog2.log_3[log_index] = SEN_F.now;
 //		mylog2.log_4[log_index] = test_float;
 //		mylog2.log_5[log_index] = 0;
+
+//		mylog.log_1[log_index] = real_L.vel;
+//		mylog.log_2[log_index] = real_R.vel;
+//		mylog.log_3[log_index] = ideal_translation.vel;
+//		mylog.log_4[log_index] = real_acc;
+//		mylog.log_5[log_index] = real_vel_from_acc;
+//		mylog2.log_1[log_index] = real_diss_from_acc;
+//		mylog2.log_2[log_index] = ideal_rotation.dis * 0;
+//		mylog2.log_3[log_index] = test_L;
+//		mylog2.log_4[log_index] = test_R;
+//		mylog2.log_5[log_index] = test_L2;
 
 		log_index++;
 		log_often_count = 0;
@@ -364,6 +388,7 @@ void log_output(void) {
 }
 
 void start_led(void) {
+	uint8_t i;
 	SEN_check_flag = 1;
 	wall_control_flag = 0;
 	while (SEN_R.now < 1000 || SEN_RF.now < 1000) {
@@ -381,16 +406,31 @@ void start_led(void) {
 	HAL_Delay(200);
 	//	log_start();
 
+
+
 	angle_calibration_integral = 0.0;
 	angle_calibration = 0.0;
+	accel_calibration_integral = 0.0;
+	accel_calibration = 0.0;
 	angle_calibration_counter = 0;
 	angle_calibration_flag = 1;
 	while (angle_calibration_flag == 1) {
 
 	}
 	angle_calibration = angle_calibration_integral / 2000.0;
+	accel_calibration = accel_calibration_integral / 2000.0;
 	real_rotation.dis = 0.0;
 	ideal_translation.vel = 0.0;
+
+	for (i = 0; i < 50; i++) {
+		enc_buff_l[i] = 0;
+		enc_buff_r[i] = 0;
+		acc_buff[i] = 0;
+	}
+	for (i = 50; i < 100; i++) {
+		enc_buff_l[i] = 0;
+		enc_buff_r[i] = 0;
+	}
 
 	rotation_deviation.cumulative = 0;
 	set_buzzer(0, E_5, 800);

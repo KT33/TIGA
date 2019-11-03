@@ -108,17 +108,17 @@ typedef struct {
 	float log_5[LOG_MAX];
 } LOG_t;
 
-typedef struct{
+typedef struct {
 	float in_offset;
 	float out_offset;
-}sla_t;
+} sla_t;
 
-typedef struct{
+typedef struct {
 	float accel;
 	float max_vel;
 	sla_t left;
 	sla_t right;
-}slarom_para_t;
+} slarom_para_t;
 
 extern uint16_t g_ADCBuffer[9];
 extern float Batt;
@@ -136,7 +136,6 @@ extern buzzer_t buzzer[30];
 extern uint8_t buzzer_index, buzzer_flag;
 extern uint8_t low_batt_flag;
 extern float before_en_val[2];
-extern SENLOG_t en_log_L, en_log_R;
 extern run_t real_R, real_L, real_rotation;
 extern run_t ideal_translation, ideal_rotation;
 extern trapezoid_t translation_parameter, rotation_parameter;
@@ -181,19 +180,24 @@ extern float oblique_offset_front;
 extern float oblique_offset_side;
 extern float front_wall_gain;
 extern uint8_t front_wall_flag;
-extern int front_wall_value_R,front_wall_value_L;
-extern float known_acc,known_vel;
+extern int front_wall_value_R, front_wall_value_L;
+extern float known_acc, known_vel;
 
-extern int32_t enc_buff_l[100],enc_buff_r[100];
+extern int32_t enc_buff_l[100], enc_buff_r[100];
 extern uint8_t enc_buff_index;
 extern float acc_buff[50];
 extern uint8_t acc_buff_index;
-extern uint16_t left_enc_before,right_enc_before;
-extern int32_t enc_sum_l,enc_sum_r;
+extern uint16_t left_enc_before, right_enc_before;
+extern int32_t enc_sum_l, enc_sum_r;
 extern float acc_sum;
 
 extern float real_acc;
+extern float real_vel_from_acc, real_diss_from_acc;
 
+extern float accel_calibration_integral , accel_calibration;
+
+extern float en_log_L[6], en_log_R[6],acc_log[6];
+extern int8_t en_log_index,acc_log_index;
 
 #define North 0
 #define West 1

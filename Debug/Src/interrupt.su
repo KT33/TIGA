@@ -1,4 +1,4 @@
 interrupt.c:25:6:interrupt_1ms	40	static
-interrupt.c:164:6:buzzer_1ms	8	static
-interrupt.c:190:6:adc_1ms	24	static
-interrupt.c:283:6:failsafe	8	static
+interrupt.c:169:6:buzzer_1ms	8	static
+interrupt.c:195:6:adc_1ms	24	static
+interrupt.c:288:6:failsafe	8	static

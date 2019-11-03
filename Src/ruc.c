@@ -283,37 +283,43 @@ float read_vel(uint8_t RorL) {
 
 //	table_index = val / 500;
 	if (RorL == LEFT) {
-		en_log_L.before_5ms = en_log_L.before_4ms;
-		en_log_L.before_4ms = en_log_L.before_3ms;
-		en_log_L.before_3ms = en_log_L.before_2ms;
-		en_log_L.before_2ms = en_log_L.before_1ms;
-		en_log_L.before_1ms = en_log_L.now;
-		en_log_L.now = val;
-
-		val_cor = LPF[0] * en_log_L.now + LPF[1] * en_log_L.before_1ms
-				+ LPF[2] * en_log_L.before_2ms + LPF[3] * en_log_L.before_3ms
-				+ LPF[4] * en_log_L.before_4ms + LPF[5] * en_log_L.before_5ms;
+//		en_log_L.before_5ms = en_log_L.before_4ms;
+//		en_log_L.before_4ms = en_log_L.before_3ms;
+//		en_log_L.before_3ms = en_log_L.before_2ms;
+//		en_log_L.before_2ms = en_log_L.before_1ms;
+//		en_log_L.before_1ms = en_log_L.now;
+//		en_log_L.now = val;
+//
+//		val_cor = LPF[0] * (float) en_log_L.now
+//				+ LPF[1] * (float) en_log_L.before_1ms
+//				+ LPF[2] * (float) en_log_L.before_2ms
+//				+ LPF[3] * (float) en_log_L.before_3ms
+//				+ LPF[4] * (float) en_log_L.before_4ms
+//				+ LPF[5] * (float) en_log_L.before_5ms;
 
 		val_cor = (float) val;
 //		test_L = (float) val;
-//		test_L = val_cor;
-//		test_L2 = val_cor - before_en_val[RorL];
+		test_L = val_cor;
+		test_L2 = val_cor - before_en_val[RorL];
 
 	} else {
-		en_log_R.before_5ms = en_log_R.before_4ms;
-		en_log_R.before_4ms = en_log_R.before_3ms;
-		en_log_R.before_3ms = en_log_R.before_2ms;
-		en_log_R.before_2ms = en_log_R.before_1ms;
-		en_log_R.before_1ms = en_log_R.now;
-		en_log_R.now = val;
+//		en_log_R.before_5ms = en_log_R.before_4ms;
+//		en_log_R.before_4ms = en_log_R.before_3ms;
+//		en_log_R.before_3ms = en_log_R.before_2ms;
+//		en_log_R.before_2ms = en_log_R.before_1ms;
+//		en_log_R.before_1ms = en_log_R.now;
+//		en_log_R.now = val;
 
-		val_cor = LPF[0] * en_log_R.now + LPF[1] * en_log_R.before_1ms
-				+ LPF[2] * en_log_R.before_2ms + LPF[3] * en_log_R.before_3ms
-				+ LPF[4] * en_log_R.before_4ms + LPF[5] * en_log_R.before_5ms;
+//		val_cor = LPF[0] * (float) en_log_R.now
+//				+ LPF[1] * (float) en_log_R.before_1ms
+//				+ LPF[2] * (float) en_log_R.before_2ms
+//				+ LPF[3] * (float) en_log_R.before_3ms
+//				+ LPF[4] * (float) en_log_R.before_4ms
+//				+ LPF[5] * (float) en_log_R.before_5ms;
 		val_cor = (float) val;
 //		test_R = (float) val;
-//		test_R = val_cor;
-//		test_R2 = val_cor - before_en_val[RorL];
+		test_R = val_cor;
+		test_R2 = val_cor - before_en_val[RorL];
 
 	}
 
@@ -327,6 +333,29 @@ float read_vel(uint8_t RorL) {
 	before_en_val[RorL] = val_cor;
 
 	vel = ((float) (val2)) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
+
+	if (RorL == LEFT) {
+		en_log_L[en_log_index] = vel;
+		vel = LPF[0] * en_log_L[((en_log_index) % 6)]
+				+ LPF[1] * en_log_L[((en_log_index - 1 + 6) % 6)]
+				+ LPF[2] * en_log_L[((en_log_index - 2 + 6) % 6)]
+				+ LPF[3] * en_log_L[((en_log_index - 3 + 6) % 6)]
+				+ LPF[4] * en_log_L[((en_log_index - 4 + 6) % 6)]
+				+ LPF[5] * en_log_L[((en_log_index - 5 + 6) % 6)];
+
+	} else {
+		en_log_R[en_log_index] = vel;
+		vel = LPF[0] * en_log_R[((en_log_index) % 6)]
+				+ LPF[1] * en_log_R[((en_log_index - 1 + 6) % 6)]
+				+ LPF[2] * en_log_R[((en_log_index - 2 + 6) % 6)]
+				+ LPF[3] * en_log_R[((en_log_index - 3 + 6) % 6)]
+				+ LPF[4] * en_log_R[((en_log_index - 4 + 6) % 6)]
+				+ LPF[5] * en_log_R[((en_log_index - 5 + 6) % 6)];
+		en_log_index++;
+		if (en_log_index == 6) {
+			en_log_index = 0;
+		}
+	}
 
 	if (RorL == LEFT) {
 		vel *= -1;
@@ -572,10 +601,11 @@ void read_vel2(float*left_vel, float*right_vel) {
 	}
 
 	test_L = (float) ((enc_sum_l / 100) / 16384.0 * (3.1415926 * DIAMETER)
-			* 1000) + vel_acc; //
+			* 1000) + vel_acc; //+ vel_acc
 	test_R = (float) ((enc_sum_r / 100) / 16384.0 * (3.1415926 * DIAMETER)
-			* 1000) + vel_acc;
-
+			* 1000) + vel_acc; //+ vel_acc
+	vel_enc_l = test_L;
+	vel_enc_r = test_R;
 //	enc_sum_l = (int32_t)left_diff * 100;
 //	enc_sum_r = (int32_t)right_diff * 100;
 //
@@ -584,8 +614,8 @@ void read_vel2(float*left_vel, float*right_vel) {
 //	vel_enc_r = (float) (enc_sum_r / 100) / 16384.0 * (3.1415926 * DIAMETER)
 //			* 1000;
 
-	vel_enc_l = (float) (left_diff) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
-	vel_enc_r = (float) (right_diff) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
+//	vel_enc_l = (float) (left_diff) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
+//	vel_enc_r = (float) (right_diff) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
 
 	*left_vel = vel_enc_l; //vel_acc +
 	*right_vel = vel_enc_r; //vel_acc +
