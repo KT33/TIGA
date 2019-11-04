@@ -270,7 +270,7 @@ float read_vel(uint8_t RorL) {
 	uint16_t val;
 	float val2;
 	float val_cor;
-//	uint8_t table_index;
+	uint8_t table_index, table_value;
 	uint8_t i;
 	for (i = 0; i < 50; i++)
 		;
@@ -297,11 +297,23 @@ float read_vel(uint8_t RorL) {
 //				+ LPF[4] * (float) en_log_L.before_4ms
 //				+ LPF[5] * (float) en_log_L.before_5ms;
 
+//		table_index = val / 500;
+//		table_value = val % 500;
+//
+//		if (table_index + 1 < 33) {
+//			val_cor =
+//					(float) (((en_L_table[table_index + 1]
+//					- en_L_table[table_index]) * (float) table_value / 500)
+//					+ en_L_table[table_index]) * val;
+//		} else {
+//			val_cor = (float) ((en_L_table[table_index + 1]
+//					- en_L_table[table_index]) * (float) table_value / 335
+//					+ en_L_table[table_index]) * val;
+//		}
+
 		val_cor = (float) val;
 //		test_L = (float) val;
 		test_L = val_cor;
-		test_L2 = val_cor - before_en_val[RorL];
-
 	} else {
 //		en_log_R.before_5ms = en_log_R.before_4ms;
 //		en_log_R.before_4ms = en_log_R.before_3ms;
@@ -309,7 +321,6 @@ float read_vel(uint8_t RorL) {
 //		en_log_R.before_2ms = en_log_R.before_1ms;
 //		en_log_R.before_1ms = en_log_R.now;
 //		en_log_R.now = val;
-
 //		val_cor = LPF[0] * (float) en_log_R.now
 //				+ LPF[1] * (float) en_log_R.before_1ms
 //				+ LPF[2] * (float) en_log_R.before_2ms
@@ -319,18 +330,22 @@ float read_vel(uint8_t RorL) {
 		val_cor = (float) val;
 //		test_R = (float) val;
 		test_R = val_cor;
-		test_R2 = val_cor - before_en_val[RorL];
-
 	}
 
 	val2 = (float) ((val_cor - before_en_val[RorL]));
+	before_en_val[RorL] = val_cor;
 	if (val2 < -8000) {
 		val2 += 16384;
 	}
 	if (val2 > 8000) {
 		val2 -= 16384;
 	}
-	before_en_val[RorL] = val_cor;
+
+	if (RorL == LEFT) {
+		test_L2 = val2;
+	} else {
+		test_R2 = val2;
+	}
 
 	vel = ((float) (val2)) / 16384.0 * (3.1415926 * DIAMETER) * 1000;
 
