@@ -167,14 +167,14 @@ int main(void) {
 	mode = 0;
 	mode_select_dis = 10;
 
-	SEN_L.reference = 376;
-	SEN_L.threshold = 61;
-	SEN_R.reference = 394;
-	SEN_R.threshold = 100;
-	SEN_LF.reference = 496;
-	SEN_LF.threshold = 374;
-	SEN_RF.reference = 550;
-	SEN_RF.threshold = 380;
+	SEN_L.reference = 415;
+	SEN_L.threshold = 88;
+	SEN_R.reference = 438;
+	SEN_R.threshold = 104;
+	SEN_LF.reference = 418;//区画入り口
+	SEN_LF.threshold = 917;//区画入り口と中心の間
+	SEN_RF.reference = 418;//区画入り口
+	SEN_RF.threshold = 1200;//区画入り口と中心の間
 
 	SEN_F.threshold = (int) (SEN_RF.threshold + SEN_LF.threshold) / 2 * 0.45;
 	SEN_F.reference = (int) (SEN_RF.reference + SEN_LF.reference) / 2;
@@ -183,6 +183,10 @@ int main(void) {
 	run_gain.Ki = 0.15;
 	rotation_gain.Kp = 0.41;
 	rotation_gain.Ki = 0.005; //3
+
+	rotation_gain.Kp = 0.5;
+	rotation_gain.Ki = 0.015; //3
+
 	wall_cntrol_gain.Kp = 0.05;
 	wall_cntrol_gain.Kd = 0.0;
 

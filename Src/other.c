@@ -190,7 +190,7 @@ float read_accel(void) {
 //		acc_log_index = 0;
 //	}
 
-	return ((float) (value * 0.598568681905 * -1) - accel_calibration)*1.02; //*9.8...*2/(2^15-1)*1000 return mm/ms^2
+	return ((float) (value * 0.598568681905 * -1) - accel_calibration) * 1.02; //*9.8...*2/(2^15-1)*1000 return mm/ms^2
 }
 
 uint16_t check_parity(uint16_t val) {
@@ -313,37 +313,49 @@ void log_sampling(void) {
 		log_flag = 0;
 		log_index = 0;
 	} else if (log_often_count == log_how_often) {
-//		mylog.log_1[log_index] = real_L.vel;
-//		mylog.log_2[log_index] = real_R.vel;
-//		mylog.log_3[log_index] = ideal_translation.vel;
-//		mylog.log_4[log_index] = real_rotation.vel;
-//		mylog.log_5[log_index] = ideal_rotation.vel;
-//		mylog2.log_1[log_index] = real_rotation.dis;
-//		mylog2.log_2[log_index] = ideal_rotation.dis;
-//		mylog2.log_3[log_index] = test_L;
-//		mylog2.log_4[log_index] = test_R;
-//		mylog2.log_5[log_index] = test_L2;
-
-		//	mylog.log_1[log_index] = real_acc;
-
 		mylog.log_1[log_index] = real_L.vel;
 		mylog.log_2[log_index] = real_R.vel;
 		mylog.log_3[log_index] = ideal_translation.vel;
-		mylog.log_4[log_index] = test_L;
-		mylog.log_5[log_index] = test_L2;
-		mylog2.log_1[log_index] = test_R;
-		mylog2.log_2[log_index] = test_R2;
-		mylog2.log_3[log_index] = rotation_deviation.cumulative;
-		mylog2.log_4[log_index] = run_left_deviation.cumulative;
-		mylog2.log_5[log_index] = run_right_deviation.cumulative;
+		mylog.log_4[log_index] = real_rotation.vel;
+		mylog.log_5[log_index] = ideal_rotation.vel;
+		mylog2.log_1[log_index] = real_rotation.dis;
+		mylog2.log_2[log_index] = ideal_rotation.dis;
+		mylog2.log_3[log_index] = test_L;
+		mylog2.log_4[log_index] = test_R;
+		mylog2.log_5[log_index] = test_L2;
 
-//		mylog.log_1[log_index] = (float)SEN_L.now;
-//		mylog.log_2[log_index] = (float)SEN_R.now;
-//		mylog.log_3[log_index] = (float)SEN_LF.now;
-//		mylog.log_4[log_index] = (float)SEN_RF.now;
-////		mylog.log_5[log_index] = 0;
-//		mylog2.log_1[log_index] = SEN_L.now;
-//		mylog2.log_2[log_index] = SEN_R.now;
+//		mylog.log_1[log_index] = 1;
+//		mylog.log_2[log_index] = 2;
+//		mylog.log_3[log_index] = 3;
+//		mylog.log_4[log_index] = 4;
+//		mylog.log_5[log_index] = 5;
+//		mylog2.log_1[log_index] = 6;
+//		mylog2.log_2[log_index] = 7;
+//		mylog2.log_3[log_index] = 8;
+//		mylog2.log_4[log_index] = 9;
+//		mylog2.log_5[log_index] = 10;
+
+		//	mylog.log_1[log_index] = real_acc;
+
+//		mylog.log_1[log_index] = real_L.vel;
+//		mylog.log_2[log_index] = real_R.vel;
+//		mylog.log_3[log_index] = ideal_translation.vel;
+//		mylog.log_4[log_index] = test_L;
+//		mylog.log_5[log_index] = test_L2;
+//		mylog2.log_1[log_index] = test_R;
+//		mylog2.log_2[log_index] = test_R2;
+//		mylog2.log_3[log_index] = rotation_deviation.cumulative;
+//		mylog2.log_4[log_index] = run_left_deviation.cumulative;
+//		mylog2.log_5[log_index] = run_right_deviation.cumulative;
+//
+
+		mylog.log_1[log_index] = (float) SEN_L.now;
+		mylog.log_2[log_index] = (float) SEN_R.now;
+		mylog.log_3[log_index] = (float) SEN_LF.now;
+		mylog.log_4[log_index] = (float) SEN_RF.now;
+		mylog.log_5[log_index] = (float) SEN_F.now;
+		mylog2.log_1[log_index] = test_L;
+		mylog2.log_2[log_index] = test_R;
 //		mylog2.log_3[log_index] = SEN_F.now;
 //		mylog2.log_4[log_index] = test_float;
 //		mylog2.log_5[log_index] = 0;
@@ -405,8 +417,6 @@ void start_led(void) {
 	set_led(0);
 	HAL_Delay(200);
 	//	log_start();
-
-
 
 	angle_calibration_integral = 0.0;
 	angle_calibration = 0.0;

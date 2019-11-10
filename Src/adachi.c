@@ -1130,7 +1130,7 @@ void adachi_special_move(uint8_t goal_x, uint8_t goal_y, uint8_t wall_direction,
 			turn_180(accel, vel);
 		}
 		if (flag > 11) {
-			set_straight(180.0 * (flag - 10), known_acc, known_vel, vel, vel);
+			set_straight(90.0 * (flag - 10), known_acc, known_vel, vel, vel);
 			wait_straight();
 			for (i = 0; i < flag - 10 - 1; i++) {
 				coordinate();

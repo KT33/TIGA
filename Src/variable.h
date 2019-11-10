@@ -18,7 +18,7 @@ typedef struct {
 	int reference; //真ん中にいるときのセンサー値
 	int threshold; //閾値
 	int diff; //差分
-	int diff_1ms;
+	int error_before;
 	int oblique_reference;
 	int oblique_threshold;
 } sensor_t;

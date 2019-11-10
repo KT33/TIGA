@@ -146,8 +146,8 @@ void duty_to_moter(void) {
 		duty_right = (duty.right * -1);
 	}
 
-	test_L = duty_left;
-	test_R = duty_right;
+//	test_L = duty_left;
+//	test_R = duty_right;
 
 	if (duty_left >= 800) {
 		duty_left = 800 - 1;
@@ -313,7 +313,7 @@ float read_vel(uint8_t RorL) {
 
 		val_cor = (float) val;
 //		test_L = (float) val;
-		test_L = val_cor;
+//		test_L = val_cor;
 	} else {
 //		en_log_R.before_5ms = en_log_R.before_4ms;
 //		en_log_R.before_4ms = en_log_R.before_3ms;
@@ -329,7 +329,7 @@ float read_vel(uint8_t RorL) {
 //				+ LPF[5] * (float) en_log_R.before_5ms;
 		val_cor = (float) val;
 //		test_R = (float) val;
-		test_R = val_cor;
+//		test_R = val_cor;
 	}
 
 	val2 = (float) ((val_cor - before_en_val[RorL]));
@@ -351,21 +351,23 @@ float read_vel(uint8_t RorL) {
 
 	if (RorL == LEFT) {
 		en_log_L[en_log_index] = vel;
-		vel = LPF[0] * en_log_L[((en_log_index) % 6)]
-				+ LPF[1] * en_log_L[((en_log_index - 1 + 6) % 6)]
-				+ LPF[2] * en_log_L[((en_log_index - 2 + 6) % 6)]
-				+ LPF[3] * en_log_L[((en_log_index - 3 + 6) % 6)]
-				+ LPF[4] * en_log_L[((en_log_index - 4 + 6) % 6)]
-				+ LPF[5] * en_log_L[((en_log_index - 5 + 6) % 6)];
+//		test_L = vel * -1;
+//		vel = LPF[0] * en_log_L[((en_log_index) % 6)]
+//				+ LPF[1] * en_log_L[((en_log_index - 1 + 6) % 6)]
+//				+ LPF[2] * en_log_L[((en_log_index - 2 + 6) % 6)]
+//				+ LPF[3] * en_log_L[((en_log_index - 3 + 6) % 6)]
+//				+ LPF[4] * en_log_L[((en_log_index - 4 + 6) % 6)]
+//				+ LPF[5] * en_log_L[((en_log_index - 5 + 6) % 6)];
 
 	} else {
 		en_log_R[en_log_index] = vel;
-		vel = LPF[0] * en_log_R[((en_log_index) % 6)]
-				+ LPF[1] * en_log_R[((en_log_index - 1 + 6) % 6)]
-				+ LPF[2] * en_log_R[((en_log_index - 2 + 6) % 6)]
-				+ LPF[3] * en_log_R[((en_log_index - 3 + 6) % 6)]
-				+ LPF[4] * en_log_R[((en_log_index - 4 + 6) % 6)]
-				+ LPF[5] * en_log_R[((en_log_index - 5 + 6) % 6)];
+//		test_R = vel;
+//		vel = LPF[0] * en_log_R[((en_log_index) % 6)]
+//				+ LPF[1] * en_log_R[((en_log_index - 1 + 6) % 6)]
+//				+ LPF[2] * en_log_R[((en_log_index - 2 + 6) % 6)]
+//				+ LPF[3] * en_log_R[((en_log_index - 3 + 6) % 6)]
+//				+ LPF[4] * en_log_R[((en_log_index - 4 + 6) % 6)]
+//				+ LPF[5] * en_log_R[((en_log_index - 5 + 6) % 6)];
 		en_log_index++;
 		if (en_log_index == 6) {
 			en_log_index = 0;
@@ -430,39 +432,38 @@ void integral_ideal(run_t *ideal) {
 }
 
 void wall_control(void) {
-//	test_L = (float) SEN_L.diff;
-//	test_R = (float) SEN_R.diff;
-//	test_L2 = (float) SEN_F.reference;
-
+	float L_error = (float) SEN_L.now - (float) SEN_L.reference;
+	float R_error = (float) SEN_R.now - (float) SEN_R.reference;
+	float L_error_diff = (L_error - SEN_L.error_before);
+	float R_error_diff = (R_error - SEN_R.error_before);
+	SEN_L.error_before = ((float) SEN_L.now - (float) SEN_L.diff)
+			- (float) SEN_L.reference;
+	SEN_R.error_before = ((float) SEN_R.now - (float) SEN_R.diff)
+			- (float) SEN_R.reference;
+	test_L = L_error_diff;
+	test_R = R_error_diff;
 	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) {
-		test_R2 = 1;
-		if (((ideal_translation.vel) > 100.0) && (SEN_L.diff < 8)
-				&& (SEN_R.diff < 8) && (SEN_F.now < SEN_F.reference)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
-			test_R2 = 2;
+
+		if (((ideal_translation.vel) > 50.0)
+//				&& (SEN_L.diff < 8)&& (SEN_R.diff < 8)
+				&& (SEN_F.now < SEN_F.reference)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
 			if (SEN_L.now > SEN_L.threshold && SEN_R.now > SEN_R.threshold) {
-				test_R2 = 3;
 				wallcontrol_value = wall_cntrol_gain.Kp
-						* (((float) SEN_L.now - (float) SEN_L.reference)
-								- ((float) SEN_R.now - (float) SEN_R.reference))
+						* ((L_error) - (R_error))
 						+ wall_cntrol_gain.Kd
-								* (float) (SEN_L.diff_1ms - SEN_R.diff_1ms);
+								* (float) (L_error_diff - R_error_diff);
 				set_led(5);
 			} else if (SEN_L.now < SEN_L.threshold
 					&& SEN_R.now > SEN_R.threshold) {
-				test_R2 = 4;
-				wallcontrol_value = -2.0 * wall_cntrol_gain.Kp
-						* ((float) SEN_R.now - (float) SEN_R.reference)
-						+ wall_cntrol_gain.Kd * (float) (-2 * SEN_R.diff_1ms);
+				wallcontrol_value = -2.0 * wall_cntrol_gain.Kp * (R_error)
+						+ wall_cntrol_gain.Kd * (float) (-2 * R_error_diff);
 				set_led(4);
 			} else if (SEN_L.now > SEN_L.threshold
 					&& SEN_R.now < SEN_R.threshold) {
-				test_R2 = 5;
-				wallcontrol_value = 2.0 * wall_cntrol_gain.Kp
-						* ((float) SEN_L.now - (float) SEN_L.reference)
-						+ wall_cntrol_gain.Kd * (float) (2 * SEN_L.diff_1ms);
+				wallcontrol_value = 2.0 * wall_cntrol_gain.Kp * (L_error)
+						+ wall_cntrol_gain.Kd * (float) (2 * L_error_diff);
 				set_led(1);
 			} else {
-				test_R2 = 6;
 				wallcontrol_value = 0.0;
 				set_led(2);
 			}
@@ -471,8 +472,8 @@ void wall_control(void) {
 //				&& ((ideal_translation.vel) < 1800.0)
 //				&& (SEN_F.now < SEN_F.threshold)) {
 //			wallcontrol_value = 2.0 * wall_cntrol_gain.Kp
-//					* ((float) SEN_L.now - (float) SEN_L.reference)
-//					+ wall_cntrol_gain.Kd * (float) (2 * SEN_L.diff_1ms);
+//					* (L_error)
+//					+ wall_cntrol_gain.Kd * (float) (2 * L_error_diff);
 //			if (ideal_translation.vel > 1600.0) {
 //				wallcontrol_value *= 0.2;
 //			}
@@ -480,8 +481,8 @@ void wall_control(void) {
 //				&& ((ideal_translation.vel) < 1800.0)
 //				&& (SEN_F.now < SEN_F.threshold)) {
 //			wallcontrol_value = -2.0 * wall_cntrol_gain.Kp
-//					* ((float) SEN_R.now - (float) SEN_R.reference)
-//					+ wall_cntrol_gain.Kd * (float) (-2 * SEN_R.diff_1ms);
+//					* (R_error)
+//					+ wall_cntrol_gain.Kd * (float) (-2 * R_error_diff);
 //			if (ideal_translation.vel > 1600.0) {
 //				wallcontrol_value *= 0.2;
 //			}
@@ -494,7 +495,7 @@ void wall_control(void) {
 		wallcontrol_value = 0.0; //ここに斜め壁制御を書く
 		if (wall_control_oblique_flag == 1 || wall_control_oblique_flag == 2) {
 			test_R2 = 8;
-			if (SEN_L.now > SEN_L.oblique_threshold && SEN_L.diff_1ms < 180) {
+			if (SEN_L.now > SEN_L.oblique_threshold && SEN_L.diff < 180) {
 				test_R2 = 9;
 				wallcontrol_value += (float) oblique_Side_gain
 						* (float) (SEN_L.now - SEN_L.oblique_reference);
@@ -507,7 +508,7 @@ void wall_control(void) {
 		}
 		if (wall_control_oblique_flag == 1 || wall_control_oblique_flag == 3) {
 			test_R2 = 11;
-			if (SEN_R.now > SEN_R.oblique_threshold && SEN_R.diff_1ms < 180) {
+			if (SEN_R.now > SEN_R.oblique_threshold && SEN_R.diff < 180) {
 				test_R2 = 12;
 				wallcontrol_value -= (float) oblique_Side_gain
 						* (float) (SEN_R.now - SEN_R.oblique_reference) * 2.0;
@@ -615,12 +616,14 @@ void read_vel2(float*left_vel, float*right_vel) {
 		enc_buff_index = 0;
 	}
 
-	test_L = (float) ((enc_sum_l / 100) / 16384.0 * (3.1415926 * DIAMETER)
+//	test_L = (float) ((enc_sum_l / 100) / 16384.0 * (3.1415926 * DIAMETER)
+//			* 1000) + vel_acc; //+ vel_acc
+//	test_R = (float) ((enc_sum_r / 100) / 16384.0 * (3.1415926 * DIAMETER)
+//			* 1000) + vel_acc; //+ vel_acc
+	vel_enc_l = (float) ((enc_sum_l / 100) / 16384.0 * (3.1415926 * DIAMETER)
 			* 1000) + vel_acc; //+ vel_acc
-	test_R = (float) ((enc_sum_r / 100) / 16384.0 * (3.1415926 * DIAMETER)
+	vel_enc_r = (float) ((enc_sum_r / 100) / 16384.0 * (3.1415926 * DIAMETER)
 			* 1000) + vel_acc; //+ vel_acc
-	vel_enc_l = test_L;
-	vel_enc_r = test_R;
 //	enc_sum_l = (int32_t)left_diff * 100;
 //	enc_sum_r = (int32_t)right_diff * 100;
 //
