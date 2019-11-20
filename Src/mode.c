@@ -61,42 +61,59 @@ void mode_0(void) {
 }
 
 void mode_1(void) {
-
-	wall_cntrol_gain.Kp = 0.03;
-	wall_cntrol_gain.Kd = 0.0;
 	start_led();
 	real_diss_from_acc = 0.0;
 	real_vel_from_acc = 0.0;
-	log_start();
-	set_straight(90.0 * 6, nomal_run.accel, nomal_run.vel_search, 0.0, 0.0);
-	wait_straight();
-	HAL_Delay(1000);
-	log_flag = 0;
-	run_left_deviation.cumulative = 0.0;
-	run_right_deviation.cumulative = 0.0;
-	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
+	wall_cntrol_gain.Kp = 0.05;
+	wall_cntrol_gain.Ki = 0.0;
+	search_run_special(7, 7, 4);
+	save_all_walldata();
+
+//	wall_cntrol_gain.Kp = 0.0;
+//	wall_cntrol_gain.Kd = 0.0;
+//	start_led();
+//	real_diss_from_acc = 0.0;
+//	real_vel_from_acc = 0.0;
+//	log_start();
+//	go_entrance(nomal_run.accel, nomal_run.vel_search);
+//	set_straight(90.0 * 6, nomal_run.accel, nomal_run.vel_search, nomal_run.vel_search, 0.0);
 //	wait_straight();
-	moter_flag = 0;
-//	save_log_to_flash();
+//	HAL_Delay(1000);
+//	log_flag = 0;
+//	run_left_deviation.cumulative = 0.0;
+//	run_right_deviation.cumulative = 0.0;
+//	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
+////	wait_straight();
+//	moter_flag = 0;
+////	save_log_to_flash();
 }
 
 void mode_2(void) {
-	wall_cntrol_gain.Kp = 0.05;
-	wall_cntrol_gain.Kd = 1;
 	start_led();
 	real_diss_from_acc = 0.0;
 	real_vel_from_acc = 0.0;
-	log_start();
-	set_straight(90.0 * 6, nomal_run.accel, nomal_run.vel_search, 0.0, 0.0);
-	wait_straight();
-	HAL_Delay(1000);
-	log_flag = 0;
-	run_left_deviation.cumulative = 0.0;
-	run_right_deviation.cumulative = 0.0;
-	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
+	wall_cntrol_gain.Kp = 0.05;
+//	wall_cntrol_gain.Ki = 0.0;
+	search_run_special(7, 7, 4);
+	save_all_walldata();
+//	wall_cntrol_gain.Kp = 0.055;
+//	wall_cntrol_gain.Kd = 0.0;
+//	start_led();
+//	real_diss_from_acc = 0.0;
+//	real_vel_from_acc = 0.0;
+//	log_start();
+//	go_entrance(nomal_run.accel, nomal_run.vel_search);
+//	set_straight(90.0 * 6, nomal_run.accel, nomal_run.vel_search,
+//			nomal_run.vel_search, 0.0);
 //	wait_straight();
-	moter_flag = 0;
-
+//	HAL_Delay(1000);
+//	log_flag = 0;
+//	run_left_deviation.cumulative = 0.0;
+//	run_right_deviation.cumulative = 0.0;
+//	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
+////	wait_straight();
+//	moter_flag = 0;
+////	save_log_to_flash();
 
 //	start_led();
 //	real_diss_from_acc = 0.0;
@@ -117,27 +134,29 @@ void mode_2(void) {
 //	log_start();
 //	adachi_search_run_known(x.goal, y.goal, 4, nomal_run.accel, nomal_run.vel_search, 0, 0);
 
-
-	//	search_run_special(7, 7, 4);
+//	search_run_special(7, 7, 4);
 }
 
 void mode_3(void) { //253.558
 
-	wall_cntrol_gain.Kp = 0.05;
-	wall_cntrol_gain.Kd = 0.5;
-	start_led();
-	real_diss_from_acc = 0.0;
-	real_vel_from_acc = 0.0;
-	log_start();
-	set_straight(90.0 * 6, nomal_run.accel, nomal_run.vel_search, 0.0, 0.0);
-	wait_straight();
-	HAL_Delay(1000);
-	log_flag = 0;
-	run_left_deviation.cumulative = 0.0;
-	run_right_deviation.cumulative = 0.0;
-	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
+//	wall_cntrol_gain.Kp = 0.1;
+//	wall_cntrol_gain.Kd = 0.0;
+//	start_led();
+//	real_diss_from_acc = 0.0;
+//	real_vel_from_acc = 0.0;
+//	log_start();
+//	go_entrance(nomal_run.accel, nomal_run.vel_search);
+//	set_straight(90.0 * 6, nomal_run.accel, nomal_run.vel_search,
+//			nomal_run.vel_search, 0.0);
 //	wait_straight();
-	moter_flag = 0;
+//	HAL_Delay(1000);
+//	log_flag = 0;
+//	run_left_deviation.cumulative = 0.0;
+//	run_right_deviation.cumulative = 0.0;
+//	//	set_straight(90.0, 3500, 300, 0.0, 0.0);
+////	wait_straight();
+//	moter_flag = 0;
+////	save_log_to_flash();
 
 //	rotation_gain.Kp = 0.41;
 //	rotation_gain.Ki = 0.005; //3
@@ -151,45 +170,44 @@ void mode_3(void) { //253.558
 //	HAL_Delay(500);
 //	log_flag = 0;
 
-
-//	start_led();
-//	log_start();
-//	go_entrance(nomal_run.accel, nomal_run.vel_search);
-//	for (uint8_t i = 0; i < 12; i++) {
-//		pass_180(nomal_run.accel, nomal_run.vel_search);
-//		slalom_left90(nomal_run.accel, nomal_run.vel_search);
-//	}
-//	set_straight(45.0, nomal_run.accel, nomal_run.vel_search,
-//			nomal_run.vel_search, 0.0);
-//	wall_control_flag = 0;
-//	wait_straight();
+	start_led();
+	log_start();
+	go_entrance(nomal_run.accel, nomal_run.vel_search);
+	for (uint8_t i = 0; i < 1; i++) {
+		pass_180(nomal_run.accel, nomal_run.vel_search);
+		slalom_left90(nomal_run.accel, nomal_run.vel_search);
+	}
+	set_straight(45.0, nomal_run.accel, nomal_run.vel_search,
+			nomal_run.vel_search, 0.0);
+	wall_control_flag = 0;
+	wait_straight();
 //	save_log_to_flash();
 }
 
 void mode_4(void) {
-	rotation_gain.Kp = 0.5;
-	rotation_gain.Ki = 0.015; //3
-	start_led();
-	log_start();
-	set_rotation(180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
-	HAL_Delay(500);
-	set_rotation(180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
-	wait_rotation();
-	HAL_Delay(500);
-	log_flag = 0;
-
+//	rotation_gain.Kp = 0.5;
+//	rotation_gain.Ki = 0.015; //3
 //	start_led();
 //	log_start();
-//	go_entrance(nomal_run.accel, nomal_run.vel_search);
-//	for (uint8_t i = 0; i < 12; i++) {
-//		pass_180(nomal_run.accel, nomal_run.vel_search);
-//		slalom_right90(nomal_run.accel, nomal_run.vel_search);
-//	}
-//	set_straight(45.0, nomal_run.accel, nomal_run.vel_search,
-//			nomal_run.vel_search, 0.0);
-//	wall_control_flag = 0;
-//	wait_straight();
+//	set_rotation(180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
+//	wait_rotation();
+//	HAL_Delay(500);
+//	set_rotation(180.0, nomal_rotation.accel, nomal_rotation.vel_search, 0.0);
+//	wait_rotation();
+//	HAL_Delay(500);
+//	log_flag = 0;
+
+	start_led();
+	log_start();
+	go_entrance(nomal_run.accel, nomal_run.vel_search);
+	for (uint8_t i = 0; i < 1; i++) {
+		pass_180(nomal_run.accel, nomal_run.vel_search);
+		slalom_right90(nomal_run.accel, nomal_run.vel_search);
+	}
+	set_straight(45.0, nomal_run.accel, nomal_run.vel_search,
+			nomal_run.vel_search, 0.0);
+	wall_control_flag = 0;
+	wait_straight();
 	//save_log_to_flash();
 }
 
@@ -220,22 +238,11 @@ void mode_5(void) { //nomal_run.accel, nomal_run.vel_search,nomal_run.vel_search
 }
 
 void mode_6(void) {
-	read_all_walldata();
 
-//	uint16_t test, wall_direction;
-//	uint8_t Next_XY_8bit, y_local, x_local;
-//
-//	uint8_t flag= how_to_move_special(0, 0, 0);
+//	start_led();
+//	while (failsafe_flag==0)
+//		;
 
-//	test = make_temporary_goal_XY(7, 7, 4);
-//	wall_direction = check_flag(test);
-//	Next_XY_8bit = (uint8_t) (test & 0x00ff);
-//	y_local = Next_XY_8bit / 16;
-//	x_local = Next_XY_8bit % 16;
-	while (HAL_GPIO_ReadPin(SWITCH_GPIO_Port, SWITCH_Pin) == 1)
-		;
-	make_temporary_goal_XY(2, 0, 4);
-	output_Walldata(ALL);
 //		start_led();
 //		log_start();
 //		set_straight(90*14, nomal_run.accel, nomal_run.vel_search, 0, 0);
@@ -249,6 +256,9 @@ void mode_6(void) {
 //				nomal_run.vel_search, 0.0);
 //		wall_control_flag = 0;
 //		wait_straight();
+
+	read_all_walldata();
+	output_Walldata(ALL);
 
 }
 

@@ -21,6 +21,7 @@ typedef struct {
 	int error_before;
 	int oblique_reference;
 	int oblique_threshold;
+	int front_kusi;
 } sensor_t;
 
 typedef struct {

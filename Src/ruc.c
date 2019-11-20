@@ -444,9 +444,8 @@ void wall_control(void) {
 	test_R = R_error_diff;
 	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) {
 
-		if (((ideal_translation.vel) > 50.0)
-//				&& (SEN_L.diff < 8)&& (SEN_R.diff < 8)
-				&& (SEN_F.now < SEN_F.reference)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
+		if (((ideal_translation.vel) > 50.0) && (SEN_L.diff < 18)
+				&& (SEN_R.diff < 18) && (SEN_F.now < SEN_F.reference)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
 			if (SEN_L.now > SEN_L.threshold && SEN_R.now > SEN_R.threshold) {
 				wallcontrol_value = wall_cntrol_gain.Kp
 						* ((L_error) - (R_error))
@@ -467,6 +466,14 @@ void wall_control(void) {
 				wallcontrol_value = 0.0;
 				set_led(2);
 			}
+		}
+		if (SEN_RF.now > SEN_RF.front_kusi && SEN_RF.now < SEN_RF.reference) {
+			wallcontrol_value -= wall_cntrol_gain.Ki
+					* (SEN_RF.now - SEN_RF.front_kusi);
+		}
+		if (SEN_LF.now > SEN_LF.front_kusi && SEN_LF.now < SEN_LF.reference) {
+			wallcontrol_value += wall_cntrol_gain.Ki
+					* (SEN_LF.now - SEN_LF.front_kusi);
 		}
 //		  else if ((SEN_L.now > SEN_L.reference)
 //				&& ((ideal_translation.vel) < 1800.0)

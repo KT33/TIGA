@@ -170,7 +170,7 @@ void turn_180(float accel, float vel) {
 		run_left_deviation.cumulative = 0.0;
 		run_right_deviation.cumulative = 0.0;
 		wallcontrol_value = 0.0;
-		set_straight(87.0, accel, vel, 0.0, vel);
+		set_straight(65.0, accel, vel, 0.0, vel);
 		wait_straight();
 	}
 }
@@ -336,19 +336,22 @@ void slalom_left90(float run_accel, float run_vel) {
 	gain_t box;
 	box.Ki = rotation_gain.Ki;
 	box.Kp = rotation_gain.Kp;
+//	if ((SEN_F.now < SEN_F.reference)
+//				&& (getWall(x.now, y.now, direction, &walldata.real))) {
+//			while (SEN_F.now < SEN_F.reference) {
+//				set_buzzer(0, C_5, 200);
+//				ideal_translation.dis = 0.0;
+//			}
+//	}
 	if (run_vel == 280.0) {
 		rotation_gain.Ki *= 1;
 		rotation_gain.Kp *= 1;
 		rota_accel = 10000;
 		rota_vel = 1300;
-		in_offset = 5;
-		out_offset = 13;
+		in_offset = 7;
+		out_offset = 15;
 	}
-	if (SEN_F.now > SEN_F.threshold) {
-		while (SEN_RF.now < SEN_RF.threshold && SEN_LF.now < SEN_LF.threshold){
-			set_buzzer(0, C_5, 200);
-		}
-	}
+
 	set_straight(in_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();
 	set_rotation(90.0 + angle_offset, rota_accel, rota_vel, run_vel);
@@ -365,19 +368,20 @@ void slalom_right90(float run_accel, float run_vel) {
 	gain_t box;
 	box.Ki = rotation_gain.Ki;
 	box.Kp = rotation_gain.Kp;
+//	if ((SEN_F.now < SEN_F.reference)
+//			&& (getWall(x.now, y.now, direction, &walldata.real))) {
+//		while (SEN_F.now < SEN_F.reference) {
+//			set_buzzer(0, C_5, 200);
+//			ideal_translation.dis = 0.0;
+//		}
+//	}
 	if (run_vel == 280.0) {
 		rotation_gain.Ki *= 1.2;
 		rotation_gain.Kp *= 1;
 		rota_accel = 10000;
 		rota_vel = 1300;
-		in_offset = 5;
-		out_offset = 14;
-	}
-	if (SEN_F.now > SEN_F.threshold) {
-		while (SEN_RF.now < SEN_RF.threshold && SEN_LF.now < SEN_LF.threshold){
-			set_buzzer(0, C_5, 200);
-
-		}
+		in_offset = 9;
+		out_offset = 17;
 	}
 	set_straight(in_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();

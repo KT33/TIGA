@@ -213,7 +213,7 @@ void adc_1ms(void) {
 	SEN_RF_log.before_1ms = SEN_RF_log.now;
 	SEN_RF_log.now = SEN_RF.now;
 //	SEN_RF.diff_1ms = SEN_RF_log.now - SEN_RF_log.before_1ms;
-	SEN_RF.diff = SEN_RF_log.now - SEN_RF_log.before_3ms;
+	SEN_RF.diff = SEN_RF_log.now - SEN_RF_log.before_5ms;
 
 	HAL_GPIO_WritePin(SENLED_L_GPIO_Port, SENLED_L_Pin, 0);
 	for (uint8_t i = 0; i < 100; i++)
@@ -234,7 +234,7 @@ void adc_1ms(void) {
 	SEN_L_log.before_1ms = SEN_L_log.now;
 	SEN_L_log.now = SEN_L.now;
 //	SEN_L.diff_1ms = SEN_L_log.now - SEN_L_log.before_1ms;
-	SEN_L.diff = SEN_L_log.now - SEN_L_log.before_3ms;
+	SEN_L.diff = SEN_L_log.now - SEN_L_log.before_5ms;
 
 	HAL_GPIO_WritePin(SENLED_R_GPIO_Port, SENLED_R_Pin, 0);
 	for (uint8_t i = 0; i < 100; i++)
@@ -255,7 +255,7 @@ void adc_1ms(void) {
 	SEN_R_log.before_1ms = SEN_R_log.now;
 	SEN_R_log.now = SEN_R.now;
 //	SEN_R.diff_1ms = SEN_R_log.now - SEN_R_log.before_1ms;
-	SEN_R.diff = SEN_R_log.now - SEN_R_log.before_3ms;
+	SEN_R.diff = SEN_R_log.now - SEN_R_log.before_5ms;
 
 	HAL_GPIO_WritePin(SENLED_LF_GPIO_Port, SENLED_LF_Pin, 0);
 	for (uint8_t i = 0; i < 100; i++)
@@ -276,7 +276,7 @@ void adc_1ms(void) {
 	SEN_LF_log.before_1ms = SEN_LF_log.now;
 	SEN_LF_log.now = SEN_LF.now;
 //	SEN_LF.diff_1ms = SEN_LF_log.before_1ms;
-	SEN_LF.diff = SEN_LF_log.before_3ms;
+	SEN_LF.diff = SEN_LF_log.before_5ms;
 
 	SEN_F.now = (int) ((SEN_RF.now + SEN_LF.now) / 2);
 
