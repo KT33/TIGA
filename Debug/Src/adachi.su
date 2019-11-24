@@ -12,6 +12,6 @@ adachi.c:813:6:search_run_special	40	static
 adachi.c:884:10:make_temporary_goal_XY	112	static
 adachi.c:956:9:how_to_move_special	32	static
 adachi.c:1020:6:adachi_special_move	120	static
-adachi.c:1144:9:check_flag	24	static
-adachi.c:1163:6:stop_move	16	static
-adachi.c:1201:6:adachi_map_special	552	static
+adachi.c:1149:9:check_flag	24	static
+adachi.c:1168:6:stop_move	16	static
+adachi.c:1206:6:adachi_map_special	552	static

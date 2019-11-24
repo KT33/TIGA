@@ -200,6 +200,8 @@ extern float accel_calibration_integral , accel_calibration;
 extern float en_log_L[6], en_log_R[6],acc_log[6];
 extern int8_t en_log_index,acc_log_index;
 
+extern uint8_t kushi_control_flag;
+
 #define North 0
 #define West 1
 #define South 2

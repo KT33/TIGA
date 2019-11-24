@@ -839,7 +839,7 @@ void search_run_special(uint8_t goal_x, uint8_t goal_y, uint8_t goal_scale) {
 	coordinate();
 	addWall();
 	while (failsafe_flag == 0) {
-		set_buzzer(0, D_4, 600);
+//		set_buzzer(0, D_4, 600);
 //		adachi_map(goal_x, goal_y, goal_scale, walldata.real); //歩数マップ展開
 		Next_XY_16bit = make_temporary_goal_XY(goal_x, goal_y, goal_scale); //見たい壁の位置からゴールを算出
 		if (Next_XY_16bit == 0xffff) {
@@ -949,7 +949,7 @@ uint16_t make_temporary_goal_XY(uint8_t ture_goal_x, uint8_t ture_goal_y,
 	if (shift == 255) { //経路内に未知壁なし
 		Next_XY = 0xffff;
 	}
-	printf("%d\n",Next_XY);
+	printf("%d\n", Next_XY);
 	return Next_XY; //一時的なゴール座標を返す
 }
 
@@ -1127,10 +1127,14 @@ void adachi_special_move(uint8_t goal_x, uint8_t goal_y, uint8_t wall_direction,
 		}
 
 		if (flag == 4) {
+			kushi_control_flag=0;
 			turn_180(accel, vel);
 		}
 		if (flag > 11) {
-			set_straight(90.0 * (flag - 10), known_acc, known_vel, vel, vel);
+			set_straight(90.0 * (flag - 10)-30, known_acc, known_vel, vel, vel);
+			wait_straight();
+			set_straight(30, known_acc, known_vel, vel, vel);
+			kushi_control_flag=0;
 			wait_straight();
 			for (i = 0; i < flag - 10 - 1; i++) {
 				coordinate();
@@ -1138,6 +1142,7 @@ void adachi_special_move(uint8_t goal_x, uint8_t goal_y, uint8_t wall_direction,
 		}
 		coordinate();
 		addWall();
+
 	}
 }
 

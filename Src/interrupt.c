@@ -98,12 +98,14 @@ void interrupt_1ms(void) {
 			angle_calibration_counter++;
 			angle_calibration_integral += real_rotation.vel;
 			accel_calibration_integral += real_acc;
-			if (angle_calibration_counter == 2000) {
+			if (angle_calibration_counter == 2048) {
 				angle_calibration_flag = 0;
 			}
 		}
 
+
 		wall_control();
+
 
 //			wallcontrol_value = 0.0;
 
@@ -117,16 +119,16 @@ void interrupt_1ms(void) {
 					control_accel(&ideal_rotation, &rotation_parameter, 1);
 					integral_ideal(&ideal_rotation);
 				}
-
+//				ideal_rotation.vel-=wallcontrol_value;
 				PID_control(&ideal_translation, &real_L, &real_R,
 						&run_left_deviation, &run_right_deviation, &run_gain,
 						&translation_parameter, &duty, 0);
-				if (translation_parameter.back_rightturn_flag == 0
-						|| ideal_translation.vel > 50.0) {
+//				if (translation_parameter.back_rightturn_flag == 0
+//						|| ideal_translation.vel > 50.0) {
 					PID_control(&ideal_rotation, &real_rotation, &real_rotation,
 							&rotation_deviation, &rotation_deviation,
 							&rotation_gain, &rotation_parameter, &duty, 1);
-				}
+//				}
 				integral_ideal(&ideal_translation);
 
 			} else {
@@ -276,7 +278,7 @@ void adc_1ms(void) {
 	SEN_LF_log.before_1ms = SEN_LF_log.now;
 	SEN_LF_log.now = SEN_LF.now;
 //	SEN_LF.diff_1ms = SEN_LF_log.before_1ms;
-	SEN_LF.diff = SEN_LF_log.before_5ms;
+	SEN_LF.diff = SEN_LF_log.now-SEN_LF_log.before_5ms;
 
 	SEN_F.now = (int) ((SEN_RF.now + SEN_LF.now) / 2);
 

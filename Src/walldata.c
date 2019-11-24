@@ -115,22 +115,28 @@ void addWall(void) {
 			add_East_wall(&walldata.checked);
 		}
 
-		if (SEN_F.now > SEN_F.threshold) {
+		kushi_control_flag = 1;
+		if ((SEN_F.now > SEN_F.threshold)
+				&& (SEN_RF.now > (int) SEN_RF.reference * 0.5)
+				&& (SEN_LF.now > (int) SEN_LF.reference * 0.5)) {
 			add_walldata_one(direction, &walldata.real);
-		} else if (getWall(x.now, y.now, direction, &walldata.real)==0) {
+			kushi_control_flag = 0;
+		} else if (getWall(x.now, y.now, direction, &walldata.real) == 0) {
 			pull_walldata_one(direction, &walldata.adachi);
 		}
 
 		if (SEN_R.now > SEN_R.threshold) {
-			add_walldata_one(direction+3, &walldata.real);
-		} else if (getWall(x.now, y.now, direction+3, &walldata.real)==0) {
-			pull_walldata_one(direction+3, &walldata.adachi);
+			add_walldata_one(direction + 3, &walldata.real);
+//			kushi_control_flag = 0;
+		} else if (getWall(x.now, y.now, direction + 3, &walldata.real) == 0) {
+			pull_walldata_one(direction + 3, &walldata.adachi);
 		}
 
 		if (SEN_L.now > SEN_L.threshold) {
-			add_walldata_one(direction+1, &walldata.real);
-		} else if (getWall(x.now, y.now, direction+1, &walldata.real)==0) {
-			pull_walldata_one(direction+1, &walldata.adachi);
+			add_walldata_one(direction + 1, &walldata.real);
+//			kushi_control_flag = 0;
+		} else if (getWall(x.now, y.now, direction + 1, &walldata.real) == 0) {
+			pull_walldata_one(direction + 1, &walldata.adachi);
 		}
 
 	}

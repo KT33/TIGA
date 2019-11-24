@@ -8,6 +8,7 @@
 #include "run.h"
 #include "variable.h"
 #include "tim.h"
+#include "walldata.h"
 
 void set_straight(float i_distance, float accel, float max_vel, float strat_vel,
 		float end_vel) {
@@ -444,37 +445,47 @@ void wall_control(void) {
 	test_R = R_error_diff;
 	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) {
 
-		if (((ideal_translation.vel) > 50.0) && (SEN_L.diff < 18)
+		if (((ideal_translation.vel) > 80.0) && (SEN_L.diff < 18)
 				&& (SEN_R.diff < 18) && (SEN_F.now < SEN_F.reference)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
 			if (SEN_L.now > SEN_L.threshold && SEN_R.now > SEN_R.threshold) {
 				wallcontrol_value = wall_cntrol_gain.Kp
 						* ((L_error) - (R_error))
 						+ wall_cntrol_gain.Kd
 								* (float) (L_error_diff - R_error_diff);
-				set_led(5);
+//				set_led(5);
 			} else if (SEN_L.now < SEN_L.threshold
 					&& SEN_R.now > SEN_R.threshold) {
 				wallcontrol_value = -2.0 * wall_cntrol_gain.Kp * (R_error)
 						+ wall_cntrol_gain.Kd * (float) (-2 * R_error_diff);
-				set_led(4);
+//				set_led(4);
 			} else if (SEN_L.now > SEN_L.threshold
 					&& SEN_R.now < SEN_R.threshold) {
 				wallcontrol_value = 2.0 * wall_cntrol_gain.Kp * (L_error)
 						+ wall_cntrol_gain.Kd * (float) (2 * L_error_diff);
-				set_led(1);
+//				set_led(1);
 			} else {
 				wallcontrol_value = 0.0;
-				set_led(2);
+//				set_led(2);
 			}
 		}
-		if (SEN_RF.now > SEN_RF.front_kusi && SEN_RF.now < SEN_RF.reference) {
-			wallcontrol_value -= wall_cntrol_gain.Ki
-					* (SEN_RF.now - SEN_RF.front_kusi);
+		if ((kushi_control_flag == 1) && ideal_translation.vel > 150.0) {
+			set_led(7);
+			if ((SEN_RF.now > SEN_RF.front_kusi)
+					&& ((float) SEN_RF.now < (float) SEN_RF.reference * 1)
+					&& (SEN_RF.diff > 10) && (SEN_R.now < SEN_R.threshold)) { //
+				wallcontrol_value -= wall_cntrol_gain.Ki
+						* (SEN_RF.now - SEN_RF.front_kusi);
+			}
+			if ((SEN_LF.now > SEN_LF.front_kusi)
+					&& ((float) SEN_LF.now < (float) SEN_LF.reference * 1)
+					&& (SEN_LF.diff > 10) && (SEN_L.now < SEN_L.threshold)) { //
+				wallcontrol_value += wall_cntrol_gain.Ki
+						* (SEN_LF.now - SEN_LF.front_kusi);
+			}
+		} else {
+			set_led(2);
 		}
-		if (SEN_LF.now > SEN_LF.front_kusi && SEN_LF.now < SEN_LF.reference) {
-			wallcontrol_value += wall_cntrol_gain.Ki
-					* (SEN_LF.now - SEN_LF.front_kusi);
-		}
+
 //		  else if ((SEN_L.now > SEN_L.reference)
 //				&& ((ideal_translation.vel) < 1800.0)
 //				&& (SEN_F.now < SEN_F.threshold)) {

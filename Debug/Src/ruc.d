@@ -29,7 +29,7 @@ Src/ruc.o: ../Src/ruc.c ../Src/run.h ../Src/variable.h ../Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Src/other.h ../Inc/tim.h ../Inc/main.h
+ ../Src/other.h ../Inc/tim.h ../Inc/main.h ../Src/walldata.h
 
 ../Src/run.h:
 
@@ -102,3 +102,5 @@ Src/ruc.o: ../Src/ruc.c ../Src/run.h ../Src/variable.h ../Inc/main.h \
 ../Inc/tim.h:
 
 ../Inc/main.h:
+
+../Src/walldata.h:

@@ -97,3 +97,4 @@ float en_log_L[6] = { 0, 0, 0, 0, 0, 0 }, en_log_R[6] = { 0, 0, 0, 0, 0, 0 },
 		acc_log[6] = { 0, 0, 0, 0, 0, 0 };
 int8_t en_log_index = 0, acc_log_index = 0;
 
+uint8_t kushi_control_flag=0;

@@ -177,22 +177,20 @@ int main(void) {
 	SEN_RF.threshold = 1200; //区画入り口と中心の間
 
 	SEN_F.reference = (int) (SEN_RF.reference + SEN_LF.reference) / 2;
-	SEN_F.threshold = (int) (SEN_F.reference * 0.35);
+	SEN_F.threshold = (int) (SEN_F.reference * 0.5);
 
-	SEN_LF.front_kusi = 200;
+
+	wall_cntrol_gain.Kp = 0.075;
+	SEN_LF.front_kusi = 200;//200//SEN_LF.reference
 	SEN_RF.front_kusi = 200;
-	wall_cntrol_gain.Ki = 0.01;
+	wall_cntrol_gain.Ki = 0.75*2;
 
 	run_gain.Kp = 0.6;
 	run_gain.Ki = 0.15;
-	rotation_gain.Kp = 0.41;
-	rotation_gain.Ki = 0.005; //3
 
 	rotation_gain.Kp = 0.5;
 	rotation_gain.Ki = 0.015; //3
 
-	wall_cntrol_gain.Kp = 0.03;
-	wall_cntrol_gain.Kd = 0.0;
 
 	nomal_run.vel_search = 280.0;
 	nomal_run.accel = 1000.0;

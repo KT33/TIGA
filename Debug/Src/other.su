@@ -21,4 +21,4 @@ other.c:303:6:log_start	4	static
 other.c:310:6:log_sampling	4	static
 other.c:381:6:log_output	32	static
 other.c:402:6:start_led	16	static
-other.c:451:6:output_SEN	16	static
+other.c:452:6:output_SEN	16	static

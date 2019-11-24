@@ -348,14 +348,14 @@ void log_sampling(void) {
 //		mylog2.log_4[log_index] = run_left_deviation.cumulative;
 //		mylog2.log_5[log_index] = run_right_deviation.cumulative;
 //
-
-		mylog.log_1[log_index] = (float) SEN_L.now;
-		mylog.log_2[log_index] = (float) SEN_R.now;
-		mylog.log_3[log_index] = (float) SEN_LF.now;
-		mylog.log_4[log_index] = (float) SEN_RF.now;
-		mylog.log_5[log_index] = (float) SEN_F.now;
-		mylog2.log_1[log_index] = test_L;
-		mylog2.log_2[log_index] = test_R;
+//
+//		mylog.log_1[log_index] = (float) SEN_L.now;
+//		mylog.log_2[log_index] = (float) SEN_R.now;
+//		mylog.log_3[log_index] = (float) SEN_LF.now;
+//		mylog.log_4[log_index] = (float) SEN_RF.now;
+//		mylog.log_5[log_index] = (float) SEN_F.now;
+//		mylog2.log_1[log_index] = ideal_translation.dis;
+//		mylog2.log_2[log_index] = test_R;
 //		mylog2.log_3[log_index] = SEN_F.now;
 //		mylog2.log_4[log_index] = test_float;
 //		mylog2.log_5[log_index] = 0;
@@ -416,7 +416,8 @@ void start_led(void) {
 	HAL_Delay(200);
 	set_led(0);
 	HAL_Delay(200);
-	//	log_start();
+
+	log_start();
 
 	angle_calibration_integral = 0.0;
 	angle_calibration = 0.0;
@@ -427,8 +428,8 @@ void start_led(void) {
 	while (angle_calibration_flag == 1) {
 
 	}
-	angle_calibration = angle_calibration_integral / 2000.0;
-	accel_calibration = accel_calibration_integral / 2000.0;
+	angle_calibration = angle_calibration_integral / 2048.0;
+	accel_calibration = accel_calibration_integral / 2048.0;
 	real_rotation.dis = 0.0;
 	ideal_translation.vel = 0.0;
 
