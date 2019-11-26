@@ -311,7 +311,7 @@ void log_sampling(void) {
 	log_often_count++;
 	if (log_index == LOG_MAX - 1) {
 		log_flag = 0;
-		log_index = 0;
+//		log_index = 0;
 	} else if (log_often_count == log_how_often) {
 		mylog.log_1[log_index] = real_L.vel;
 		mylog.log_2[log_index] = real_R.vel;
@@ -320,7 +320,7 @@ void log_sampling(void) {
 		mylog.log_5[log_index] = ideal_rotation.vel;
 		mylog2.log_1[log_index] = real_rotation.dis;
 		mylog2.log_2[log_index] = ideal_rotation.dis;
-		mylog2.log_3[log_index] = test_L;
+		mylog2.log_3[log_index] = wallcontrol_value;
 		mylog2.log_4[log_index] = test_R;
 		mylog2.log_5[log_index] = test_L2;
 
@@ -417,7 +417,7 @@ void start_led(void) {
 	set_led(0);
 	HAL_Delay(200);
 
-	log_start();
+//	log_start();
 
 	angle_calibration_integral = 0.0;
 	angle_calibration = 0.0;

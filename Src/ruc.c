@@ -246,7 +246,7 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 		left_deviation->cumulative += left_deviation->now;
 		right_deviation->cumulative += right_deviation->now;
 	} else if (rotation_flag == 1) {
-		left_deviation->cumulative += left_deviation->now;
+		left_deviation->cumulative += left_deviation->now + wallcontrol_value;
 		right_deviation->cumulative = left_deviation->cumulative;
 	}
 	duty_left = (int) left_deviation->now * Kp
