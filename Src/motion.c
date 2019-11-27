@@ -42,6 +42,7 @@ void go_entrance(float accel, float vel) {
 //rotation_deviation.cumulative = 0.0;
 	moter_flag = 1;
 	set_straight(67.0, accel, vel, 0.0, vel);
+	wall_control_flag=10;
 	wait_straight();
 }
 
@@ -87,11 +88,21 @@ void turn_right(float accel, float vel) {
 }
 
 void pass_180(float accel, float vel) {
-	set_straight(50.0, accel, vel, vel, vel);
+//	log_start();
+	set_straight(30.0, accel, vel, vel, vel);
 	wait_straight();
-	set_straight(40.0, accel, vel, vel, vel);
+	set_straight(30.0, accel, vel, vel, vel);
+	wall_control_flag=10;
+	wait_straight();
+	set_straight(30.0, accel, vel, vel, vel);
 	kushi_control_flag=0;
 	wait_straight();
+	//	set_straight(50.0, accel, vel, vel, vel);
+//	wait_straight();
+//	set_straight(40.0, accel, vel, vel, vel);
+//	kushi_control_flag=0;
+//	wait_straight();
+//	log_flag = 0;
 }
 
 void turn_180(float accel, float vel) {
@@ -174,13 +185,14 @@ void turn_180(float accel, float vel) {
 //		run_right_deviation.cumulative = 0.0;
 //		wallcontrol_value = 0.0;
 		set_straight(75.0, accel, vel, 0.0, vel);
+		wall_control_flag=10;
 		wait_straight();
 	}
 }
 
 void ketuate(float accel, float vel) {
 	set_straight(45.0, accel, vel, vel, 0.0);
-	kushi_control_flag=0;
+	kushi_control_flag = 0;
 	wait_straight();
 //	if (getWall(x.now, y.now, direction + 1, &walldata.real) == 1) {
 //		set_rotation(90.0, nomal_rotation.accel, nomal_rotation.vel_search,
@@ -269,18 +281,19 @@ void ketuate_left(float accel, float vel) {
 }
 
 void back_100(void) {
-	float kp,ki;
-	ki=rotation_gain.Ki;
-	kp=rotation_gain.Kp;
+	float kp, ki;
+	ki = rotation_gain.Ki;
+	kp = rotation_gain.Kp;
 	set_straight(-35.0, 300, 80, 0.0, 80.0);
 	wall_control_flag = 0;
 	wait_straight();
-	rotation_gain.Ki=0.0;
-	rotation_gain.Kp=0.0;
+	rotation_gain.Ki = 0.0;
+	rotation_gain.Kp = 0.0;
 	set_straight(-15.0, 300, 80, 80.0, 0.0);
 	wall_control_flag = 0;
 	wait_straight();
 
+	HAL_Delay(100);
 
 	rotation_deviation.cumulative = 0.0;
 	rotation_deviation.now = 0.0;
@@ -290,9 +303,8 @@ void back_100(void) {
 	run_right_deviation.cumulative = 0.0;
 	wallcontrol_value = 0.0;
 
-
-	rotation_gain.Ki=ki;
-	rotation_gain.Kp=kp;
+	rotation_gain.Ki = ki;
+	rotation_gain.Kp = kp;
 }
 
 void ketuate_goal_left(float accel, float vel) {
@@ -373,7 +385,7 @@ void slalom_left90(float run_accel, float run_vel) {
 		rotation_gain.Kp *= 1;
 		rota_accel = 10000;
 		rota_vel = 1300;
-		in_offset = 8;
+		in_offset = 10;
 		out_offset = 13;
 	}
 
@@ -402,12 +414,12 @@ void slalom_right90(float run_accel, float run_vel) {
 //		}
 //	}
 	if (run_vel == 280.0) {
-		rotation_gain.Ki *= 1.2;
+//		rotation_gain.Ki *= 1.2;
 		rotation_gain.Kp *= 1;
 		rota_accel = 10000;
 		rota_vel = 1300;
 		in_offset = 10;
-		out_offset = 14;
+		out_offset = 16;
 	}
 	set_straight(in_offset, run_accel, run_vel, run_vel, run_vel);
 	wait_straight();

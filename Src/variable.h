@@ -11,7 +11,7 @@
 #include "stdint.h"
 #include "stdio.h"
 
-#define DIAMETER 12.5
+#define DIAMETER 12.7
 
 typedef struct {
 	int now; //今の値

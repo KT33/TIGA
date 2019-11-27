@@ -246,7 +246,7 @@ void PID_control(run_t *ideal, run_t *left, run_t *right,
 		left_deviation->cumulative += left_deviation->now;
 		right_deviation->cumulative += right_deviation->now;
 	} else if (rotation_flag == 1) {
-		left_deviation->cumulative += left_deviation->now + wallcontrol_value;
+		left_deviation->cumulative += left_deviation->now; //+ wallcontrol_value
 		right_deviation->cumulative = left_deviation->cumulative;
 	}
 	duty_left = (int) left_deviation->now * Kp
@@ -435,6 +435,28 @@ void integral_ideal(run_t *ideal) {
 void wall_control(void) {
 	float L_error = (float) SEN_L.now - (float) SEN_L.reference;
 	float R_error = (float) SEN_R.now - (float) SEN_R.reference;
+
+	float error_max = 400;
+
+	if (L_error < 0) {
+		L_error *= 1.6;
+	}
+	if (R_error < 0) {
+		R_error *= 1.6;
+	}
+
+	if (L_error > error_max) {
+		L_error = error_max;
+	}
+	if (R_error > error_max) {
+		R_error = error_max;
+	}
+	if (L_error < -error_max) {
+		L_error = -error_max;
+	}
+	if (R_error < -error_max) {
+		R_error = -error_max;
+	}
 	float L_error_diff = (L_error - SEN_L.error_before);
 	float R_error_diff = (R_error - SEN_R.error_before);
 	SEN_L.error_before = ((float) SEN_L.now - (float) SEN_L.diff)
@@ -443,7 +465,7 @@ void wall_control(void) {
 			- (float) SEN_R.reference;
 	test_L = L_error_diff;
 	test_R = R_error_diff;
-	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) {
+	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) { //通常
 
 		if (((ideal_translation.vel) > 80.0) && (SEN_L.diff < 18)
 				&& (SEN_R.diff < 18) && (SEN_F.now < SEN_F.reference)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
@@ -543,6 +565,25 @@ void wall_control(void) {
 		}
 		if (wallcontrol_value < -300.0) {
 			wallcontrol_value = -300.0;
+		}
+
+	} else if (wall_control_flag == 10) { //壁キレ区間
+		if (SEN_L.now > SEN_L.reference && SEN_R.now > SEN_R.reference) {
+			wallcontrol_value = wall_cntrol_gain.Kp * ((L_error) - (R_error))
+					+ wall_cntrol_gain.Kd
+							* (float) (L_error_diff - R_error_diff);
+//				set_led(5);
+		} else if (SEN_L.now < SEN_L.threshold && SEN_R.now > SEN_R.reference) {
+			wallcontrol_value = -2.0 * wall_cntrol_gain.Kp * (R_error)
+					+ wall_cntrol_gain.Kd * (float) (-2 * R_error_diff);
+//				set_led(4);
+		} else if (SEN_L.now > SEN_L.reference && SEN_R.now < SEN_R.threshold) {
+			wallcontrol_value = 2.0 * wall_cntrol_gain.Kp * (L_error)
+					+ wall_cntrol_gain.Kd * (float) (2 * L_error_diff);
+//				set_led(1);
+		} else {
+			wallcontrol_value = 0.0;
+//				set_led(2);
 		}
 
 	} else {

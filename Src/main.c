@@ -180,16 +180,25 @@ int main(void) {
 	SEN_F.threshold = (int) (SEN_F.reference * 0.5);
 
 
-	wall_cntrol_gain.Kp = 0.075;
-	SEN_LF.front_kusi = 200;//200//SEN_LF.reference
-	SEN_RF.front_kusi = 200;
-	wall_cntrol_gain.Ki = 0.5;
+//	wall_cntrol_gain.Kp = 0.075;
+	SEN_LF.front_kusi = 180;//200//SEN_LF.reference
+	SEN_RF.front_kusi = 180;
+//	wall_cntrol_gain.Ki = 0.5;
 
 	run_gain.Kp = 0.6;
 	run_gain.Ki = 0.15;
 
-	rotation_gain.Kp = 0.5;
-	rotation_gain.Ki = 0.012; //3
+//	rotation_gain.Kp = 0.5;
+//	rotation_gain.Ki = 0.012; //3
+
+//	rotation_gain.Kp = 0.27;
+//	rotation_gain.Ki = 0.065; //3
+
+	rotation_gain.Kp = 0.22;
+	rotation_gain.Ki = 0.045; //3
+
+	wall_cntrol_gain.Ki = 0.25*0;
+	wall_cntrol_gain.Kp = 0.2;
 
 
 	nomal_run.vel_search = 280.0;

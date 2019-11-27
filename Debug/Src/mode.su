@@ -1,9 +1,9 @@
 mode.c:18:6:mode_0	8	static
 mode.c:71:6:mode_1	8	static
-mode.c:106:6:mode_2	8	static
-mode.c:147:6:mode_3	8	static
-mode.c:193:6:mode_4	16	static
+mode.c:103:6:mode_2	8	static
+mode.c:144:6:mode_3	8	static
+mode.c:190:6:mode_4	16	static
 mode.c:220:6:mode_5	16	static
-mode.c:253:6:mode_6	16	static
-mode.c:278:6:mode_7	8	static
-mode.c:343:6:go_mode	16	static
+mode.c:253:6:mode_6	8	static
+mode.c:289:6:mode_7	8	static
+mode.c:354:6:go_mode	16	static
