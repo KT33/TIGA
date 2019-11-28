@@ -31,6 +31,7 @@ void integral_ideal(run_t *ideal);
 void wall_control(void);
 void coordinate(void);
 void read_vel2(float*left_vel,float*right_vel);
+void coordinate_pass(void);
 
 
 #endif /* RUN_H_ */

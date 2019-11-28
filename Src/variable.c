@@ -98,3 +98,9 @@ float en_log_L[6] = { 0, 0, 0, 0, 0, 0 }, en_log_R[6] = { 0, 0, 0, 0, 0, 0 },
 int8_t en_log_index = 0, acc_log_index = 0;
 
 uint8_t kushi_control_flag=0;
+
+uint8_t direction_pass = 0;
+uint8_t pass[255];
+uint8_t pass_compression[255];
+uint8_t pass_big[255];
+uint8_t pass_oblique[255];

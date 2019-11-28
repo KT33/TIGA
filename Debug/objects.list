@@ -28,6 +28,7 @@
 "Src/mode.o"
 "Src/motion.o"
 "Src/other.o"
+"Src/pass.o"
 "Src/ruc.o"
 "Src/spi.o"
 "Src/stm32f4xx_hal_msp.o"

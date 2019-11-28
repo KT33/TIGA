@@ -439,10 +439,10 @@ void wall_control(void) {
 	float error_max = 400;
 
 	if (L_error < 0) {
-		L_error *= 1.6;
+		L_error *= 3;
 	}
 	if (R_error < 0) {
-		R_error *= 1.6;
+		R_error *= 3;
 	}
 
 	if (L_error > error_max) {
@@ -467,7 +467,7 @@ void wall_control(void) {
 	test_R = R_error_diff;
 	if ((wall_control_flag == 1) && (wall_control_oblique_flag == 0)) { //通常
 
-		if (((ideal_translation.vel) > 80.0) && (SEN_L.diff < 18)
+		if (((ideal_translation.vel) > 40.0) && (SEN_L.diff < 18)
 				&& (SEN_R.diff < 18) && (SEN_F.now < SEN_F.reference)) { //&& (SEN_L.diff < 2000) && (SEN_R.diff < 2000)&& (SEN_F.now < SEN_F.threshold * 100))
 			if (SEN_L.now > SEN_L.threshold && SEN_R.now > SEN_R.threshold) {
 				wallcontrol_value = wall_cntrol_gain.Kp
@@ -573,7 +573,7 @@ void wall_control(void) {
 					+ wall_cntrol_gain.Kd
 							* (float) (L_error_diff - R_error_diff);
 //				set_led(5);
-		} else if (SEN_L.now < SEN_L.threshold && SEN_R.now > SEN_R.reference) {
+		} else if (SEN_L.now < SEN_L.threshold  && SEN_R.now > SEN_R.reference) {
 			wallcontrol_value = -2.0 * wall_cntrol_gain.Kp * (R_error)
 					+ wall_cntrol_gain.Kd * (float) (-2 * R_error_diff);
 //				set_led(4);
@@ -603,6 +603,18 @@ void coordinate(void) {
 		y.now--;
 	} else if (direction == East) {
 		x.now++;
+	}
+}
+
+void coordinate_pass(void) {
+	if (direction_pass == North) {
+		y.pass++;
+	} else if (direction_pass == West) {
+		x.pass--;
+	} else if (direction_pass == South) {
+		y.pass--;
+	} else if (direction_pass == East) {
+		x.pass++;
 	}
 }
 

@@ -11,7 +11,7 @@
 #include "stdint.h"
 #include "stdio.h"
 
-#define DIAMETER 12.7
+#define DIAMETER 12.49
 
 typedef struct {
 	int now; //今の値
@@ -201,6 +201,12 @@ extern float en_log_L[6], en_log_R[6],acc_log[6];
 extern int8_t en_log_index,acc_log_index;
 
 extern uint8_t kushi_control_flag;
+
+extern uint8_t  direction_pass;
+extern uint8_t pass[255];
+extern uint8_t pass_compression[255];
+extern uint8_t pass_big[255];
+extern uint8_t pass_oblique[255];
 
 #define North 0
 #define West 1
