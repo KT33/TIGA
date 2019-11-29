@@ -117,8 +117,8 @@ void addWall(void) {
 
 		kushi_control_flag = 1;
 		if ((SEN_F.now > SEN_F.threshold)
-				&& (SEN_RF.now > (int) SEN_RF.reference * 0.5)
-				&& (SEN_LF.now > (int) SEN_LF.reference * 0.5)) {
+				&& (SEN_RF.now > (int) SEN_RF.reference * 0.25)
+				&& (SEN_LF.now > (int) SEN_LF.reference * 0.25)) {
 			add_walldata_one(direction, &walldata.real);
 			kushi_control_flag = 0;
 		} else if (getWall(x.now, y.now, direction, &walldata.real) == 0) {

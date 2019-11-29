@@ -371,15 +371,18 @@ void move_pass_big_turn(float accel, float max_vel, float big_turn_vel) {
 //	out_put_pass(pass_big);
 //		while (1)
 //			;
-//
+////
 //	for (i = 0; pass[i] != 0xff; i++) {
-//		//printf("%d\n", pass[i]);
+//		printf("%d\n", pass[i]);
 //	}
 //	//printf("\n");
 //	for (i = 0; pass_big[i] != 0xff; i++) {
-//		//printf("%d\n", pass_big[i]);
+//		printf("%d\n", pass_big[i]);
 //	}
 //
+//	while(1);
+	//
+
 //	while (1)
 //		;
 

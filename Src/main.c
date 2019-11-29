@@ -203,6 +203,7 @@ int main(void) {
 
 	nomal_run.vel_search = 280.0;
 	nomal_run.accel = 1000.0;
+	nomal_run.vel_max=500.0;
 
 	known_acc = 1000.0;
 	known_vel = 350.0;
