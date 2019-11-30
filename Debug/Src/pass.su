@@ -1,6 +1,6 @@
-pass.c:24:6:make_pass	120	static
-pass.c:125:6:move_pass	24	static
-pass.c:140:6:move_pass_compression	32	static
-pass.c:263:6:move_pass_big_turn	40	static
+pass.c:23:6:make_pass	120	static
+pass.c:124:6:move_pass	24	static
+pass.c:139:6:move_pass_compression	32	static
+pass.c:262:6:move_pass_big_turn	40	static
 pass.c:535:6:move_pass_oblique	56	static
-pass.c:1009:6:out_put_pass	24	static
+pass.c:1007:6:out_put_pass	24	static

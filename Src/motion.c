@@ -141,10 +141,12 @@ void turn_180(float accel, float vel) {
 	if (getWall(x.now, y.now, (direction + 2) % 4, &walldata.real) == 1) {
 		HAL_Delay(50);
 		back_100();
-//		if (u_turn_counter == 100) {
-//
-//			save_all_walldata();
-//			u_turn_counter = 0;
+
+		if (u_turn_counter == 100&&failsafe_flag==0) {
+			save_all_walldata();
+			u_turn_counter = 0;
+		}
+
 //		} else if (u_turn_counter > 4 || (x.now == 7 && y.now == 7)
 //				|| (x.now == 8 && y.now == 7) || (x.now == 7 && y.now == 8)
 //				|| (x.now == 8 && y.now == 8)) {
@@ -468,11 +470,11 @@ void turn_left_180_big(float vel) {
 	float angle_offset;
 	if (vel == 500.0) {
 		in_offset = 20.0;
-		out_offset = 0.0;
+		out_offset = 30.0;
 		rota_accel = 16000.0;
 		rota_vel = 620.0;
 		angle_offset = 0.0;
-		kabekire_dis=5;
+		kabekire_dis = 5;
 	}
 
 	while (SEN_L.now > SEN_L.threshold) {
@@ -505,13 +507,15 @@ void turn_left_180_big(float vel) {
 void turn_right_180_big(float vel) {
 	float in_offset, out_offset, rota_accel, rota_vel, kabekire_dis;
 	float angle_offset;
+	float Ki = rotation_gain.Ki;
+	rotation_gain.Ki *= 1.1;
 	if (vel == 500.0) {
 		in_offset = 22.0;
-		out_offset = 0.0;
+		out_offset = 30.0;
 		rota_accel = 15000.0;
 		rota_vel = 635.0;
 		angle_offset = 0.0;
-		kabekire_dis=10;
+		kabekire_dis = 10;
 	}
 
 	while (SEN_R.now > SEN_R.threshold) {
@@ -538,14 +542,15 @@ void turn_right_180_big(float vel) {
 		direction -= 4;
 	}
 	coordinate();
+	rotation_gain.Ki = Ki;
 }
 
 void turn_left_90_big(float vel) {
 	float in_offset, out_offset, rota_accel, rota_vel, kabekire_dis;
 	float angle_offset;
 	if (vel == 500.0) {
-		in_offset = 28.0;
-		out_offset = 14.0;
+		in_offset = 29.0;
+		out_offset = 52.0;
 		rota_accel = 15000.0;
 		rota_vel = 1000.0;
 		angle_offset = 0.0;
@@ -571,11 +576,11 @@ void turn_left_90_big(float vel) {
 void turn_right_90_big(float vel) {
 	float in_offset, out_offset, rota_accel, rota_vel, kabekire_dis;
 	float angle_offset;
-	float Ki=rotation_gain.Ki;
-	rotation_gain.Ki*=1.2;
+	float Ki = rotation_gain.Ki;
+	rotation_gain.Ki *= 1.3;
 	if (vel == 500.0) {
 		in_offset = 37.0;
-		out_offset = 13.0;
+		out_offset = 48.0;
 		rota_accel = 15000.0;
 		rota_vel = 1000.0;
 		angle_offset = 0.0;
@@ -596,7 +601,7 @@ void turn_right_90_big(float vel) {
 	set_straight(out_offset, nomal_run.accel, vel, vel, vel);
 	wait_straight();
 
-	rotation_gain.Ki=Ki;
+	rotation_gain.Ki = Ki;
 
 	coordinate();
 }
@@ -615,7 +620,7 @@ void farst_turn_right_90_big(float vel) {
 
 	coordinate();
 
-	set_straight(in_offset + 22.0, nomal_run.accel*2, vel, 0.0, vel);
+	set_straight(in_offset + 22.0, nomal_run.accel * 2, vel, 0.0, vel);
 	wait_straight();
 	set_rotation(-90.0 + angle_offset, rota_accel, rota_vel, vel);
 	wait_rotation();

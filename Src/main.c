@@ -211,8 +211,8 @@ int main(void) {
 	nomal_rotation.vel_search = 750.0;
 	nomal_rotation.accel = 1700.0;
 
-	x.goal = 2;
-	y.goal = 0;
+	x.goal = 8;
+	y.goal = 7;
 	while (1) {
 //		while (1) {
 //			set_led(2);

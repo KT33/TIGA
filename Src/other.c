@@ -101,7 +101,24 @@ void read_flash(uint32_t address, uint8_t *data, uint32_t size) {
 }
 
 void save_all_walldata(void) {
-	write_flash(SECTOR_BASE_ADRR, (uint8_t*) &walldata, sizeof(walldata));
+	if (failsafe_flag == 0) {
+		moter_flag=0;
+//		set_buzzer(0, C_4, 400);
+//		set_buzzer(1, D_4, 400);
+		write_flash(SECTOR_BASE_ADRR, (uint8_t*) &walldata, sizeof(walldata));
+		for (uint8_t i = 0; i < 2; i++) {
+			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin,
+					SET);
+			set_led(5);
+			HAL_Delay(200);
+			HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin,
+					RESET);
+			set_led(2);
+			HAL_Delay(200);
+		}
+		moter_flag=1;
+		HAL_Delay(200);
+	}
 }
 
 void read_all_walldata(void) {
@@ -294,9 +311,9 @@ void set_led(uint8_t num) {
 		HAL_GPIO_WritePin(UI_LED_LEFT_GPIO_Port, UI_LED_LEFT_Pin, RESET);
 	}
 	if ((0x08 & num) != 0) {
-		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, SET);
+//		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, SET);
 	} else {
-		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, RESET);
+//		HAL_GPIO_WritePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin, RESET);
 	}
 }
 

@@ -12,7 +12,6 @@
  *      Author: kt33_
  */
 
-
 #include "pass.h"
 #include "main.h"
 #include "run.h"
@@ -265,7 +264,6 @@ void move_pass_big_turn(float accel, float max_vel, float big_turn_vel) {
 	int8_t straight_count;
 	uint8_t x_box, y_box, direction_box;
 
-
 	ideal_translation.accel = 0.0;
 	ideal_translation.vel = 0.0;
 	ideal_translation.dis = 0.0;
@@ -380,23 +378,24 @@ void move_pass_big_turn(float accel, float max_vel, float big_turn_vel) {
 //		printf("%d\n", pass_big[i]);
 //	}
 //
-//	while(1);
+//	while (1)
+//		;
 	//
 
 //	while (1)
 //		;
 
 	moter_flag = 1;
-
+	HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
 	i = 0;
 	coordinate();
 	if (pass_big[i] < 35) {
 		if (pass_big[1] == SHORTLEFT90 || pass_big[1] == SHORTRIGHT90) {
-			set_straight(67.0 + 45.0 * (float) pass_big[i], accel, max_vel,
-					0.0, nomal_run.vel_search);
+			set_straight(67.0 + 45.0 * (float) pass_big[i], accel, max_vel, 0.0,
+					nomal_run.vel_search);
 		} else {
-			set_straight(67.0 + 45.0 * (float) pass_big[i], accel, max_vel,
-					0.0, big_turn_vel);
+			set_straight(67.0 + 45.0 * (float) pass_big[i], accel, max_vel, 0.0,
+					big_turn_vel);
 		}
 		wait_straight();
 		for (j = 0; j < pass_big[i] / 2; j++) {
@@ -415,6 +414,7 @@ void move_pass_big_turn(float accel, float max_vel, float big_turn_vel) {
 	}
 
 	for (i = 1; pass_big[i] != 0xff; i++) {
+		HAL_GPIO_TogglePin(UI_LED_LEFT_BO_GPIO_Port, UI_LED_LEFT_BO_Pin);
 		if (pass_big[i] < 35) { //直進の途中
 			if (pass_big[i - 1] == SHORTLEFT90
 					|| pass_big[i - 1] == SHORTRIGHT90) {
@@ -540,7 +540,6 @@ void move_pass_oblique(float accel, float max_vel, float big_turn_vel,
 	uint8_t x_box, y_box, direction_box;
 //	float ro_ki_box=rotation_gain.Ki;
 //	float ro_kp_box=rotation_gain.Kp;
-
 
 	if (big_turn_vel >= 1300.0) {
 		rotation_gain.Kp = 0.67;
@@ -785,7 +784,6 @@ void move_pass_oblique(float accel, float max_vel, float big_turn_vel,
 //////////////////////////////////////////////////////////////////////////
 	moter_flag = 1;
 
-
 	log_start();
 	i = 0;
 	coordinate();
@@ -1003,7 +1001,7 @@ void move_pass_oblique(float accel, float max_vel, float big_turn_vel,
 	wallcontrol_value = 0.0;
 	run_left_deviation.cumulative = 0.0;
 	run_right_deviation.cumulative = 0.0;
-	wallcontrol_value=0.0;
+	wallcontrol_value = 0.0;
 }
 
 void out_put_pass(uint8_t *pass) {
